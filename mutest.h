@@ -1,10 +1,10 @@
-/* zutest.h
+/* mutest.h
  * Scott Bronson
  * 6 Mar 2006
  *
  * TODO: make tests self-documenting.  The test name is the same as the
  * function name, but they should also have a short and long description.
- * TODO: make zutest suites able to be arranged in a hierarchy.
+ * TODO: make mutest suites able to be arranged in a hierarchy.
  * 
  * This file is released under the MIT License.
  * See http://en.wikipedia.org/wiki/MIT_License for more.
@@ -15,7 +15,7 @@
  */
 
 
-/* @file zutest.h
+/* @file mutest.h
  *
  * This file contains the declarations and all the Assert macros
  * required to use Zutest in your own applications.
@@ -25,15 +25,15 @@
  * To compile Zutest to run its own unit tests, do this:
  * 
  * <pre>
- * 	$ cc -DZUTEST_MAIN zutest.c -o zutest
- * 	$ ./zutest
+ * 	$ cc -DZUTEST_MAIN mutest.c -o mutest
+ * 	$ ./mutest
  * 	4 tests run, 4 successes (132 assertions).
  * </pre>
  *
  * If your non-gcc compiler complains about a missing __func__ macro,
  * add -D__func__='"test"' to the compiler's command line.
  *
- * See ::zutest_tests for instructions on how to add zutest's
+ * See ::mutest_tests for instructions on how to add mutest's
  * built-in unit tests to your application's test suite.
  */
 
@@ -48,20 +48,20 @@
 //#define ZUTBECAUSE " failed because "
 #define ZUTBECAUSE " failed. "
 
-// Note that Fail doesn't increment zutest_assertions (the number of assertions
+// Note that Fail doesn't increment mutest_assertions (the number of assertions
 // that have been made) because it doesn't assert anything.  It only fails.
-// If you call fail, you might want to increment zutest_assertions
+// If you call fail, you might want to increment mutest_assertions
 // manually if you care about this number.  Normally you won't care.
-#define Fail(...) zutest_fail(__FILE__, __LINE__, __func__, __VA_ARGS__)
+#define Fail(...) mutest_fail(__FILE__, __LINE__, __func__, __VA_ARGS__)
 
 // If the expression returns false, it is printed in the failure message.
-#define Assert(x) do { zutest_assertions++; \
+#define Assert(x) do { mutest_assertions++; \
 		if(!(x)) { Fail(#x); } } while(0)
 
 // If the expression returns false, the given format string is printed.
 // This is the same as Assert, just with much more helpful error messages.
 // For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
-#define AssertFmt(x,...) do { zutest_assertions++; \
+#define AssertFmt(x,...) do { mutest_assertions++; \
 		if(!(x)) { Fail(__VA_ARGS__); } } while(0)
 
 // integers, longs, chars...
@@ -137,12 +137,12 @@
 #define AssertStrLe(x,y) AssertStrOp(x,le,<=,y)
 
 // ensures a string is non-null but zero-length
-#define AssertStrEmpty(p) do { zutest_assertions++; \
+#define AssertStrEmpty(p) do { mutest_assertions++; \
 		if(!(p)) { Fail(#p" is empty" ZUTBECAUSE #p " is NULL!"); } \
 		if((p)[0]) { Fail(#p" is empty" ZUTBECAUSE #p " is: %s",p); } \
 	} while(0)
 // ensures a string is non-null and non-zero-length
-#define AssertStrNonEmpty(p) do { zutest_assertions++; \
+#define AssertStrNonEmpty(p) do { mutest_assertions++; \
 		if(!(p)) { Fail(#p" is nonempty" ZUTBECAUSE #p " is NULL!"); } \
 		if(!(p)[0]) { Fail(#p" is nonempty" ZUTBECAUSE #p"[0] is 0!"); } \
 	} while(0)
@@ -182,32 +182,32 @@
 
 /** Fails the current test.
  *
- * This function may only be called from within a ::zutest_proc.
+ * This function may only be called from within a ::mutest_proc.
  *
  * If none of the built-in Assert macros fit your fancy, you can do the
- * check on your own and call zutest_fail in the event that it fails.
+ * check on your own and call mutest_fail in the event that it fails.
  * 
  * Example:
  * 
  * <pre>
  * if(my_error) {
- *    zutest_fail(__FILE__, __LINE__, __func__, "Error Message %d", 1);
+ *    mutest_fail(__FILE__, __LINE__, __func__, "Error Message %d", 1);
  * }
  * </pre>
  *
  * But, really, it's easier just to call the Fail() macro.
  */
 
-void zutest_fail(const char *file, int line, const char *func,
+void mutest_fail(const char *file, int line, const char *func,
 		const char *msg, ...);
 		
 		
-#define zutest(test) do { zutest_tests_run += 1; 	\
-		if(!setjmp(zutest_test_bail)) { 			\
+#define mutest(test) do { mutest_tests_run += 1; 	\
+		if(!setjmp(mutest_test_bail)) { 			\
 			do { test; } while(0); 					\
-			zutest_successes += 1; 					\
+			mutest_successes += 1; 					\
 		} else { 									\
-			zutest_failures += 1; 					\
+			mutest_failures += 1; 					\
 		} } while(0)
 		
 
@@ -224,20 +224,20 @@ void zutest_fail(const char *file, int line, const char *func,
  * update this variable properly.
  */
 
-extern int zutest_assertions;
-extern int zutest_tests_run;
-extern int zutest_successes;
-extern int zutest_failures;
-extern jmp_buf zutest_test_bail;
+extern int mutest_assertions;
+extern int mutest_tests_run;
+extern int mutest_successes;
+extern int mutest_failures;
+extern jmp_buf mutest_test_bail;
 
-typedef void (*zutest_proc)();
+typedef void (*mutest_proc)();
 
 /** Runs all the tests in a suite. */
-void run_zutest_suite(zutest_proc proc);
+void run_mutest_suite(mutest_proc proc);
 /** Runs all the tests in all the suites passed in. */
-void run_zutest_suites(zutest_proc proc);
+void run_mutest_suites(mutest_proc proc);
 
-void print_zutest_results();
+void print_mutest_results();
 
 
 /** 
@@ -246,10 +246,10 @@ void print_zutest_results();
  * ran your program with the first arg of "--run-unit-tests", this will
  * run the tests and exit.  Otherwise your program will run as normal.
  * If you would rather create a dedicated executable, just call
- * run_zutest_suites() directly.
+ * run_mutest_suites() directly.
  */
 
-void unit_test_check(int argc, char **argv, zutest_proc proc);
+void unit_test_check(int argc, char **argv, mutest_proc proc);
 
 /**
  *
@@ -257,8 +257,8 @@ void unit_test_check(int argc, char **argv, zutest_proc proc);
  * if you want to handle the arguments yourself.
  */
 
-void run_unit_tests(zutest_proc proc);
-void run_unit_tests_showing_failures(zutest_proc proc);
+void run_unit_tests(mutest_proc proc);
+void run_unit_tests_showing_failures(mutest_proc proc);
 
 
 /** Zutest's built-in test suite.
@@ -268,13 +268,13 @@ void run_unit_tests_showing_failures(zutest_proc proc);
  * before running your application's.  This is for the especially pedantic. :)
  *
  * Unfortunately, there is one test that cannot be run if you do this:
- * ensuring that zutest properly handles empty test suites.
- * Other than this one test, adding zutest_tests
- * to your application's test suite is equivalent to causing zutest to
- * compile and run its unit tests as described in zutest.h.
+ * ensuring that mutest properly handles empty test suites.
+ * Other than this one test, adding mutest_tests
+ * to your application's test suite is equivalent to causing mutest to
+ * compile and run its unit tests as described in mutest.h.
  */
 
-void zutest_tests();
+void mutest_tests();
 
 
 #endif

@@ -1,4 +1,4 @@
-/* zutest.c
+/* mutest.c
  * Scott Bronson
  * 6 Mar 2006
  * 
@@ -14,10 +14,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include "zutest.h"
+#include "mutest.h"
 
 
-/** @file zutest.c
+/** @file mutest.c
  *
  * This file contains all of the test mechanisms provided by the
  * Zutest unit testing framework.
@@ -63,16 +63,16 @@
  */
 
 
-int zutest_assertions = 0;		///< A goofy statistic, updated by the assertion macros
-int zutest_tests_run = 0;		///< The number of tests that we have run.  successes+failures==tests_run (if not, then there's a bug somewhere).
-int zutest_successes = 0;		///< The number of successful tests run
-int zutest_failures = 0;		///< The number of failed tests run.
-jmp_buf zutest_test_bail;		///< If an assertion fails, and we're not inverted, this is where we end up.
+int mutest_assertions = 0;		///< A goofy statistic, updated by the assertion macros
+int mutest_tests_run = 0;		///< The number of tests that we have run.  successes+failures==tests_run (if not, then there's a bug somewhere).
+int mutest_successes = 0;		///< The number of successful tests run
+int mutest_failures = 0;		///< The number of failed tests run.
+jmp_buf mutest_test_bail;		///< If an assertion fails, and we're not inverted, this is where we end up.
 static jmp_buf *inversion;		///< If an assertion fails, and we're inverted, this is where we end up.  This is NULL except when running Zutest's internal unit tests.  See test_fail().
 static int show_failures = 0; 	///< Set this to 1 to print the failures.  This allows you to view the output of each failure to ensure it looks OK.
 
 
-void zutest_fail(const char *file, int line, const char *func, 
+void mutest_fail(const char *file, int line, const char *func, 
 		const char *msg, ...)
 {
 	va_list ap;
@@ -89,38 +89,38 @@ void zutest_fail(const char *file, int line, const char *func,
 		longjmp(*inversion, 1);
 	}
 
-	longjmp(zutest_test_bail, 1);
+	longjmp(mutest_test_bail, 1);
 }
 
 
-void print_zutest_results()
+void print_mutest_results()
 {
-	if(zutest_failures == 0) {
+	if(mutest_failures == 0) {
 		printf("All OK.  %d test%s run, %d successe%s (%d assertion%s).\n",
-				zutest_successes, (zutest_successes == 1 ? "" : "s"),
-				zutest_successes, (zutest_successes == 1 ? "" : "s"),
-				zutest_assertions, (zutest_assertions == 1 ? "" : "s"));
+				mutest_successes, (mutest_successes == 1 ? "" : "s"),
+				mutest_successes, (mutest_successes == 1 ? "" : "s"),
+				mutest_assertions, (mutest_assertions == 1 ? "" : "s"));
 		return;
 	}
 
 	printf("ERROR: %d failure%s in %d test%s run!\n",
-			zutest_failures, (zutest_failures == 1 ? "" : "s"), 
-			zutest_tests_run, (zutest_tests_run == 1 ? "" : "s"));
+			mutest_failures, (mutest_failures == 1 ? "" : "s"), 
+			mutest_tests_run, (mutest_tests_run == 1 ? "" : "s"));
 }
 
 
 /** Runs all the unit tests in all the passed-in test suites.
  */
 
-void run_unit_tests(zutest_proc proc)
+void run_unit_tests(mutest_proc proc)
 {
 	(*proc)();
-	print_zutest_results();
-	exit(zutest_failures < 100 ? zutest_failures : 100);
+	print_mutest_results();
+	exit(mutest_failures < 100 ? mutest_failures : 100);
 }
 
 
-void run_unit_tests_showing_failures(zutest_proc proc)
+void run_unit_tests_showing_failures(mutest_proc proc)
 {
 	show_failures = 1;
 	run_unit_tests(proc);
@@ -138,7 +138,7 @@ void run_unit_tests_showing_failures(zutest_proc proc)
  * without doing anything.
  */
 
-void unit_test_check(int argc, char **argv, zutest_proc proc)
+void unit_test_check(int argc, char **argv, mutest_proc proc)
 {
 	if(argc > 1 && strcmp(argv[1],"--run-unit-tests") == 0) {
 		run_unit_tests(proc);
@@ -147,7 +147,7 @@ void unit_test_check(int argc, char **argv, zutest_proc proc)
 
 
 
-/* This code runs the zutest unit tests to ensure that zutest itself
+/* This code runs the mutest unit tests to ensure that mutest itself
  * is working properly.
  */
 
@@ -381,27 +381,11 @@ void test_assert_strings()
 }
 
 
-void zutest_tests()
+void mutest_tests()
 {
-	zutest( test_assert_int() );
-	zutest( test_assert_hex() );
-	zutest( test_assert_ptr() );
-	zutest( test_assert_float() );
-	zutest( test_assert_strings() );
+	mutest( test_assert_int() );
+	mutest( test_assert_hex() );
+	mutest( test_assert_ptr() );
+	mutest( test_assert_float() );
+	mutest( test_assert_strings() );
 };
-
-
-#ifdef ZUTEST_MAIN
-int main(int argc, char **argv)
-{
-	if(argc > 1) {
-		// "zutest -f" prints all the failures in the zutest unit tests.
-		// This allows you to check the output of each macro.
-		run_unit_tests_showing_failures(zutest_tests);
-	} else {
-		run_unit_tests(zutest_tests);
-	}
-	// this will never be reached
-	return 0;
-}
-#endif
