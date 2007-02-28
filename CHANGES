@@ -1,0 +1,17 @@
+TODO:
+- Make a MUTEST { ... } macro to surround the test.
+  - Make it nestable?
+- Add routine to parse cmdline args.
+  --test will initiate unit testing (optional arg).
+     --list lists unit tests,
+	 --skip or --run to select tests to run,
+	 --verbose to dump a lot of info?  Maybe no need for this one.
+	 --brittle to exit on the first failure and not try further tests.
+- Add assertion flavors.
+- Add support for the NOTESTS macro.
+- Make tests check for signals.  int/fp /0 and bus errors.
+- Add the ability to temporarily disable tests but leave them in the test deck.
+- Add ability to specify an optional timeout.
+
+dev: 28 Feb 2007 - ?
+- Split mutest from tmtest's zutest.c/.h files.
