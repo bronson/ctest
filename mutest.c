@@ -7,7 +7,6 @@
  *
  * Version 0.7,  16 Feb 2007 -- turn dependency tree into functions
  * Version 0.6,  26 Apr 2006 -- first version worth releasing
- * Released under the MIT License.
  */
 
 #include <stdio.h>
