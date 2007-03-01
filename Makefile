@@ -10,7 +10,8 @@ COPTS=-g -Wall -Werror
 
 all: mutest
 
-mutest: mutest.c main.c mutest.h Makefile
-	$(CC) $(COPTS) mutest.c main.c -o mutest
+mutest: mutest.c main.c mutest_tests.c mutest.h Makefile
+	$(CC) $(COPTS) mutest.c main.c mutest_tests.c -o mutest
 
-clean: rm -f mutest
+clean:
+	rm -f mutest

@@ -8,24 +8,19 @@
  * 
  * This file is released under the MIT License.
  * See http://en.wikipedia.org/wiki/MIT_License for more.
- * 
- * Version 0.7,  16 Feb 2007 -- turn dependency tree into functions
- * Version 0.62, 22 Jan 2007 -- clean up failure messages
- * Version 0.61, 30 Apr 2006 -- first version worth releasing
  */
 
 
 /* @file mutest.h
  *
  * This file contains the declarations and all the Assert macros
- * required to use Zutest in your own applications.
+ * required to use mutest in your own applications.
  *
- * Zutest is a ground-up rewrite of Asim Jalis's "CuTest" library.
- *
- * To compile Zutest to run its own unit tests, do this:
+ * To compile mutest to run its own unit tests, do this:
  * 
  * <pre>
- * 	$ cc -DZUTEST_MAIN mutest.c -o mutest
+ * 	$ make
+ *  cc -g -Wall -Werror mutest.c main.c mutest_tests.c -o mutest
  * 	$ ./mutest
  * 	4 tests run, 4 successes (132 assertions).
  * </pre>
@@ -38,15 +33,15 @@
  */
 
 
-#ifndef ZUTEST_H
-#define ZUTEST_H
+#ifndef MUTEST_H
+#define MUTEST_H
 
 // This include is unfortunate...  TODO: try to get this out of here.
 #include <setjmp.h>
 
 
-//#define ZUTBECAUSE " failed because "
-#define ZUTBECAUSE " failed. "
+//#define MUTBECAUSE " failed because "
+#define MUTBECAUSE " failed. "
 
 // Note that Fail doesn't increment mutest_assertions (the number of assertions
 // that have been made) because it doesn't assert anything.  It only fails.
@@ -98,9 +93,9 @@
 
 // Pointers...
 #define AssertPtr(p)  AssertFmt(p != NULL, \
-		#p" != NULL" ZUTBECAUSE #p"==0x%lX!", (unsigned long)p)
+		#p" != NULL" MUTBECAUSE #p"==0x%lX!", (unsigned long)p)
 #define AssertNull(p) AssertFmt(p == NULL, \
-		#p" == NULL" ZUTBECAUSE #p"==0x%lX!", (unsigned long)p)
+		#p" == NULL" MUTBECAUSE #p"==0x%lX!", (unsigned long)p)
 #define AssertNonNull(p) AssertPtr(p)
 
 #define AssertPtrNull(p) AssertNull(p)
@@ -138,13 +133,13 @@
 
 // ensures a string is non-null but zero-length
 #define AssertStrEmpty(p) do { mutest_assertions++; \
-		if(!(p)) { Fail(#p" is empty" ZUTBECAUSE #p " is NULL!"); } \
-		if((p)[0]) { Fail(#p" is empty" ZUTBECAUSE #p " is: %s",p); } \
+		if(!(p)) { Fail(#p" is empty" MUTBECAUSE #p " is NULL!"); } \
+		if((p)[0]) { Fail(#p" is empty" MUTBECAUSE #p " is: %s",p); } \
 	} while(0)
 // ensures a string is non-null and non-zero-length
 #define AssertStrNonEmpty(p) do { mutest_assertions++; \
-		if(!(p)) { Fail(#p" is nonempty" ZUTBECAUSE #p " is NULL!"); } \
-		if(!(p)[0]) { Fail(#p" is nonempty" ZUTBECAUSE #p"[0] is 0!"); } \
+		if(!(p)) { Fail(#p" is nonempty" MUTBECAUSE #p " is NULL!"); } \
+		if(!(p)[0]) { Fail(#p" is nonempty" MUTBECAUSE #p"[0] is 0!"); } \
 	} while(0)
 
 // I think that "Equal" looks better than "Eq".
@@ -161,12 +156,12 @@
 //
 
 #define AssertExpType(x,op,y,type,fmt) \
-	AssertFmt((type)x op (type)y, #x" "#op" "#y ZUTBECAUSE \
+	AssertFmt((type)x op (type)y, #x" "#op" "#y MUTBECAUSE \
 	#x"=="fmt" and "#y"=="fmt"!", (type)x,(type)y)
 // The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll
 // special-case checking against 0: x==0 failed because x==1).
 #define AssertExpToZero(x,op,type,fmt) \
-	AssertFmt((type)x op 0,#x" "#op" 0" ZUTBECAUSE #x"=="fmt"!", (type)x)
+	AssertFmt((type)x op 0,#x" "#op" 0" MUTBECAUSE #x"=="fmt"!", (type)x)
 
 #define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")
 #define AssertHexOp(x,op,y) AssertExpType(x,op,y,long,"0x%lX")
@@ -175,7 +170,7 @@
 #define AssertPtrOp(x,op,y) AssertExpType(x,op,y,unsigned long,"0x%lX")
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
-	#x" "#opn" "#y ZUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
+	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
 
 
 
@@ -220,7 +215,7 @@ void mutest_fail(const char *file, int line, const char *func,
 
 /** Keeps track of how many assertions have been made.
  * This needs to be updated manually each time an assertion
- * is made.  The Zutest built-in assertion macros all
+ * is made.  The mutest built-in assertion macros all
  * update this variable properly.
  */
 
@@ -251,6 +246,7 @@ void print_mutest_results();
 
 void unit_test_check(int argc, char **argv, mutest_proc proc);
 
+
 /**
  *
  * This runs all the unit tests supplied and then exits.  Use this
@@ -261,10 +257,10 @@ void run_unit_tests(mutest_proc proc);
 void run_unit_tests_showing_failures(mutest_proc proc);
 
 
-/** Zutest's built-in test suite.
+/** mutest's built-in test suite.
  *
- * This allows you to add the Zutest unit test suite to your application's
- * test suites.  This way, you can ensure that Zutest's unit tests pass
+ * This allows you to add the mutest unit test suite to your application's
+ * test suites.  This way, you can ensure that mutest's unit tests pass
  * before running your application's.  This is for the especially pedantic. :)
  *
  * Unfortunately, there is one test that cannot be run if you do this:
@@ -275,6 +271,16 @@ void run_unit_tests_showing_failures(mutest_proc proc);
  */
 
 void mutest_tests();
+
+
+/** A user-supplied function to run all tests in the project.
+ * 
+ * You must supply this function yourself.  If you want your tests
+ * to include mutest's self-consistency checks (and you should),
+ * make sure your all_tests() function calls mutest_tests().
+ */
+
+void all_tests();
 
 
 #endif
