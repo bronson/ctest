@@ -2,6 +2,12 @@
  * Scott Bronson
  * 6 Mar 2006
  *
+ * This file does not define any asserts for your app to use.  You'll want to
+ * look at one of the flavor files, like mutest_Assert.h if you want
+ * AssertEqual(a,b), mutest_should if you want should_be_equal(a,b),
+ * or mutest_check if you want check(a == b).
+ * 
+ * TODO: split this file in twain.
  * TODO: make tests self-documenting.  The test name is the same as the
  * function name, but they should also have a short and long description.
  * TODO: make mutest suites able to be arranged in a hierarchy.
@@ -40,140 +46,6 @@
 #include <setjmp.h>
 
 
-//#define MUTBECAUSE " failed because "
-#define MUTBECAUSE " failed. "
-
-// Note that Fail doesn't increment mutest_assertions (the number of assertions
-// that have been made) because it doesn't assert anything.  It only fails.
-// If you call fail, you might want to increment mutest_assertions
-// manually if you care about this number.  Normally you won't care.
-#define Fail(...) mutest_fail(__FILE__, __LINE__, __func__, __VA_ARGS__)
-
-// If the expression returns false, it is printed in the failure message.
-#define Assert(x) do { mutest_assertions++; \
-		if(!(x)) { Fail(#x); } } while(0)
-
-// If the expression returns false, the given format string is printed.
-// This is the same as Assert, just with much more helpful error messages.
-// For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
-#define AssertFmt(x,...) do { mutest_assertions++; \
-		if(!(x)) { Fail(__VA_ARGS__); } } while(0)
-
-// integers, longs, chars...
-#define AssertEq(x,y) AssertOp(x,==,y)
-#define AssertNe(x,y) AssertOp(x,!=,y)
-#define AssertGt(x,y) AssertOp(x,>,y)
-#define AssertGe(x,y) AssertOp(x,>=,y)
-#define AssertLt(x,y) AssertOp(x,<,y)
-#define AssertLe(x,y) AssertOp(x,<=,y)
-
-#define AssertZero(x) AssertOpToZero(x,==)
-#define AssertNonzero(x) AssertOpToZero(x,!=)
-#define AssertNonZero(x) AssertNonzero(x)
-#define AssertPositive(x) AssertOpToZero(x,>);
-#define AssertNegative(x) AssertOpToZero(x,<);
-#define AssertNonNegative(x) AssertOpToZero(x,>=);
-#define AssertNonPositive(x) AssertOpToZero(x,<=);
-
-// Also integers but failure values are printed in hex rather than decimal.
-#define AssertEqHex(x,y) AssertHexOp(x,==,y)
-#define AssertNeHex(x,y) AssertHexOp(x,!=,y)
-#define AssertGtHex(x,y) AssertHexOp(x,>,y)
-#define AssertGeHex(x,y) AssertHexOp(x,>=,y)
-#define AssertLtHex(x,y) AssertHexOp(x,<,y)
-#define AssertLeHex(x,y) AssertHexOp(x,<=,y)
-
-#define AssertZeroHex(x) AssertHexOpToZero(x,==)
-#define AssertNonzeroHex(x) AssertHexOpToZero(x,!=)
-#define AssertNonZeroHex(x) AssertNonzeroHex(x)
-#define AssertPositiveHex(x) AssertHexOpToZero(x,>);
-#define AssertNegativeHex(x) AssertHexOpToZero(x,<);
-#define AssertNonNegativeHex(x) AssertHexOpToZero(x,>=);
-#define AssertNonPositiveHex(x) AssertHexOpToZero(x,<=);
-
-// Pointers...
-#define AssertPtr(p)  AssertFmt(p != NULL, \
-		#p" != NULL" MUTBECAUSE #p"==0x%lX!", (unsigned long)p)
-#define AssertNull(p) AssertFmt(p == NULL, \
-		#p" == NULL" MUTBECAUSE #p"==0x%lX!", (unsigned long)p)
-#define AssertNonNull(p) AssertPtr(p)
-
-#define AssertPtrNull(p) AssertNull(p)
-#define AssertPtrNonNull(p) AssertNonNull(p)
-#define AssertPtrEq(x,y) AssertPtrOp(x,==,y)
-#define AssertPtrNe(x,y) AssertPtrOp(x,!=,y)
-#define AssertPtrGt(x,y) AssertPtrOp(x,>,y)
-#define AssertPtrGe(x,y) AssertPtrOp(x,>=,y)
-#define AssertPtrLt(x,y) AssertPtrOp(x,<,y)
-#define AssertPtrLe(x,y) AssertPtrOp(x,<=,y)
-
-// These work with floats and doubles
-// (everything is handled internally as double)
-#define AssertFloatEq(x,y) AssertFloatOp(x,==,y)
-#define AssertFloatNe(x,y) AssertFloatOp(x,!=,y)
-#define AssertFloatGt(x,y) AssertFloatOp(x,>,y)
-#define AssertFloatGe(x,y) AssertFloatOp(x,>=,y)
-#define AssertFloatLt(x,y) AssertFloatOp(x,<,y)
-#define AssertFloatLe(x,y) AssertFloatOp(x,<=,y)
-// supply Doubles so people don't worry about precision when they see Float
-#define AssertDoubleEq(x,y) AssertFloatOp(x,==,y)
-#define AssertDoubleNe(x,y) AssertFloatOp(x,!=,y)
-#define AssertDoubleGt(x,y) AssertFloatOp(x,>,y)
-#define AssertDoubleGe(x,y) AssertFloatOp(x,>=,y)
-#define AssertDoubleLt(x,y) AssertFloatOp(x,<,y)
-#define AssertDoubleLe(x,y) AssertFloatOp(x,<=,y)
-
-// Strings (uses strcmp)...
-#define AssertStrEq(x,y) AssertStrOp(x,eq,==,y)
-#define AssertStrNe(x,y) AssertStrOp(x,ne,!=,y)
-#define AssertStrGt(x,y) AssertStrOp(x,gt,>,y)
-#define AssertStrGe(x,y) AssertStrOp(x,ge,>=,y)
-#define AssertStrLt(x,y) AssertStrOp(x,lt,<,y)
-#define AssertStrLe(x,y) AssertStrOp(x,le,<=,y)
-
-// ensures a string is non-null but zero-length
-#define AssertStrEmpty(p) do { mutest_assertions++; \
-		if(!(p)) { Fail(#p" is empty" MUTBECAUSE #p " is NULL!"); } \
-		if((p)[0]) { Fail(#p" is empty" MUTBECAUSE #p " is: %s",p); } \
-	} while(0)
-// ensures a string is non-null and non-zero-length
-#define AssertStrNonEmpty(p) do { mutest_assertions++; \
-		if(!(p)) { Fail(#p" is nonempty" MUTBECAUSE #p " is NULL!"); } \
-		if(!(p)[0]) { Fail(#p" is nonempty" MUTBECAUSE #p"[0] is 0!"); } \
-	} while(0)
-
-// I think that "Equal" looks better than "Eq".
-// This is probably proof that these macros need to be totally overhauled...
-#define AssertEqual(x,y) AssertEq(x,y)
-#define AssertEqualHex(x,y) AssertHexEq(x,y)
-#define AssertPtrEqual(x,y) AssertPtrEq(x,y)
-#define AssertFloatEqual(x,y) AssertFloatEq(x,y)
-#define AssertDoubleEqual(x,y) AssertFloatEq(x,y)
-#define AssertStrEqual(x,y) AssertStrEq(x,y)
-
-//
-// helper macros, not intended to be called directly.
-//
-
-#define AssertExpType(x,op,y,type,fmt) \
-	AssertFmt((type)x op (type)y, #x" "#op" "#y MUTBECAUSE \
-	#x"=="fmt" and "#y"=="fmt"!", (type)x,(type)y)
-// The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll
-// special-case checking against 0: x==0 failed because x==1).
-#define AssertExpToZero(x,op,type,fmt) \
-	AssertFmt((type)x op 0,#x" "#op" 0" MUTBECAUSE #x"=="fmt"!", (type)x)
-
-#define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")
-#define AssertHexOp(x,op,y) AssertExpType(x,op,y,long,"0x%lX")
-#define AssertOpToZero(x,op) AssertExpToZero(x,op,long,"%ld")
-#define AssertHexOpToZero(x,op) AssertExpToZero(x,op,long,"0x%lX")
-#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,unsigned long,"0x%lX")
-#define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
-#define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
-	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
-
-
-
 
 /** Fails the current test.
  *
@@ -205,13 +77,13 @@ void mutest_fail(const char *file, int line, const char *func,
 			mutest_failures += 1; 					\
 		} } while(0)
 		
+extern jmp_buf *mutest_inversion;
 
 /* above this line is stuff only needed within the tests */
 /* ------------------ */
 /* below this line is stuff only needed to run the tests */
 
-
-
+extern jmp_buf *mutest_inversion;
 
 /** Keeps track of how many assertions have been made.
  * This needs to be updated manually each time an assertion

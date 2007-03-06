@@ -10,13 +10,14 @@ TODO:
 	 --brittle to exit on the first failure and not try further tests.
 - Add some functional tests to check the command line arguments.
 - Make sure to try compiling with gcc set to pedantic C99 as well.
-- Add assertion flavors.
 - Add support for the NOTESTS macro.
 - Make tests check for signals.  int/fp /0 and bus errors.
 - Add the ability to temporarily disable tests but leave them in the test deck.
 - Add ability to specify an optional timeout.
+- There's got to be a better API than show_inversions
 
 Version ??, 28 Feb 2007 - ?
+- Created test flavors.  Now it's easy for people to customize their asserts.
 - Split mutest from tmtest's zutest.c/.h files.
 
 Version 0.7,  16 Feb 2007
