@@ -10,7 +10,7 @@
  * this file to change much...
  */
 
-#include "mutest.h"
+#include "mutest_assert.h"
 
 
 void all_tests()

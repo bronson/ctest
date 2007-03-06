@@ -11,7 +11,6 @@
  */
 
 #include "mutest.h"
-#include "mutest_Assert.h"
 
 
 int main(int argc, char **argv)

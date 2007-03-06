@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-#include "mutest_Assert.h"
+#include "mutest_assert.h"
 
 
 /** This macro is used to reverse the sense of the tests. 
