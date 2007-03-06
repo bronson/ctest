@@ -1,12 +1,12 @@
 /* mutest.c
  * Scott Bronson
  * 6 Mar 2006
+ *
+ * This file contains the code needed to find and launch mutests.
  * 
+ * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
  * See http://en.wikipedia.org/wiki/MIT_License for more.
- *
- * Version 0.7,  16 Feb 2007 -- turn dependency tree into functions
- * Version 0.6,  26 Apr 2006 -- first version worth releasing
  */
 
 #include <stdio.h>

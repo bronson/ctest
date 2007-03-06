@@ -4,13 +4,14 @@
  * 
  * Tests the AssertEqual(a,b) style tests from mutest_Assert.h
  * 
+ * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
  * See http://en.wikipedia.org/wiki/MIT_License for more.
  */
 
 #include <string.h>
 
-#include "mutest_assert.h"
+#include "mu_assert.h"
 
 
 /** This macro is used to reverse the sense of the tests. 

@@ -1,19 +1,16 @@
 /* mutest.h
  * Scott Bronson
  * 6 Mar 2006
- *
- * This file does not define any asserts for your app to use.  You'll want to
- * look at one of the flavor files, like mutest_Assert.h if you want
- * AssertEqual(a,b), mutest_should if you want should_be_equal(a,b),
- * or mutest_check if you want check(a == b).
  * 
- * TODO: split this file in twain.
- * TODO: make tests self-documenting.  The test name is the same as the
- * function name, but they should also have a short and long description.
- * TODO: make mutest suites able to be arranged in a hierarchy.
- * 
+ * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
  * See http://en.wikipedia.org/wiki/MIT_License for more.
+ */
+
+/* @file mutest.h
+ * 
+ * This file declares the routines used by your application to
+ * cause your unit tests to be run.
  */
 
 
@@ -44,45 +41,6 @@
 
 // This include is unfortunate...  TODO: try to get this out of here.
 #include <setjmp.h>
-
-
-
-/** Fails the current test.
- *
- * This function may only be called from within a ::mutest_proc.
- *
- * If none of the built-in Assert macros fit your fancy, you can do the
- * check on your own and call mutest_fail in the event that it fails.
- * 
- * Example:
- * 
- * <pre>
- * if(my_error) {
- *    mutest_fail(__FILE__, __LINE__, __func__, "Error Message %d", 1);
- * }
- * </pre>
- *
- * But, really, it's easier just to call the Fail() macro.
- */
-
-void mutest_fail(const char *file, int line, const char *func,
-		const char *msg, ...);
-		
-		
-#define mutest(test) do { mutest_tests_run += 1; 	\
-		if(!setjmp(mutest_test_bail)) { 			\
-			do { test; } while(0); 					\
-			mutest_successes += 1; 					\
-		} else { 									\
-			mutest_failures += 1; 					\
-		} } while(0)
-		
-extern jmp_buf *mutest_inversion;
-
-/* above this line is stuff only needed within the tests */
-/* ------------------ */
-/* below this line is stuff only needed to run the tests */
-
 extern jmp_buf *mutest_inversion;
 
 /** Keeps track of how many assertions have been made.

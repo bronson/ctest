@@ -1,6 +1,11 @@
 TODO:
+- Clean up hierarchy -- split mutest.h, etc.
 - Make a MUTEST { ... } macro to surround the test.
   - Make it nestable?
+ * TODO: make tests self-documenting.  The test name is the same as the
+ * function name, but they should also have a short and long description.
+ * TODO: make mutest suites able to be arranged in a hierarchy.
+- Try to get the #include <setjmp.h> out of mutest_test.h.
 - Do I still use __func__?
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).

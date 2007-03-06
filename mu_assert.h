@@ -1,27 +1,39 @@
-/* mutest_Assert.h
+/* mu_assert.h
  * Scott Bronson
  * 6 Mar 2006
  *
- * This is a mustest flavor file.
- * It provides CamelCase Assert macros to test your app:
+ * Copyright (C) 2007 Scott Bronson
+ * This file is released under the MIT License.
+ * See http://en.wikipedia.org/wiki/MIT_License for more.
+ */
+
+/* @file mu_assert.h
+ *
+ * This is a mutest flavor file.
+ * It provides CamelCase Assert macros:
  * 
  *     AssertEqual(a,b);
  *     AssertGT(a,b);  AssumeGreaterThan(a,b);
  *     AssertStringEqual(a,b);
  *     etc.
+ *
+ * Here's an example of what assertion failures look like:
+ *
+ * <pre>
+ * test_assert.c:56: In test_assert_int, assert a == b failed. a==4 and b==3!
+ * test_assert.c:57: In test_assert_int, assert a != c failed. a==4 and c==4!
+ * test_assert.c:58: In test_assert_int, assert a > c failed. a==4 and c==4!
+ * </pre>
  * 
- * In fact, it's mutest's original assert flavor.  We've come a long way.
- * 
- * This file is released under the MIT License.
- * See http://en.wikipedia.org/wiki/MIT_License for more.
+ * This was mutest's original built-in assert.  All other
+ * flavors were based on this one.
  */
-
 
 
 #ifndef MUTEST_ASSERT_H
 #define MUTEST_ASSERT_H
 
-#include "mutest.h"
+#include "mutest_test.h"
 
 //
 //      Macros to test your app:
@@ -194,6 +206,8 @@
 	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
 
 
+// If you want your app to run the unit tests for this flavor,
+// add the following test to your test deck.
 extern void mutest_test_assert_flavor();
 
 #endif
