@@ -14,33 +14,6 @@
 #include "mu_assert.h"
 
 
-/** This macro is used to reverse the sense of the tests. 
- *
- * To properly test Zutest, we need to ensure that the Assert macros
- * handle failures too.  Therefore, we occasionally want to reverse
- * the sense of the macro, where a failure indicates a successful test
- * and a passing assert means that the test has failed.
- *
- * This macro inverts the sense of the contained assertion.
- * test_failure(AssertEq(a,b)) causes the test to pass
- * only when the assertion fails (i.e. when a != b).
- */
-
-#define test_failure(test) 				\
-	do { 								\
-		jmp_buf jb; 					\
-		int val = setjmp(jb); 			\
-		if(val == 0) { 					\
-			mutest_inversion = &jb;			\
-			do { test; } while(0);		\
-			mutest_inversion = NULL;			\
-			Fail("This test should have failed: " #test);	\
-		}								\
-		mutest_inversion = NULL;				\
-	} while(0)
-
-
-
 void test_assert_int()
 {
 	int a=4, b=3, c=4, z=0, n=-1;
@@ -53,36 +26,48 @@ void test_assert_int()
 	AssertLT(b,a);
 	AssertLE(b,a);
 	AssertLE(c,a);
-
-	test_failure( AssertEQ(a,b) );
-	test_failure( AssertNE(a,c) );
-	test_failure( AssertGT(a,c) );
-	test_failure( AssertGT(b,c) );
-	test_failure( AssertGE(b,a) );
-	test_failure( AssertLT(c,a) );
-	test_failure( AssertLT(c,b) );
-	test_failure( AssertLE(a,b) );
+	
+	mutest_start_inverted(0, 0) {
+		AssertEQ(a,b);
+		AssertNE(a,c);
+		AssertGT(a,c);
+		AssertGT(b,c);
+		AssertGE(b,a);
+		AssertLT(c,a);
+		AssertLT(c,b);
+		AssertLE(a,b);
+	}
 
 	AssertZero(z);
-	test_failure( AssertZero(a) );
 	AssertNonzero(a);
-	test_failure( AssertNonzero(z) );
+	mutest_start_inverted(0, 0) {
+		AssertZero(a);
+		AssertNonzero(z);
+	}
 
 	AssertPositive(a);
-	test_failure( AssertPositive(z) );
-	test_failure( AssertPositive(n) );
+	mutest_start_inverted(0, 0) {
+		AssertPositive(z)
+		AssertPositive(n)
+	}
 
 	AssertNonPositive(n);
 	AssertNonPositive(z);
-	test_failure( AssertNonPositive(a) );
+	mutest_start_inverted(0, 0) {
+		AssertNonPositive(a)
+	}
 
 	AssertNegative(n);
-	test_failure( AssertNegative(z) );
-	test_failure( AssertNegative(a) );
+	mutest_start_inverted(0, 0) {
+		AssertNegative(z)
+		AssertNegative(a)
+	}
 
 	AssertNonNegative(a);
 	AssertNonNegative(z);
-	test_failure( AssertNonNegative(n) );
+	mutest_start_inverted(0, 0) {
+		AssertNonNegative(n)
+	}
 }
 
 
@@ -99,35 +84,47 @@ void test_assert_hex()
 	AssertHexLE(b,a);
 	AssertHexLE(c,a);
 
-	test_failure( AssertHexEQ(a,b) );
-	test_failure( AssertHexNE(a,c) );
-	test_failure( AssertHexGT(a,c) );
-	test_failure( AssertHexGT(b,c) );
-	test_failure( AssertHexGE(b,a) );
-	test_failure( AssertHexLT(c,a) );
-	test_failure( AssertHexLT(c,b) );
-	test_failure( AssertHexLE(a,b) );
+	mutest_start_inverted(0, 0) {
+		AssertHexEQ(a,b);
+		AssertHexNE(a,c);
+		AssertHexGT(a,c);
+		AssertHexGT(b,c);
+		AssertHexGE(b,a);
+		AssertHexLT(c,a);
+		AssertHexLT(c,b);
+		AssertHexLE(a,b);
+	}
 
 	AssertHexZero(z);
-	test_failure( AssertHexZero(a) );
 	AssertHexNonzero(a);
-	test_failure( AssertHexNonzero(z) );
+	mutest_start_inverted(0, 0) {
+		AssertHexZero(a);
+		AssertHexNonzero(z);
+	}
 
 	AssertHexPositive(a);
-	test_failure( AssertHexPositive(z) );
-	test_failure( AssertHexPositive(n) );
+	mutest_start_inverted(0, 0) {
+		AssertHexPositive(z);
+		AssertHexPositive(n);
+	}
 
 	AssertHexNonPositive(n);
 	AssertHexNonPositive(z);
-	test_failure( AssertHexNonPositive(a) );
+	mutest_start_inverted(0, 0) {
+		AssertHexNonPositive(a);
+	}
 
 	AssertHexNegative(n);
-	test_failure( AssertHexNegative(z) );
-	test_failure( AssertHexNegative(a) );
+	mutest_start_inverted(0, 0) {
+		AssertHexNegative(z);
+		AssertHexNegative(a);
+	}	
 
 	AssertHexNonNegative(a);
 	AssertHexNonNegative(z);
-	test_failure( AssertHexNonNegative(n) );
+	mutest_start_inverted(0, 0) {
+		AssertHexNonNegative(n);
+	}
 }
 
 
@@ -142,8 +139,10 @@ void test_assert_ptr()
 	AssertPtr(ap);
 	AssertNull(n);
 
-	test_failure( AssertPtr(n) );
-	test_failure( AssertNull(ap) );
+	mutest_start_inverted(0, 0) {
+		AssertPtr(n);
+		AssertNull(ap);
+	}
 
 	AssertPtrEQ(ap,cp);
 	AssertPtrNE(ap,bp);
@@ -154,14 +153,16 @@ void test_assert_ptr()
 	AssertPtrLE(bp,ap);
 	AssertPtrLE(cp,ap);
 
-	test_failure( AssertPtrEQ(ap,bp) );
-	test_failure( AssertPtrNE(ap,cp) );
-	test_failure( AssertPtrGT(ap,cp) );
-	test_failure( AssertPtrGT(bp,cp) );
-	test_failure( AssertPtrGE(bp,ap) );
-	test_failure( AssertPtrLT(cp,ap) );
-	test_failure( AssertPtrLT(cp,bp) );
-	test_failure( AssertPtrLE(ap,bp) );
+	mutest_start_inverted(0, 0) {
+		AssertPtrEQ(ap,bp);
+		AssertPtrNE(ap,cp);
+		AssertPtrGT(ap,cp);
+		AssertPtrGT(bp,cp);
+		AssertPtrGE(bp,ap);
+		AssertPtrLT(cp,ap);
+		AssertPtrLT(cp,bp);
+		AssertPtrLE(ap,bp);
+	}
 }
 
 
@@ -178,15 +179,17 @@ void test_assert_float()
 	AssertFloatLE(b,a);
 	AssertFloatLE(c,a);
 
-	test_failure( AssertFloatEQ(a,b) );
-	test_failure( AssertFloatNE(a,c) );
-	test_failure( AssertFloatGT(a,c) );
-	test_failure( AssertFloatGT(b,c) );
-	test_failure( AssertFloatGE(b,a) );
-	test_failure( AssertFloatLT(c,a) );
-	test_failure( AssertFloatLT(c,b) );
-	test_failure( AssertFloatLE(a,b) );
-
+	mutest_start_inverted(0, 0) {
+		AssertFloatEQ(a,b);
+		AssertFloatNE(a,c);
+		AssertFloatGT(a,c);
+		AssertFloatGT(b,c);
+		AssertFloatGE(b,a);
+		AssertFloatLT(c,a);
+		AssertFloatLT(c,b);
+		AssertFloatLE(a,b);
+	}
+	
 	AssertDoubleEQ(a,c);
 	AssertDoubleNE(a,b);
 	AssertDoubleGT(a,b);
@@ -196,14 +199,16 @@ void test_assert_float()
 	AssertDoubleLE(b,a);
 	AssertDoubleLE(c,a);
 
-	test_failure( AssertDoubleEQ(a,b) );
-	test_failure( AssertDoubleNE(a,c) );
-	test_failure( AssertDoubleGT(a,c) );
-	test_failure( AssertDoubleGT(b,c) );
-	test_failure( AssertDoubleGE(b,a) );
-	test_failure( AssertDoubleLT(c,a) );
-	test_failure( AssertDoubleLT(c,b) );
-	test_failure( AssertDoubleLE(a,b) );
+	mutest_start_inverted(0, 0) {
+		AssertDoubleEQ(a,b);
+		AssertDoubleNE(a,c);
+		AssertDoubleGT(a,c);
+		AssertDoubleGT(b,c);
+		AssertDoubleGE(b,a);
+		AssertDoubleLT(c,a);
+		AssertDoubleLT(c,b);
+		AssertDoubleLE(a,b);
+	}
 }
 
 
@@ -224,30 +229,50 @@ void test_assert_strings()
 	AssertStrLE(b,a);
 	AssertStrLE(c,a);
 
-	test_failure( AssertStrEQ(a,b) );
-	test_failure( AssertStrNE(a,c) );
-	test_failure( AssertStrGT(a,c) );
-	test_failure( AssertStrGT(b,c) );
-	test_failure( AssertStrGE(b,a) );
-	test_failure( AssertStrLT(c,a) );
-	test_failure( AssertStrLT(c,b) );
-	test_failure( AssertStrLE(a,b) );
+	mutest_start_inverted(0, 0) {
+		AssertStrEQ(a,b);
+		AssertStrNE(a,c);
+		AssertStrGT(a,c);
+		AssertStrGT(b,c);
+		AssertStrGE(b,a);
+		AssertStrLT(c,a);
+		AssertStrLT(c,b);
+		AssertStrLE(a,b);
+	}
 
 	AssertStrEmpty(e);
-	test_failure( AssertStrEmpty(a) );
-	test_failure( AssertStrEmpty(n) );
+	mutest_start_inverted(0, 0) {
+		AssertStrEmpty(a);
+		AssertStrEmpty(n);
+	}
 
 	AssertStrNonEmpty(a);
-	test_failure( AssertStrNonEmpty(e) );
-	test_failure( AssertStrNonEmpty(n) );
+	mutest_start_inverted(0, 0) {
+		AssertStrNonEmpty(e);
+		AssertStrNonEmpty(n);
+	}
 }
 
 
 void mutest_test_assert_flavor()
 {
-	mutest( test_assert_int() );
-	mutest( test_assert_hex() );
-	mutest( test_assert_ptr() );
-	mutest( test_assert_float() );
-	mutest( test_assert_strings() );
+	mutest_start("AssertInt", "Tests Assert int macros") {
+		test_assert_int();
+	}
+	
+	mutest_start("AssertHex", "Tests AssertHex macros") {
+		test_assert_hex();
+	}
+	
+	mutest_start("AssertPtr", "Tests AssertPtr macros") {
+		test_assert_ptr();
+	}
+	
+	mutest_start("AssertFloat", "Tests AssertFloat macros") {
+		test_assert_float();
+	}
+	
+	mutest_start("AssertStr", "Tests AssertStr macros") {
+		test_assert_strings();
+	}
 };

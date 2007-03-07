@@ -43,7 +43,7 @@ sub usage() {
 my $per_flavor_files = {
 	default => {
 		c => ['mutest.c'],
-		h => ['mutest.h'],
+		h => ['mutest.h', 'mutest_test.h'],
 	},
 	assert => {
 		h => ['mu_assert.h'],

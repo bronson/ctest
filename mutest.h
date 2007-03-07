@@ -39,23 +39,9 @@
 #ifndef MUTEST_H
 #define MUTEST_H
 
-// This include is unfortunate...  TODO: try to get this out of here.
-#include <setjmp.h>
-extern jmp_buf *mutest_inversion;
-
-/** Keeps track of how many assertions have been made.
- * This needs to be updated manually each time an assertion
- * is made.  The mutest built-in assertion macros all
- * update this variable properly.
- */
-
-extern int mutest_assertions;
-extern int mutest_tests_run;
-extern int mutest_successes;
-extern int mutest_failures;
-extern jmp_buf mutest_test_bail;
-
+// TODO: delete this.  nobody uses it.
 typedef void (*mutest_proc)();
+
 
 /** Runs all the tests in a suite. */
 void run_mutest_suite(mutest_proc proc);
@@ -110,6 +96,7 @@ void mutest_tests();
  * make sure your all_tests() function calls mutest_tests().
  */
 
+// TODO: try to get rid of this.
 void all_tests();
 
 

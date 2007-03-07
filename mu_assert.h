@@ -112,14 +112,19 @@
 #define AssertStrLE(x,y) AssertStrOp(x,le,<=,y)
 
 // ensures a string is non-null but zero-length
-#define AssertStrEmpty(p) do { mutest_assertions++; \
-		if(!(p)) { Fail(#p" is empty" MUTBECAUSE #p " is NULL!"); } \
-		if((p)[0]) { Fail(#p" is empty" MUTBECAUSE #p " is: %s",p); } \
+#define AssertStrEmpty(p) do { \
+		mutest_assert_prepare(__FILE__, __LINE__, __func__, #p " is empty"); \
+		if(!(p)) { mutest_assert_failed(#p" is empty" MUTBECAUSE #p " is NULL!"); } \
+		else if((p)[0]) { mutest_assert_failed(#p" is empty" MUTBECAUSE #p " is: %s",p); } \
+		else mutest_assert_succeeded(); \
 	} while(0)
+
 // ensures a string is non-null and non-zero-length
-#define AssertStrNonEmpty(p) do { mutest_assertions++; \
-		if(!(p)) { Fail(#p" is nonempty" MUTBECAUSE #p " is NULL!"); } \
-		if(!(p)[0]) { Fail(#p" is nonempty" MUTBECAUSE #p"[0] is 0!"); } \
+#define AssertStrNonEmpty(p) do { \
+		mutest_assert_prepare(__FILE__, __LINE__, __func__, #p " is non-empty"); \
+		if(!(p)) { mutest_assert_failed(#p" is nonempty" MUTBECAUSE #p " is NULL!"); } \
+		else if(!(p)[0]) { mutest_assert_failed(#p" is nonempty" MUTBECAUSE #p"[0] is 0!"); } \
+		else mutest_assert_succeeded(); \
 	} while(0)
 
 
@@ -172,19 +177,17 @@
 #define MUTBECAUSE " failed. "
 
 
-// Fail doesn't increment mutest_assertions (the number of assertions that have
-// been made) because it doesn't actually assert anything.  It only fails.
-#define Fail(...) mutest_fail(__FILE__, __LINE__, __func__, __VA_ARGS__)
-
 // If the expression returns false, it is printed in the failure message.
-#define Assert(x) do { mutest_assertions++; \
-		if(!(x)) { Fail(#x); } } while(0)
+#define Assert(x) do { \
+		mutest_assert_prepare(__FILE__, __LINE__, __func__, #x); \
+		if(x) { mutest_assert_succeeded(); } else { mutest_assert_failed(#x); } } while(0)
 
 // If the expression returns false, the given format string is printed.
 // This is the same as Assert, just with much more helpful error messages.
 // For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
-#define AssertFmt(x,...) do { mutest_assertions++; \
-		if(!(x)) { Fail(__VA_ARGS__); } } while(0)
+#define AssertFmt(x,...) do { \
+		mutest_assert_prepare(__FILE__, __LINE__, __func__, #x); \
+		if(x) { mutest_assert_succeeded(); } else { mutest_assert_failed(__VA_ARGS__); } } while(0)
 
 
 #define AssertExpType(x,op,y,type,fmt) \

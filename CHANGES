@@ -1,18 +1,17 @@
 TODO:
-- Clean up hierarchy -- split mutest.h, etc.
-- Make a MUTEST { ... } macro to surround the test.
-  - Make it nestable?
- * TODO: make tests self-documenting.  The test name is the same as the
- * function name, but they should also have a short and long description.
- * TODO: make mutest suites able to be arranged in a hierarchy.
-- Try to get the #include <setjmp.h> out of mutest_test.h.
-- Do I still use __func__?
+- I should probably get rid of __func__ -- it's not very useful anymore.
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,
 	 --skip or --run to select tests to run,
 	 --verbose to dump a lot of info?  Maybe no need for this one.
 	 --brittle to exit on the first failure and not try further tests.
+ * TODO: print test results, test suites, etc as they run.
+ *    Add a quiet flag that will suppress printing unless a test fails.
+ *    quiet=0, full printing
+ *    quiet=1, test results not printed
+ *    quiet=2, suite results not printed
+ *    quiet=3, summary not printed.
 - Add some functional tests to check the command line arguments.
 - Make sure to try compiling with gcc set to pedantic C99 as well.
 - Add support for the NOTESTS macro.
@@ -22,6 +21,7 @@ TODO:
 - There's got to be a better API than show_inversions
 
 Version ??, 28 Feb 2007 - ?
+- created the mutest_start macro, cleaned up the assertion routines.
 - Created test flavors.  Now it's easy for people to customize their asserts.
 - Split mutest from tmtest's zutest.c/.h files.
 
