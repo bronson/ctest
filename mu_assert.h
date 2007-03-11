@@ -139,6 +139,13 @@
 #define AssertDoubleEqual(x,y) AssertFloatEQ(x,y)
 #define AssertStrEqual(x,y) AssertStrEQ(x,y)
 
+#define AssertNotEqual(x,y) AssertNE(x,y)
+#define AssertHexNotEqual(x,y) AssertHexNE(x,y)
+#define AssertPtrNotEqual(x,y) AssertPtrNE(x,y)
+#define AssertFloatNotEqual(x,y) AssertFloatNE(x,y)
+#define AssertDoubleNotEqual(x,y) AssertFloatNE(x,y)
+#define AssertStrNotEqual(x,y) AssertStrNE(x,y)
+
 // And GreaterThan looks a little better than GT
 #define AssertGreaterThan(x,y) AssertGT(x,y)
 #define AssertHexGreaterThan(x,y) AssertHexGT(x,y)
