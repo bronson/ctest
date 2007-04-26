@@ -39,38 +39,29 @@
 #ifndef MUTEST_H
 #define MUTEST_H
 
-// TODO: delete this.  nobody uses it.
-typedef void (*mutest_proc)();
+
+/** Determines if user wants to run unit tests.  Returns 1 if unit
+ * tests should be run, 0 if not.  Feel free to ignore this routine
+ * and make your own decision on whether to run the unit tests.
+ *
+ * If the first arg passed to your program is "--run-unit-tests", this 
+ * function return true.  It may also parse subsequent argumets to
+ * determine how to run the tests and set run-time flags appropriately.
+ */
+
+int mutest_should_run_tests(int argc, char **argv);
 
 
-/** Runs all the tests in a suite. */
-void run_mutest_suite(mutest_proc proc);
-/** Runs all the tests in all the suites passed in. */
-void run_mutest_suites(mutest_proc proc);
+/** Prints the results of a test run.
+ */
 
 void print_mutest_results();
 
 
-/** 
- *
- * Call this on the very first line of your application.  If the user
- * ran your program with the first arg of "--run-unit-tests", this will
- * run the tests and exit.  Otherwise your program will run as normal.
- * If you would rather create a dedicated executable, just call
- * run_mutest_suites() directly.
+/** Run your unit tests, then call mutest_exit to print the result and quit.
  */
 
-void unit_test_check(int argc, char **argv, mutest_proc proc);
-
-
-/**
- *
- * This runs all the unit tests supplied and then exits.  Use this
- * if you want to handle the arguments yourself.
- */
-
-void run_unit_tests(mutest_proc proc);
-void run_unit_tests_showing_failures(mutest_proc proc);
+void mutest_exit();
 
 
 /** mutest's built-in test suite.
@@ -86,18 +77,10 @@ void run_unit_tests_showing_failures(mutest_proc proc);
  * compile and run its unit tests as described in mutest.h.
  */
 
-void mutest_tests();
+void run_mutest_unit_tests();
 
 
-/** A user-supplied function to run all tests in the project.
- * 
- * You must supply this function yourself.  If you want your tests
- * to include mutest's self-consistency checks (and you should),
- * make sure your all_tests() function calls mutest_tests().
- */
-
-// TODO: try to get rid of this.
-void all_tests();
-
+// TODO: this is a hack.  Handle it better.
+void mutest_show_failures();
 
 #endif

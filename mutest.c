@@ -328,21 +328,15 @@ void print_mutest_results()
 }
 
 
-/** Runs all the unit tests in all the passed-in test suites.
+/** You should have already run all tests.  This call will print their
+ * results (print_mutest_results()) and exit with the number of tests
+ * that failed as the error code (up to 100).
  */
 
-void run_unit_tests(mutest_proc proc)
+void mutest_exit()
 {
-	(*proc)();
 	print_mutest_results();
 	exit(test_failures < 100 ? test_failures : 100);
-}
-
-
-void run_unit_tests_showing_failures(mutest_proc proc)
-{
-	show_failures = 1;
-	run_unit_tests(proc);
 }
 
 
@@ -357,9 +351,18 @@ void run_unit_tests_showing_failures(mutest_proc proc)
  * without doing anything.
  */
 
-void unit_test_check(int argc, char **argv, mutest_proc proc)
+int mutest_should_run_tests(int argc, char **argv)
 {
 	if(argc > 1 && strcmp(argv[1],"--run-unit-tests") == 0) {
-		run_unit_tests(proc);
+		return 1;
 	}
+
+	return 0;
 }
+
+
+void mutest_show_failures()
+{
+	show_failures = 1;
+}
+

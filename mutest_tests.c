@@ -11,9 +11,10 @@
  */
 
 #include "mu_assert.h"
+#include "mutest.h"
 
 
-void all_tests()
+void run_mutest_unit_tests()
 {
 	mutest_test_assert_flavor();
 }

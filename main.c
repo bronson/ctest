@@ -19,10 +19,11 @@ int main(int argc, char **argv)
 	if(argc > 1) {
 		// "mutest -f" prints all the failures in the mutest unit tests.
 		// This allows you to check the output of each macro.
-		run_unit_tests_showing_failures(all_tests);
-	} else {
-		run_unit_tests(all_tests);
+		mutest_show_failures();
 	}
+
+	run_mutest_unit_tests();
+	mutest_exit();
 	
 	// this will never be reached
 	return 0;
