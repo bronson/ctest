@@ -168,7 +168,7 @@ void test_assert_ptr()
 
 void test_assert_float()
 {
-	float a=0.0004, b=0.0003, c=0.0004;
+	float a=0.0004f, b=0.0003f, c=0.0004f;
 
 	AssertFloatEQ(a,c);
 	AssertFloatNE(a,b);

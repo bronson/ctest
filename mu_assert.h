@@ -35,6 +35,12 @@
 
 #include "mutest_test.h"
 
+#if WIN32
+// Microsoft's compiler doesn't support __func__.
+// TODO: is there a better way to test for this?
+#define __func__ "test"
+#endif
+
 //
 //      Macros to test your app:
 //
@@ -73,9 +79,9 @@
 
 // Pointers...
 #define AssertPtr(p)  AssertFmt(p != (void*)0, \
-		#p" != NULL" MUTBECAUSE #p"==0x%lX!", (unsigned long)p)
+		#p" != NULL" MUTBECAUSE #p"==0x%p!", p)
 #define AssertNull(p) AssertFmt(p == (void*)0, \
-		#p" == NULL" MUTBECAUSE #p"==0x%lX!", (unsigned long)p)
+		#p" == NULL" MUTBECAUSE #p"==0x%p!", p)
 #define AssertNonNull(p) AssertPtr(p)
 
 #define AssertPtrNull(p) AssertNull(p)
@@ -198,19 +204,19 @@
 
 
 #define AssertExpType(x,op,y,type,fmt) \
-	AssertFmt((type)x op (type)y, #x" "#op" "#y MUTBECAUSE \
-	#x"=="fmt" and "#y"=="fmt"!", (type)x,(type)y)
+	AssertFmt((type)(x) op (type)(y), #x" "#op" "#y MUTBECAUSE \
+	#x"=="fmt" and "#y"=="fmt"!", (type)(x),(type)(y))
 // The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll
 // special-case checking against 0: x==0 failed because x==1).
 #define AssertExpToZero(x,op,type,fmt) \
-	AssertFmt((type)x op 0,#x" "#op" 0" MUTBECAUSE #x"=="fmt"!", (type)x)
+	AssertFmt((type)(x) op 0,#x" "#op" 0" MUTBECAUSE #x"=="fmt"!", (type)(x))
 
 
 #define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")
 #define AssertHexOp(x,op,y) AssertExpType(x,op,y,long,"0x%lX")
 #define AssertOpToZero(x,op) AssertExpToZero(x,op,long,"%ld")
 #define AssertHexOpToZero(x,op) AssertExpToZero(x,op,long,"0x%lX")
-#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,unsigned long,"0x%lX")
+#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%p")
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
 	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)

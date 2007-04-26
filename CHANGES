@@ -1,4 +1,6 @@
 TODO:
+- MAKE SURE that we print a decent error if the user forgot to call start_test.
+	(actually, why don't we just bail out completely?)
 - I should probably get rid of __func__ -- it's not very useful anymore.
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
