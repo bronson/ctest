@@ -79,9 +79,9 @@
 
 // Pointers...
 #define AssertPtr(p)  AssertFmt(p != (void*)0, \
-		#p" != NULL" MUTBECAUSE #p"==0x%p!", p)
+		#p" != NULL" MUTBECAUSE #p" is NULL!")
 #define AssertNull(p) AssertFmt(p == (void*)0, \
-		#p" == NULL" MUTBECAUSE #p"==0x%p!", p)
+		#p" == NULL" MUTBECAUSE #p"==0x%lX!", p)
 #define AssertNonNull(p) AssertPtr(p)
 
 #define AssertPtrNull(p) AssertNull(p)
@@ -216,7 +216,7 @@
 #define AssertHexOp(x,op,y) AssertExpType(x,op,y,long,"0x%lX")
 #define AssertOpToZero(x,op) AssertExpToZero(x,op,long,"%ld")
 #define AssertHexOpToZero(x,op) AssertExpToZero(x,op,long,"0x%lX")
-#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%p")
+#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		// can't use %p because some libc print "0x" first and some don't
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
 	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)

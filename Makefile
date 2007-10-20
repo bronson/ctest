@@ -17,5 +17,11 @@ all: mutest
 mutest: $(CSRC) $(CHDR) Makefile
 	$(CC) $(COPTS) $(CSRC) -o mutest
 
+# This uses the tmtest command to perform some functional testing.
+# You can ignore it if you don't have tmtest installed.
+test: mutest
+	./mutest
+	tmtest
+
 clean:
 	rm -f mutest
