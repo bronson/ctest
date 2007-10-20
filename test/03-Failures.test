@@ -3,77 +3,91 @@
 # (we need to mask hex representations of pointers and negative
 # numbers because they will be different on different archs).
 
-$mutest -f 2>&1 | sed s/0x[A-Fa-f0-9][A-Fa-f0-9]*/0xHEXDIGIT/g
+
+# Once tmtest is fully event-based, we can do this:
+# # exec 2> >(sed s/0x[A-Z0-9][A-Z0-9]*/0xHEXDIGIT/g 1>&2)
+# #  ... run commands ...
+# # exec 2>&-
+# or this:
+# # $tmtest --show-unit-fails > >(sed s/0x[A-Z0-9][A-Z0-9]*/0xHEXDIGIT/g) 2>&1
+
+
+$mutest -f 2>&1 | \
+	sed s/0x[A-Fa-f0-9][A-Fa-f0-9]*/0xHEXDIGIT/g | \
+	sed s/^.*\\.c:[0-9]\*:/test.c:NNN:/
+	# first sed: hide all hex digits: 0xDECAFBAD
+	# second sed: hide filename and line numbers
+
 
 STDOUT:
-test_assert.c:31: In test_assert_int, assert a == b failed. a==4 and b==3!
-test_assert.c:32: In test_assert_int, assert a != c failed. a==4 and c==4!
-test_assert.c:33: In test_assert_int, assert a > c failed. a==4 and c==4!
-test_assert.c:34: In test_assert_int, assert b > c failed. b==3 and c==4!
-test_assert.c:35: In test_assert_int, assert b >= a failed. b==3 and a==4!
-test_assert.c:36: In test_assert_int, assert c < a failed. c==4 and a==4!
-test_assert.c:37: In test_assert_int, assert c < b failed. c==4 and b==3!
-test_assert.c:38: In test_assert_int, assert a <= b failed. a==4 and b==3!
-test_assert.c:44: In test_assert_int, assert a == 0 failed. a==4!
-test_assert.c:45: In test_assert_int, assert z != 0 failed. z==0!
-test_assert.c:50: In test_assert_int, assert z > 0 failed. z==0!
-test_assert.c:51: In test_assert_int, assert n > 0 failed. n==-1!
-test_assert.c:57: In test_assert_int, assert a <= 0 failed. a==4!
-test_assert.c:62: In test_assert_int, assert z < 0 failed. z==0!
-test_assert.c:63: In test_assert_int, assert a < 0 failed. a==4!
-test_assert.c:69: In test_assert_int, assert n >= 0 failed. n==-1!
-test_assert.c:88: In test_assert_hex, assert a == b failed. a==0xHEXDIGIT and b==0xHEXDIGIT!
-test_assert.c:89: In test_assert_hex, assert a != c failed. a==0xHEXDIGIT and c==0xHEXDIGIT!
-test_assert.c:90: In test_assert_hex, assert a > c failed. a==0xHEXDIGIT and c==0xHEXDIGIT!
-test_assert.c:91: In test_assert_hex, assert b > c failed. b==0xHEXDIGIT and c==0xHEXDIGIT!
-test_assert.c:92: In test_assert_hex, assert b >= a failed. b==0xHEXDIGIT and a==0xHEXDIGIT!
-test_assert.c:93: In test_assert_hex, assert c < a failed. c==0xHEXDIGIT and a==0xHEXDIGIT!
-test_assert.c:94: In test_assert_hex, assert c < b failed. c==0xHEXDIGIT and b==0xHEXDIGIT!
-test_assert.c:95: In test_assert_hex, assert a <= b failed. a==0xHEXDIGIT and b==0xHEXDIGIT!
-test_assert.c:101: In test_assert_hex, assert a == 0 failed. a==0xHEXDIGIT!
-test_assert.c:102: In test_assert_hex, assert z != 0 failed. z==0xHEXDIGIT!
-test_assert.c:107: In test_assert_hex, assert z > 0 failed. z==0xHEXDIGIT!
-test_assert.c:108: In test_assert_hex, assert n > 0 failed. n==0xHEXDIGIT!
-test_assert.c:114: In test_assert_hex, assert a <= 0 failed. a==0xHEXDIGIT!
-test_assert.c:119: In test_assert_hex, assert z < 0 failed. z==0xHEXDIGIT!
-test_assert.c:120: In test_assert_hex, assert a < 0 failed. a==0xHEXDIGIT!
-test_assert.c:126: In test_assert_hex, assert n >= 0 failed. n==0xHEXDIGIT!
-test_assert.c:143: In test_assert_ptr, assert n != NULL failed. n is NULL!
-test_assert.c:144: In test_assert_ptr, assert ap == NULL failed. ap==0xHEXDIGIT!
-test_assert.c:157: In test_assert_ptr, assert ap == bp failed. ap==0xHEXDIGIT and bp==0xHEXDIGIT!
-test_assert.c:158: In test_assert_ptr, assert ap != cp failed. ap==0xHEXDIGIT and cp==0xHEXDIGIT!
-test_assert.c:159: In test_assert_ptr, assert ap > cp failed. ap==0xHEXDIGIT and cp==0xHEXDIGIT!
-test_assert.c:160: In test_assert_ptr, assert bp > cp failed. bp==0xHEXDIGIT and cp==0xHEXDIGIT!
-test_assert.c:161: In test_assert_ptr, assert bp >= ap failed. bp==0xHEXDIGIT and ap==0xHEXDIGIT!
-test_assert.c:162: In test_assert_ptr, assert cp < ap failed. cp==0xHEXDIGIT and ap==0xHEXDIGIT!
-test_assert.c:163: In test_assert_ptr, assert cp < bp failed. cp==0xHEXDIGIT and bp==0xHEXDIGIT!
-test_assert.c:164: In test_assert_ptr, assert ap <= bp failed. ap==0xHEXDIGIT and bp==0xHEXDIGIT!
-test_assert.c:183: In test_assert_float, assert a == b failed. a==0.000400 and b==0.000300!
-test_assert.c:184: In test_assert_float, assert a != c failed. a==0.000400 and c==0.000400!
-test_assert.c:185: In test_assert_float, assert a > c failed. a==0.000400 and c==0.000400!
-test_assert.c:186: In test_assert_float, assert b > c failed. b==0.000300 and c==0.000400!
-test_assert.c:187: In test_assert_float, assert b >= a failed. b==0.000300 and a==0.000400!
-test_assert.c:188: In test_assert_float, assert c < a failed. c==0.000400 and a==0.000400!
-test_assert.c:189: In test_assert_float, assert c < b failed. c==0.000400 and b==0.000300!
-test_assert.c:190: In test_assert_float, assert a <= b failed. a==0.000400 and b==0.000300!
-test_assert.c:203: In test_assert_float, assert a == b failed. a==0.000400 and b==0.000300!
-test_assert.c:204: In test_assert_float, assert a != c failed. a==0.000400 and c==0.000400!
-test_assert.c:205: In test_assert_float, assert a > c failed. a==0.000400 and c==0.000400!
-test_assert.c:206: In test_assert_float, assert b > c failed. b==0.000300 and c==0.000400!
-test_assert.c:207: In test_assert_float, assert b >= a failed. b==0.000300 and a==0.000400!
-test_assert.c:208: In test_assert_float, assert c < a failed. c==0.000400 and a==0.000400!
-test_assert.c:209: In test_assert_float, assert c < b failed. c==0.000400 and b==0.000300!
-test_assert.c:210: In test_assert_float, assert a <= b failed. a==0.000400 and b==0.000300!
-test_assert.c:233: In test_assert_strings, assert a eq b failed. a is "Bogozity" and b is "Arclamp"!
-test_assert.c:234: In test_assert_strings, assert a ne c failed. a is "Bogozity" and c is "Bogozity"!
-test_assert.c:235: In test_assert_strings, assert a gt c failed. a is "Bogozity" and c is "Bogozity"!
-test_assert.c:236: In test_assert_strings, assert b gt c failed. b is "Arclamp" and c is "Bogozity"!
-test_assert.c:237: In test_assert_strings, assert b ge a failed. b is "Arclamp" and a is "Bogozity"!
-test_assert.c:238: In test_assert_strings, assert c lt a failed. c is "Bogozity" and a is "Bogozity"!
-test_assert.c:239: In test_assert_strings, assert c lt b failed. c is "Bogozity" and b is "Arclamp"!
-test_assert.c:240: In test_assert_strings, assert a le b failed. a is "Bogozity" and b is "Arclamp"!
-test_assert.c:245: In test_assert_strings, assert a is empty failed. a is: Bogozity
-test_assert.c:246: In test_assert_strings, assert n is empty failed. n is NULL!
-test_assert.c:251: In test_assert_strings, assert e is nonempty failed. e[0] is 0!
-test_assert.c:252: In test_assert_strings, assert n is nonempty failed. n is NULL!
+test.c:NNN: In test_assert_int, assert a == b failed. a==4 and b==3!
+test.c:NNN: In test_assert_int, assert a != c failed. a==4 and c==4!
+test.c:NNN: In test_assert_int, assert a > c failed. a==4 and c==4!
+test.c:NNN: In test_assert_int, assert b > c failed. b==3 and c==4!
+test.c:NNN: In test_assert_int, assert b >= a failed. b==3 and a==4!
+test.c:NNN: In test_assert_int, assert c < a failed. c==4 and a==4!
+test.c:NNN: In test_assert_int, assert c < b failed. c==4 and b==3!
+test.c:NNN: In test_assert_int, assert a <= b failed. a==4 and b==3!
+test.c:NNN: In test_assert_int, assert a == 0 failed. a==4!
+test.c:NNN: In test_assert_int, assert z != 0 failed. z==0!
+test.c:NNN: In test_assert_int, assert z > 0 failed. z==0!
+test.c:NNN: In test_assert_int, assert n > 0 failed. n==-1!
+test.c:NNN: In test_assert_int, assert a <= 0 failed. a==4!
+test.c:NNN: In test_assert_int, assert z < 0 failed. z==0!
+test.c:NNN: In test_assert_int, assert a < 0 failed. a==4!
+test.c:NNN: In test_assert_int, assert n >= 0 failed. n==-1!
+test.c:NNN: In test_assert_hex, assert a == b failed. a==0xHEXDIGIT and b==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert a != c failed. a==0xHEXDIGIT and c==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert a > c failed. a==0xHEXDIGIT and c==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert b > c failed. b==0xHEXDIGIT and c==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert b >= a failed. b==0xHEXDIGIT and a==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert c < a failed. c==0xHEXDIGIT and a==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert c < b failed. c==0xHEXDIGIT and b==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert a <= b failed. a==0xHEXDIGIT and b==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert a == 0 failed. a==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert z != 0 failed. z==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert z > 0 failed. z==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert n > 0 failed. n==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert a <= 0 failed. a==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert z < 0 failed. z==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert a < 0 failed. a==0xHEXDIGIT!
+test.c:NNN: In test_assert_hex, assert n >= 0 failed. n==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert n != NULL failed. n is NULL!
+test.c:NNN: In test_assert_ptr, assert ap == NULL failed. ap==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert ap == bp failed. ap==0xHEXDIGIT and bp==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert ap != cp failed. ap==0xHEXDIGIT and cp==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert ap > cp failed. ap==0xHEXDIGIT and cp==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert bp > cp failed. bp==0xHEXDIGIT and cp==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert bp >= ap failed. bp==0xHEXDIGIT and ap==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert cp < ap failed. cp==0xHEXDIGIT and ap==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert cp < bp failed. cp==0xHEXDIGIT and bp==0xHEXDIGIT!
+test.c:NNN: In test_assert_ptr, assert ap <= bp failed. ap==0xHEXDIGIT and bp==0xHEXDIGIT!
+test.c:NNN: In test_assert_float, assert a == b failed. a==0.000400 and b==0.000300!
+test.c:NNN: In test_assert_float, assert a != c failed. a==0.000400 and c==0.000400!
+test.c:NNN: In test_assert_float, assert a > c failed. a==0.000400 and c==0.000400!
+test.c:NNN: In test_assert_float, assert b > c failed. b==0.000300 and c==0.000400!
+test.c:NNN: In test_assert_float, assert b >= a failed. b==0.000300 and a==0.000400!
+test.c:NNN: In test_assert_float, assert c < a failed. c==0.000400 and a==0.000400!
+test.c:NNN: In test_assert_float, assert c < b failed. c==0.000400 and b==0.000300!
+test.c:NNN: In test_assert_float, assert a <= b failed. a==0.000400 and b==0.000300!
+test.c:NNN: In test_assert_float, assert a == b failed. a==0.000400 and b==0.000300!
+test.c:NNN: In test_assert_float, assert a != c failed. a==0.000400 and c==0.000400!
+test.c:NNN: In test_assert_float, assert a > c failed. a==0.000400 and c==0.000400!
+test.c:NNN: In test_assert_float, assert b > c failed. b==0.000300 and c==0.000400!
+test.c:NNN: In test_assert_float, assert b >= a failed. b==0.000300 and a==0.000400!
+test.c:NNN: In test_assert_float, assert c < a failed. c==0.000400 and a==0.000400!
+test.c:NNN: In test_assert_float, assert c < b failed. c==0.000400 and b==0.000300!
+test.c:NNN: In test_assert_float, assert a <= b failed. a==0.000400 and b==0.000300!
+test.c:NNN: In test_assert_strings, assert a eq b failed. a is "Bogozity" and b is "Arclamp"!
+test.c:NNN: In test_assert_strings, assert a ne c failed. a is "Bogozity" and c is "Bogozity"!
+test.c:NNN: In test_assert_strings, assert a gt c failed. a is "Bogozity" and c is "Bogozity"!
+test.c:NNN: In test_assert_strings, assert b gt c failed. b is "Arclamp" and c is "Bogozity"!
+test.c:NNN: In test_assert_strings, assert b ge a failed. b is "Arclamp" and a is "Bogozity"!
+test.c:NNN: In test_assert_strings, assert c lt a failed. c is "Bogozity" and a is "Bogozity"!
+test.c:NNN: In test_assert_strings, assert c lt b failed. c is "Bogozity" and b is "Arclamp"!
+test.c:NNN: In test_assert_strings, assert a le b failed. a is "Bogozity" and b is "Arclamp"!
+test.c:NNN: In test_assert_strings, assert a is empty failed. a is: Bogozity
+test.c:NNN: In test_assert_strings, assert n is empty failed. n is NULL!
+test.c:NNN: In test_assert_strings, assert e is nonempty failed. e[0] is 0!
+test.c:NNN: In test_assert_strings, assert n is nonempty failed. n is NULL!
 All OK.  24 tests run, 24 successes (138 assertions).
