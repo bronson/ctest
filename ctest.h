@@ -40,6 +40,13 @@
 #define CTEST_H
 
 
+/** Call your unit test routines, then call ctest_exit
+ *  to print the results and quit.  Testing is that easy!
+ */
+
+void ctest_exit();
+
+
 /** Determines if user wants to run unit tests.  Returns 1 if unit
  * tests should be run, 0 if not.  Feel free to ignore this routine
  * and make your own decision on whether to run the unit tests.
@@ -52,29 +59,15 @@
 int ctest_should_run_tests(int argc, char **argv);
 
 
-/** Prints the results of a test run.
- */
-
-void print_ctest_results();
-
-
-/** Run your unit tests, then call ctest_exit to print the result and quit.
- */
-
-void ctest_exit();
-
 
 /** ctest's built-in test suite.
  *
- * This allows you to add the ctest unit test suite to your application's
- * test suites.  This way, you can ensure that ctest's unit tests pass
- * before running your application's.  This is for the especially pedantic. :)
+ * This allows you to call ctest's unit test suite from your application's
+ * test suites.  This lets you ensure that ctest's unit tests pass
+ * before running your application's.
  *
- * Unfortunately, there is one test that cannot be run if you do this:
+ * Well, there is one test that cannot be run if you do this:
  * ensuring that ctest properly handles empty test suites.
- * Other than this one test, adding ctest_tests
- * to your application's test suite is equivalent to causing ctest to
- * compile and run its unit tests as described in ctest.h.
  */
 
 void run_ctest_unit_tests();

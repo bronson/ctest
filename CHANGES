@@ -1,4 +1,6 @@
 TODO:
+- rename run_ctest_unit_tests to ctest_run_unit_tests
+- Fix ctest_show_failures, so gross
 - MAKE SURE that we print a decent error if the user forgot to call start_test.
 	(actually, why don't we just bail out completely?)
 - I should probably get rid of __func__ -- it's not very useful anymore.
@@ -19,6 +21,7 @@ TODO:
  *    quiet=3, summary not printed.
 - Add some functional tests to check the command line arguments.
 - Make sure to try compiling with gcc set to pedantic C99 as well.
+- Don't malloc on every test and assert.  Keep a cache or something.
 - Add support for the NOTESTS macro.
 - Make localizable by allowing CTBECAUSE to be redefined
   And also remove "is" and "and" from test macros.

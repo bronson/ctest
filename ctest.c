@@ -143,7 +143,7 @@ void ctest_assert_prepare(const char *file, int line,
 {
 	struct assert* assert = malloc(sizeof(struct assert));
 	if(!assert) {
-		fprintf(stderr, "Out of memory allocating struct assert!");
+		fprintf(stderr, "Out of memory allocating struct assert!\n");
 		exit(244);
 	}
 	
@@ -165,8 +165,8 @@ void ctest_assert_failed(const char *msg, ...)
 	va_list ap;
 	
 	if(!assert_head) {
-		fprintf(stderr, "assert failed without ctest_assert_prepare being called first!");
-		exit(0);
+		fprintf(stderr, "assert failed without ctest_assert_prepare being called first!\n");
+		exit(243);
 	}
 	
 	if(!test_head->inverted || show_failures) {
@@ -181,8 +181,8 @@ void ctest_assert_failed(const char *msg, ...)
 	assert_pop();
 
 	if(!test_head) {
-		test_print("assertion was not wrapped by start_test, ctest must exit!\n");
-		exit(244);
+		fprintf(stderr, "assert_failed with a nil test_head.  This should be impossible!\n");
+		exit(242);
 	}
 	
 	if(test_head->inverted) {
@@ -200,12 +200,17 @@ void ctest_assert_failed(const char *msg, ...)
 void ctest_assert_succeeded()
 {
 	if(!assert_head) {
-		fprintf(stderr, "assert succeeded without ctest_assert_prepare being called first!");
-		exit(0);
+		fprintf(stderr, "assert succeeded without ctest_assert_prepare being called first!\n");
+		exit(241);
 	}
 	
 	assert_pop();
 	
+	if(!test_head) {
+		fprintf(stderr, "assert_succeeded with a nil test_head.  This should be impossible!\n");
+		exit(240);
+	}
+
 	if(test_head->inverted) {
 		assertion_failures += 1;
 		longjmp(test_head->jmp.jmp, 1);
@@ -221,8 +226,8 @@ static void ctest_start_test(const char *name, const char *desc,
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
-		fprintf(stderr, "Out of memory allocating struct test!");
-		exit(244);
+		fprintf(stderr, "Out of memory allocating struct test!\n");
+		exit(239);
 	}
 	
 	if(!name || !name[0]) {
@@ -234,7 +239,7 @@ static void ctest_start_test(const char *name, const char *desc,
 				assert_head->file, assert_head->line, assert_head->func);
 		fprintf(stderr, "Unable to start a new test %s at %s:%d in %s().\n",
 				name, file, line, func);
-		exit(244);
+		exit(238);
 	}
 	
 	tests_run += 1;
@@ -269,7 +274,7 @@ struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, c
 void ctest_internal_test_jumped(const char *name, const char *desc)
 {
 	if(!test_head) {
-		fprintf(stderr, "Internal jump error: somehow ctest_start didn't complete?");
+		fprintf(stderr, "Internal jump error: somehow ctest_start didn't complete?\n");
 		exit(244);
 	}
 	
@@ -295,7 +300,7 @@ int ctest_internal_test_finished(const char *name, const char *desc)
 {
 	if(!test_head) {
 		// how could we end up here without a test_head??
-		fprintf(stderr, "Internal finish error: somehow ctest_start didn't complete?");
+		fprintf(stderr, "Internal finish error: somehow ctest_start didn't complete?\n");
 		exit(244);
 	}
 	
