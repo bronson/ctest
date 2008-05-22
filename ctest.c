@@ -106,7 +106,9 @@ static void test_print(const char *fmt, ...)
 	
 	// first, print indentation
 	for(test=test_head; test; test=test->next) {
-		fprintf(stderr, "  ");
+		if(!test->impromptou) {
+			fprintf(stderr, "  ");
+		}
 	}
 	
 	va_start(ap, fmt);
@@ -270,19 +272,19 @@ static void ctest_start_test(const char *name, const char *file, int line,
 	test->inverted = 0;
 	test->impromptou = impromptou;
 	
-	test_push(test);
-
-	tests_run += 1;
 	if(!impromptou) {
-		test_print("%d. starting %stest %s at %s:%d {\n",
+		tests_run += 1;
+		test_print("t%d. starting %stest %s at %s:%d {\n",
 				tests_run, inv, name, file, line);
 	}
+
+	test_push(test);
 }
 
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name,
 		const char *file, int line, int impromptou)
 {
-	ctest_start_test(name, file, line, "inverted ", impromptou);
+	ctest_start_test(name, file, line, "", impromptou);
 	test_head->inverted = 0;
 	return &test_head->jmp;
 }
@@ -303,16 +305,19 @@ void ctest_internal_test_jumped(const char *name)
 		exit(244);
 	}
 	
-	if(test_head->inverted) {
-		test_successes += 1;
-	} else {
-		test_failures += 1;
-	}
-
 	if(!test_head->impromptou) {
+		// don't count successes or failures for impromptou tests.
+		if(test_head->inverted) {
+			test_successes += 1;
+		} else {
+			test_failures += 1;
+		}
+
+		test_pop();
 		test_print("}\n");
+	} else {
+		test_pop();
 	}
-	test_pop();
 }
 
 
@@ -338,12 +343,14 @@ int ctest_internal_test_finished(const char *name)
 	}
 	
 	// Test has run, check the result.
-	test_successes += 1;
-
 	if(!test_head->impromptou) {
+		test_successes += 1;
+		test_pop();
 		test_print("}\n");
+	} else {
+		test_pop();
 	}
-	test_pop();
+
 	return 0;
 }
 

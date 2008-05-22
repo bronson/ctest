@@ -90,4 +90,4 @@ test.c:NNN: assert a is empty failed. a is: Bogozity
 test.c:NNN: assert n is empty failed. n is NULL!
 test.c:NNN: assert e is nonempty failed. e[0] is 0!
 test.c:NNN: assert n is nonempty failed. n is NULL!
-All OK.  25 tests run, 25 successes (139 assertions).
+All OK.  24 tests run, 24 successes (139 assertions).
