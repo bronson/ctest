@@ -18,11 +18,12 @@ TODO:
 - Make sure to try compiling with gcc set to pedantic C99 as well.
 - Add support for the NOTESTS macro.
 - Make tests check for signals.  int/fp /0 and bus errors.
+- Create a prefs structure instead of just having globals scattered everywhere.
 - Add the ability to temporarily disable tests but leave them in the test deck.
 - Add ability to specify an optional timeout.
 - There's got to be a better API than show_inversions
 
-Version ??, 28 Feb 2007 - ?
+Version 0.72, 28 Feb 2007
 - created the mutest_start macro, cleaned up the assertion routines.
 - Created test flavors.  Now it's easy for people to customize their asserts.
 - Split mutest from tmtest's zutest.c/.h files.

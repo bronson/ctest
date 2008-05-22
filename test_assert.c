@@ -1,4 +1,4 @@
-/* test_Assert.c
+/* test_assert.c
  * Scott Bronson
  * 6 Mar 2006
  * 

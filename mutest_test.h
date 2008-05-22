@@ -7,11 +7,10 @@
  * See http://en.wikipedia.org/wiki/MIT_License for more.
  */
 
-/* @file mutest_testT.h
+/* @file mutest_test.h
  * 
- * This file provides routines to be called by unit tests during
- * testing. It is intended to be used by mutest flavor files (mu_*.h).
- * and is not meant to be used by your application directly.
+ * This file provides routines used by unit test flavors.
+ * You should never need to include it directly.
  */
 
 
@@ -28,6 +27,8 @@
 struct mutest_jmp_wrapper {
         jmp_buf jmp;
 };
+
+
 
 
 /** Starts a new test.
@@ -70,6 +71,8 @@ struct mutest_jmp_wrapper {
 		if(setjmp(mutest_internal_start_inverted_test(name, desc,__FILE__,__LINE__,__func__)->jmp)) {	\
 			mutest_internal_test_jumped();									\
 		} else for(; mutest_internal_test_finished(); )
+
+
 
 
 /** Prepares mutest to check an assertion
@@ -115,6 +118,8 @@ void mutest_assert_failed(const char *msg, ...);
 void mutest_assert_succeeded();
 
 
+// The following routines are not meant to be called directly; they are used
+// by the mutest_start() macro and subject to change.
 struct mutest_jmp_wrapper* mutest_internal_start_test(const char *name, const char *description, const char *file, int line, const char *func);		///< only used by mutest_start()
 struct mutest_jmp_wrapper* mutest_internal_start_inverted_test(const char *name, const char *desc, const char *file, int line, const char *func);		///< only used by mutest_start();
 void mutest_internal_test_jumped();				///< only used by mutest_start()

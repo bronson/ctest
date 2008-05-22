@@ -28,12 +28,13 @@
  * but all other tests in the current test suite, and all other test
  * suites, will still be run.
  * 
- * You need to ensure that it's impossible for Assert macros to be
- * called without first ensuring that test_enter is called.
+ * If an assert fails outside of a test_enter block, a message is
+ * printed and the testing program is exited.
  * 
+ *
  * A single test is typically:
  *   
- *   Generally each step in a test must be processed in order
+ * Generally each step in a test must be processed in order
  * (later steps depend on earlier).  This is why tmtest bails
  * on the entire test when the first assert fails -- chances are
  * that the failure will prevent any further processing in this
@@ -43,16 +44,17 @@
  *
  * Q: Why not collect tests in data structures like other unit test
  * program do?
- * A: Zutest used to do this.  However, you can't call a data structure
- * with different parameters.  For instance, ensuring a suite of tests
- * works with any sized buffer:
+ * A: Zutest used to do this (back when it was called ZuTest).
+ * However, you can't call a data structure
+ * with different parameters.  For instance, what if you wanted to
+ * call the same test with different parameters?  You can't do this:
  *     test_buffer(1024);
  *     test_buffer(13);
  *     test_buffer(0);
  * And you can't set a breakpoint on a data structure or step through
  * it in a debugger.  So, while it might be conceptually cleaner to
- * specify your tests purely declarative, in practice it's significantly
- * less convenient.
+ * specify your tests purely declaratively, in practice it's just
+ * more hassle.
  */
 
 // Metrics

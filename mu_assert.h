@@ -7,9 +7,11 @@
  * See http://en.wikipedia.org/wiki/MIT_License for more.
  */
 
+
 /* @file mu_assert.h
  *
- * This is a mutest flavor file.
+ * This is a flavor for performing unit test asserts.
+ *
  * It provides CamelCase Assert macros:
  * 
  *     AssertEqual(a,b);
@@ -17,16 +19,21 @@
  *     AssertStringEqual(a,b);
  *     etc.
  *
- * Here's an example of what assertion failures look like:
+ * You can use either the abbreviated format, <i>AssertLE(x,y)</i>,
+ * or the expanded format <i>AssertLessThanOrEqual(x,y)</i>.
+ *
+ * Here's an example of what failures look like.  They are very
+ * informative, including variable names and their values.
  *
  * <pre>
- * test_assert.c:56: In test_assert_int, assert a == b failed. a==4 and b==3!
+ * test_assert.c:56: In test_assert_int, assert interval == base failed. interval==4 and base==3!
  * test_assert.c:57: In test_assert_int, assert a != c failed. a==4 and c==4!
- * test_assert.c:58: In test_assert_int, assert a > c failed. a==4 and c==4!
+ * etc.
  * </pre>
  * 
- * This was mutest's original built-in assert.  All other
- * flavors were based on this one.
+ * This was mutest's original assert format.
+ *
+ * TODO: is there a way to add a message?
  */
 
 
@@ -37,7 +44,7 @@
 
 #if WIN32
 // Microsoft's compiler doesn't support __func__.
-// TODO: is there a better way to test for this?
+// TODO: is there a better way to test for non-existence of __func__ than "WIN32"?
 #define __func__ "test"
 #endif
 
@@ -166,8 +173,8 @@
 #define AssertDoubleLessThan(x,y) AssertFloatLT(x,y)
 #define AssertStrLessThan(x,y) AssertStrLT(x,y)
 
-// But GreaterThanOrEqualTo seems a little silly
-#define AssertGreaterThanOrEqualTO(x,y) AssertGE(x,y)
+// GreaterThanOrEqualTo starts getting silly but we'll provide it
+#define AssertGreaterThanOrEqualTo(x,y) AssertGE(x,y)
 #define AssertHexGreaterThanOrEqualTo(x,y) AssertHexGE(x,y)
 #define AssertPtrGreaterThanOrEqualTo(x,y) AssertPtrGE(x,y)
 #define AssertFloatGreaterThanOrEqualTo(x,y) AssertFloatGE(x,y)
@@ -180,6 +187,19 @@
 #define AssertDoubleLessThanOrEqualTo(x,y) AssertFloatLE(x,y)
 #define AssertStrLessThanOrEqualTo(x,y) AssertStrLE(x,y)
 
+// Some people don't like the "To" on the end.  No problem.
+#define AssertGreaterThanOrEqual(x,y) AssertGE(x,y)
+#define AssertHexGreaterThanOrEqual(x,y) AssertHexGE(x,y)
+#define AssertPtrGreaterThanOrEqual(x,y) AssertPtrGE(x,y)
+#define AssertFloatGreaterThanOrEqual(x,y) AssertFloatGE(x,y)
+#define AssertDoubleGreaterThanOrEqual(x,y) AssertFloatGE(x,y)
+#define AssertStrGreaterThanOrEqual(x,y) AssertStrGE(x,y)
+#define AssertLessThanOrEqual(x,y) AssertLE(x,y)
+#define AssertHexLessThanOrEqual(x,y) AssertHexLE(x,y)
+#define AssertPtrLessThanOrEqual(x,y) AssertPtrLE(x,y)
+#define AssertFloatLessThanOrEqual(x,y) AssertFloatLE(x,y)
+#define AssertDoubleLessThanOrEqual(x,y) AssertFloatLE(x,y)
+#define AssertStrLessThanOrEqual(x,y) AssertStrLE(x,y)
 
 
 //
@@ -207,7 +227,7 @@
 	AssertFmt((type)(x) op (type)(y), #x" "#op" "#y MUTBECAUSE \
 	#x"=="fmt" and "#y"=="fmt"!", (type)(x),(type)(y))
 // The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll
-// special-case checking against 0: x==0 failed because x==1).
+// special-case checking against 0: "x==0 failed because x==1"
 #define AssertExpToZero(x,op,type,fmt) \
 	AssertFmt((type)(x) op 0,#x" "#op" 0" MUTBECAUSE #x"=="fmt"!", (type)(x))
 
@@ -222,8 +242,10 @@
 	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
 
 
-// If you want your app to run the unit tests for this flavor,
+// If you want your app to run the unit tests for this test flavor,
 // add the following test to your test deck.
 extern void mutest_test_assert_flavor();
 
+
 #endif
+
