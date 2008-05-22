@@ -77,7 +77,7 @@ struct test {
 	const char *name;			///< the name of the test or NULL if none was supplied
 	int finished;				///< True if we've already run the test in its entirety, false if not.  Needed because ctest_internal_test_finished() must be called twice: once when the test block is entered, and once when the block is exited.  We're only interested in the exit.
 	int inverted;				///< True if we should treat a failure as success and vice-versa (for testing ctest itself)
-	int impromptou;				///< True if the test struct was created due to assert being called outside of ctest_start.  The test should be disposed when the assert completes.
+	int implicit;				///< True if the test struct was created due to assert being called outside of ctest_start.  The test should be disposed when the assert completes.
 };
 struct test *test_head;					///< tests are listed of this list head, from most nested to least nested.
 
@@ -106,7 +106,7 @@ static void test_print(const char *fmt, ...)
 	
 	// first, print indentation
 	for(test=test_head; test; test=test->next) {
-		if(!test->impromptou) {
+		if(!test->implicit) {
 			fprintf(stderr, "  ");
 		}
 	}
@@ -158,7 +158,7 @@ void ctest_assert_prepare(const char *file, int line, const char *assertion)
 			exit(0);
                 }
 		
-		test_head->impromptou = 1;
+		test_head->implicit = 1;
 		// fake the first call to internal_test_finished.
 		// The real call will come when the assert resolves.
 		ctest_internal_test_finished();
@@ -208,7 +208,7 @@ void ctest_assert_failed(const char *msg, ...)
 	
 	if(test_head->inverted) {
 		// test was inverted and it failed so return normally!
-		// don't need to worry about impromptou tests since it's impossible to invert them.
+		// don't need to worry about implicit tests since it's impossible to invert them.
 		assertion_successes += 1;
 		return;
 	}
@@ -240,14 +240,14 @@ void ctest_assert_succeeded()
 	
 	assertion_successes += 1;
 
-	if(test_head->impromptou) {
+	if(test_head->implicit) {
                 ctest_internal_test_finished();
 	}
 }
 
 
 static void ctest_start_test(const char *name, const char *file, int line,
-	const char *inv, int impromptou)
+	const char *inv, int implicit)
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
@@ -270,9 +270,9 @@ static void ctest_start_test(const char *name, const char *file, int line,
 	test->name = name;
 	test->finished = 0;
 	test->inverted = 0;
-	test->impromptou = impromptou;
+	test->implicit = implicit;
 	
-	if(!impromptou) {
+	if(!implicit) {
 		tests_run += 1;
 		test_print("t%d. starting %stest %s at %s:%d {\n",
 				tests_run, inv, name, file, line);
@@ -282,9 +282,9 @@ static void ctest_start_test(const char *name, const char *file, int line,
 }
 
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name,
-		const char *file, int line, int impromptou)
+		const char *file, int line, int implicit)
 {
-	ctest_start_test(name, file, line, "", impromptou);
+	ctest_start_test(name, file, line, "", implicit);
 	test_head->inverted = 0;
 	return &test_head->jmp;
 }
@@ -305,8 +305,8 @@ void ctest_internal_test_jumped(const char *name)
 		exit(244);
 	}
 	
-	if(!test_head->impromptou) {
-		// don't count successes or failures for impromptou tests.
+	if(!test_head->implicit) {
+		// don't count successes or failures for implicit tests.
 		if(test_head->inverted) {
 			test_successes += 1;
 		} else {
@@ -343,7 +343,7 @@ int ctest_internal_test_finished(const char *name)
 	}
 	
 	// Test has run, check the result.
-	if(!test_head->impromptou) {
+	if(!test_head->implicit) {
 		test_successes += 1;
 		test_pop();
 		test_print("}\n");
