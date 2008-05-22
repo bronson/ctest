@@ -29,6 +29,6 @@ void ctest_run_unit_tests()
 	// TODO: write a test to fork and make sure that a failing
 	// assert causes the app to exit immediately.
 
-	ctest_test_assert_flavor();
+	ctest_test_asserts();
 }
 

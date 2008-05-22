@@ -10,9 +10,7 @@
 
 /* @file ct_assert.h
  *
- * This is a ctest flavor file.
- *
- * It provides CamelCase Assert macros:
+ * This file provides CamelCase Assert macros:
  * 
  *     AssertEqual(a,b);
  *     AssertGT(a,b);  AssumeGreaterThan(a,b);
@@ -238,9 +236,10 @@
 	#x" "#opn" "#y CTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
 
 
-// If you want your app to run the unit tests for this test flavor,
-// add the following test to your test deck.
-extern void ctest_test_assert_flavor();
+// If you want to run the unit tests for these asserts before using
+// them in your own test deck, call this function.  That should reduces
+// any chance an upgrade or compiler issues will silently break them.
+extern void ctest_test_asserts();
 
 
 #endif

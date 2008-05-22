@@ -1,5 +1,4 @@
 TODO:
-- Call them assert files, not flavor files!  What a dumb name.
 - AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
 - Make a homepage for it, replace the URL in the readme file.
 - Add routine to parse cmdline args.

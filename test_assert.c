@@ -254,7 +254,7 @@ void test_assert_strings()
 }
 
 
-void ctest_test_assert_flavor()
+void ctest_test_asserts()
 {
 	ctest_start("AssertInt") {
 		test_assert_int();
