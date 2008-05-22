@@ -24,7 +24,7 @@
 void run_ctest_unit_tests()
 {
 	// Ensure that we can hit asserts without first calling ctest_start.
-//	AssertEQ(1,1);
+	AssertEQ(1,1);
 
 	// TODO: write a test to fork and make sure that a failing
 	// assert causes the app to exit immediately.

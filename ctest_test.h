@@ -43,8 +43,10 @@ struct ctest_jmp_wrapper {
  * </pre>
  */
 
+// The for loop is so that ctest_internal_test_finished() called
+// when the flow of control exits the block that follows ctest_start.
 #define ctest_start(name, desc) 									\
-		if(setjmp(ctest_internal_start_test(name, desc,__FILE__,__LINE__,__func__)->jmp)) {	\
+		if(setjmp(ctest_internal_start_test(name, desc,__FILE__,__LINE__,__func__, 0)->jmp)) {	\
 			ctest_internal_test_jumped();							\
 		} else for(; ctest_internal_test_finished(); )
 
@@ -97,7 +99,7 @@ void ctest_assert_succeeded();
 
 // The following routines are not meant to be called directly; they are used
 // by the mutest_start() macro and subject to change.
-struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *description, const char *file, int line, const char *func);		///< only used by ctest_start()
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *description, const char *file, int line, const char *func, int impromptou);		///< only used by ctest_start()
 struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *desc, const char *file, int line, const char *func);		///< only used by ctest_start();
 void ctest_internal_test_jumped();				///< only used by ctest_start()
 int ctest_internal_test_finished();			///< only used by ctest_start()

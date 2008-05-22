@@ -76,8 +76,9 @@ struct test {
 	struct ctest_jmp_wrapper jmp;	///< used to longjump out of the current test if an assertion fails.
 	const char *name;			///< the name of the test or NULL if none was supplied
 	const char *description;	///< the longer description of the current test or NULL if none was supplied.
-	int finished;				///< True if we've already run the test in its entirety, false if not.
+	int finished;				///< True if we've already run the test in its entirety, false if not.  Needed because ctest_internal_test_finished() must be called twice: once when the test block is entered, and once when the block is exited.  We're only interested in the exit.
 	int inverted;				///< True if we should treat a failure as success and vice-versa (for testing ctest itself)
+	int impromptou;				///< True if the test struct was created due to assert being called outside of ctest_start.  The test should be disposed when the assert completes.
 };
 struct test *test_head;					///< tests are listed of this list head, from most nested to least nested.
 
@@ -124,6 +125,13 @@ struct assert {
 };
 struct assert *assert_head;	  ///< assertions are listed off this list head, from most nested to least nested.
 
+
+/** Add an assert to the list of asserts currently being checked.
+ *
+ *  Why do asserts nest?  Because sometimes you want to create an
+ *  assert based on other asserts.
+ */
+
 static void assert_push(struct assert *assert)
 {
 	// link the test into the stack of running tests
@@ -141,7 +149,23 @@ static void assert_pop()
 void ctest_assert_prepare(const char *file, int line,
 		const char *func, const char *assertion)
 {
-	struct assert* assert = malloc(sizeof(struct assert));
+	struct assert* assert;
+
+	if(!test_head) {
+		// We were called without a surrounding ctest_start block
+		if(setjmp(ctest_internal_start_test(0, 0, file, line, func, 1)->jmp)) {
+                        ctest_internal_test_jumped();
+			// we'll exit if any assertion fails, just like assert().
+			exit(0);
+                }
+		
+		test_head->impromptou = 1;
+		// fake the first call to internal_test_finished.
+		// The real call will come when the assert resolves.
+		ctest_internal_test_finished();
+	}
+
+	assert = malloc(sizeof(struct assert));
 	if(!assert) {
 		fprintf(stderr, "Out of memory allocating struct assert!\n");
 		exit(244);
@@ -187,6 +211,7 @@ void ctest_assert_failed(const char *msg, ...)
 	
 	if(test_head->inverted) {
 		// test was inverted and it failed so return normally!
+		// don't need to worry about impromptou tests since it's impossible to invert them.
 		assertion_successes += 1;
 		return;
 	}
@@ -217,12 +242,15 @@ void ctest_assert_succeeded()
 	}
 	
 	assertion_successes += 1;
-	return;
+
+	if(test_head->impromptou) {
+                ctest_internal_test_finished();
+	}
 }
 
 
 static void ctest_start_test(const char *name, const char *desc,
-		const char *file, int line, const char *func, const char *inv)
+		const char *file, int line, const char *func, const char *inv, int impromptou)
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
@@ -242,22 +270,25 @@ static void ctest_start_test(const char *name, const char *desc,
 		exit(238);
 	}
 	
-	tests_run += 1;
-	test_print("%d. starting %stest %s at %s:%d in %s() {\n", 
-			tests_run, inv, name, file, line, func);
-	
 	test->name = name;
 	test->description = desc;
 	test->finished = 0;
 	test->inverted = 0;
+	test->impromptou = impromptou;
 	
 	test_push(test);
+
+	tests_run += 1;
+	if(!impromptou) {
+		test_print("%d. starting %stest %s at %s:%d in %s() {\n", 
+				tests_run, inv, name, file, line, func);
+	}
 }
 
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *desc,
-		const char *file, int line, const char *func)
+		const char *file, int line, const char *func, int impromptou)
 {
-	ctest_start_test(name, desc, file, line, func, "inverted ");
+	ctest_start_test(name, desc, file, line, func, "inverted ", impromptou);
 	test_head->inverted = 0;
 	return &test_head->jmp;
 }
@@ -265,7 +296,7 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *desc,
 		const char *file, int line, const char *func)
 {
-	ctest_start_test(name, desc, file, line, func, "inverted ");
+	ctest_start_test(name, desc, file, line, func, "inverted ", 0);
 	test_head->inverted = 1;
 	return &test_head->jmp;
 }
@@ -279,20 +310,22 @@ void ctest_internal_test_jumped(const char *name, const char *desc)
 	}
 	
 	if(test_head->inverted) {
-        test_successes += 1;
+		test_successes += 1;
 	} else {
 		test_failures += 1;
 	}
 
+	if(!test_head->impromptou) {
+		test_print("}\n");
+	}
 	test_pop();
-	test_print("}\n");
 }
 
 
 /** Called when the test has been completed without longjumping.
  * 
  * Note that this does not automatically mean that the test has succeeded!
- * If the sense of the test has been inverted, if the test proceeds to
+ * If the sense of the test has been inverted, and if it then proceeds to
  * completion, that should be considered a failure.
  */
 
@@ -313,8 +346,10 @@ int ctest_internal_test_finished(const char *name, const char *desc)
 	// Test has run, check the result.
 	test_successes += 1;
 
+	if(!test_head->impromptou) {
+		test_print("}\n");
+	}
 	test_pop();
-	test_print("}\n");
 	return 0;
 }
 
