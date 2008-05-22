@@ -7,7 +7,7 @@
  *
  * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
- * See http://en.wikipedia.org/wiki/MIT_License for more.
+ * See http://www.opensource.org/licenses/mit-license.php
  */
 
 /** @file mutest_tests.c

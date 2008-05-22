@@ -5,7 +5,6 @@ TODO:
 - Call them assert files, not flavor files!  What a dumb name.
 - AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
 - Make a homepage for it, replace the URL in the readme file.
-- Don't use wikipedia link for license.  Link somwhere less transient?
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,
