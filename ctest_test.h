@@ -47,7 +47,7 @@ struct ctest_jmp_wrapper {
 // The for loop is so that ctest_internal_test_finished() called
 // when the flow of control exits the block that follows ctest_start.
 #define ctest_start(name) 									\
-		if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__,__func__, 0)->jmp)) {	\
+		if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__,0)->jmp)) {	\
 			ctest_internal_test_jumped();							\
 		} else for(; ctest_internal_test_finished(); )
 
@@ -63,7 +63,7 @@ struct ctest_jmp_wrapper {
  */
 
 #define ctest_start_inverted(name) 									\
-		if(setjmp(ctest_internal_start_inverted_test(name, __FILE__,__LINE__,__func__)->jmp)) {	\
+		if(setjmp(ctest_internal_start_inverted_test(name, __FILE__,__LINE__)->jmp)) {	\
 			ctest_internal_test_jumped();									\
 		} else for(; ctest_internal_test_finished(); )
 
@@ -78,7 +78,7 @@ struct ctest_jmp_wrapper {
  * be called.
  */
 
-void ctest_assert_prepare(const char *file, int line, const char *func, const char *assertion);
+void ctest_assert_prepare(const char *file, int line, const char *assertion);
 
 
 /** Causes the current assertion to fail.
@@ -100,8 +100,8 @@ void ctest_assert_succeeded();
 
 // The following routines are not meant to be called directly; they are used
 // by the mutest_start() macro and subject to change.
-struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, const char *func, int impromptou);		///< only used by ctest_start()
-struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *file, int line, const char *func);		///< only used by ctest_start();
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int impromptou);		///< only used by ctest_start()
+struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *file, int line);		///< only used by ctest_start();
 void ctest_internal_test_jumped();				///< only used by ctest_start()
 int ctest_internal_test_finished();			///< only used by ctest_start()
 

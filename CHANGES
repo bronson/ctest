@@ -1,6 +1,4 @@
 TODO:
-- Fix ctest_show_failures, so gross
-- I should probably get rid of __func__ -- it's not very useful anymore.
 - Call them assert files, not flavor files!  What a dumb name.
 - AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
 - Make a homepage for it, replace the URL in the readme file.
@@ -33,6 +31,9 @@ TODO:
 - Add the ability to fork before each test.  It's a pretty useless feature
   but some guys seem pretty hot about this.
 - Can I get rid of nesting asserts?  That would make things simpler.
+- It's lame that I need to declare the test function and start the test
+  separately.  Make a macro so I can just cunit_test(ints) { ... }
+- Fix ctest_show_failures, so gross
 
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.

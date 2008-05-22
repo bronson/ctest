@@ -120,7 +120,6 @@ struct assert {
 	struct assert *next;
 	const char *file;	///< the filename of the current assertion (as given by the prepare function)
 	int line;			///< the line number of the current assertion
-	const char *func;	///< the name of the function that contains the current assertion
 };
 struct assert *assert_head;	  ///< assertions are listed off this list head, from most nested to least nested.
 
@@ -145,14 +144,13 @@ static void assert_pop()
 	free(assert);
 }
 
-void ctest_assert_prepare(const char *file, int line,
-		const char *func, const char *assertion)
+void ctest_assert_prepare(const char *file, int line, const char *assertion)
 {
 	struct assert* assert;
 
 	if(!test_head) {
 		// We were called without a surrounding ctest_start block
-		if(setjmp(ctest_internal_start_test(0, file, line, func, 1)->jmp)) {
+		if(setjmp(ctest_internal_start_test(0, file, line, 1)->jmp)) {
                         ctest_internal_test_jumped();
 			// we'll exit if any assertion fails, just like assert().
 			exit(0);
@@ -172,13 +170,12 @@ void ctest_assert_prepare(const char *file, int line,
 	
 	assert->file = file;
 	assert->line = line;
-	assert->func = func;
 	
 	assert_push(assert);
 	
 	assertions_run += 1;
-	test_print("%d. checking %s at %s:%d in %s()\n",
-			assertions_run, assertion, file, line, func);
+	test_print("%d. checking %s at %s:%d\n",
+			assertions_run, assertion, file, line);
 }
 
 
@@ -193,8 +190,7 @@ void ctest_assert_failed(const char *msg, ...)
 	}
 	
 	if(!test_head->inverted || show_failures) {
-		fprintf(stderr, "%s:%d: In %s, assert ",
-				assert_head->file, assert_head->line, assert_head->func);
+		fprintf(stderr, "%s:%d: assert ", assert_head->file, assert_head->line);
 		va_start(ap, msg);
 		vfprintf(stderr, msg, ap);
 		va_end(ap);
@@ -249,7 +245,7 @@ void ctest_assert_succeeded()
 
 
 static void ctest_start_test(const char *name, const char *file, int line,
-	const char *func, const char *inv, int impromptou)
+	const char *inv, int impromptou)
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
@@ -262,10 +258,10 @@ static void ctest_start_test(const char *name, const char *file, int line,
 	}
 	
 	if(assert_head) {
-		fprintf(stderr, "Previous assertion at %s:%d in %s() hasn't reported a result!\n",
-				assert_head->file, assert_head->line, assert_head->func);
-		fprintf(stderr, "Unable to start a new test %s at %s:%d in %s().\n",
-				name, file, line, func);
+		fprintf(stderr, "Previous assertion at %s:%d hasn't reported a result!\n",
+				assert_head->file, assert_head->line);
+		fprintf(stderr, "Unable to start a new test %s at %s:%d.\n",
+				name, file, line);
 		exit(238);
 	}
 	
@@ -278,23 +274,23 @@ static void ctest_start_test(const char *name, const char *file, int line,
 
 	tests_run += 1;
 	if(!impromptou) {
-		test_print("%d. starting %stest %s at %s:%d in %s() {\n", 
-				tests_run, inv, name, file, line, func);
+		test_print("%d. starting %stest %s at %s:%d {\n",
+				tests_run, inv, name, file, line);
 	}
 }
 
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name,
-		const char *file, int line, const char *func, int impromptou)
+		const char *file, int line, int impromptou)
 {
-	ctest_start_test(name, file, line, func, "inverted ", impromptou);
+	ctest_start_test(name, file, line, "inverted ", impromptou);
 	test_head->inverted = 0;
 	return &test_head->jmp;
 }
 
 struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name,
-		const char *file, int line, const char *func)
+		const char *file, int line)
 {
-	ctest_start_test(name, file, line, func, "inverted ", 0);
+	ctest_start_test(name, file, line, "inverted ", 0);
 	test_head->inverted = 1;
 	return &test_head->jmp;
 }
