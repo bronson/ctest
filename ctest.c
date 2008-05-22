@@ -1,8 +1,8 @@
-/* mutest.c
+/* ctest.c
  * Scott Bronson
  * 6 Mar 2006
  *
- * This file contains the code needed to find and launch mutests.
+ * This file contains the code needed to find and launch C unit tests.
  * 
  * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
@@ -14,14 +14,14 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "mutest.h"
-#include "mutest_test.h"
+#include "ctest.h"
+#include "ctest_test.h"
 
 
-/** @file mutest.c
+/** @file ctest.c
  *
  * This file contains all of the test mechanisms provided by the
- * Zutest unit testing framework.
+ * C unit testing framework.
  *
  * A single function is called a test.  If any of the asserts fail
  * within a test, the test itself is stopped and printed as a failure
@@ -73,11 +73,11 @@ static int verbose = 0;
 
 struct test {
 	struct test *next;			///< usesd to maintain singly linked list of tests off ::test_head.
-	struct mutest_jmp_wrapper jmp;	///< used to longjump out of the current test if an assertion fails.
+	struct ctest_jmp_wrapper jmp;	///< used to longjump out of the current test if an assertion fails.
 	const char *name;			///< the name of the test or NULL if none was supplied
 	const char *description;	///< the longer description of the current test or NULL if none was supplied.
 	int finished;				///< True if we've already run the test in its entirety, false if not.
-	int inverted;				///< True if we should treat a failure as success and vice-versa (for testing mutest itself)
+	int inverted;				///< True if we should treat a failure as success and vice-versa (for testing ctest itself)
 };
 struct test *test_head;					///< tests are listed of this list head, from most nested to least nested.
 
@@ -138,7 +138,7 @@ static void assert_pop()
 	free(assert);
 }
 
-void mutest_assert_prepare(const char *file, int line,
+void ctest_assert_prepare(const char *file, int line,
 		const char *func, const char *assertion)
 {
 	struct assert* assert = malloc(sizeof(struct assert));
@@ -160,12 +160,12 @@ void mutest_assert_prepare(const char *file, int line,
 
 
 
-void mutest_assert_failed(const char *msg, ...)
+void ctest_assert_failed(const char *msg, ...)
 {
 	va_list ap;
 	
 	if(!assert_head) {
-		fprintf(stderr, "assert failed without mutest_assert_prepare being called first!");
+		fprintf(stderr, "assert failed without ctest_assert_prepare being called first!");
 		exit(0);
 	}
 	
@@ -181,7 +181,7 @@ void mutest_assert_failed(const char *msg, ...)
 	assert_pop();
 
 	if(!test_head) {
-		test_print("assertion was not wrapped by start_test, mutest must exit!\n");
+		test_print("assertion was not wrapped by start_test, ctest must exit!\n");
 		exit(244);
 	}
 	
@@ -197,10 +197,10 @@ void mutest_assert_failed(const char *msg, ...)
 }
 
 
-void mutest_assert_succeeded()
+void ctest_assert_succeeded()
 {
 	if(!assert_head) {
-		fprintf(stderr, "assert succeeded without mutest_assert_prepare being called first!");
+		fprintf(stderr, "assert succeeded without ctest_assert_prepare being called first!");
 		exit(0);
 	}
 	
@@ -216,7 +216,7 @@ void mutest_assert_succeeded()
 }
 
 
-static void mutest_start_test(const char *name, const char *desc,
+static void ctest_start_test(const char *name, const char *desc,
 		const char *file, int line, const char *func, const char *inv)
 {
 	struct test* test = malloc(sizeof(struct test));
@@ -249,27 +249,27 @@ static void mutest_start_test(const char *name, const char *desc,
 	test_push(test);
 }
 
-struct mutest_jmp_wrapper* mutest_internal_start_test(const char *name, const char *desc,
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *desc,
 		const char *file, int line, const char *func)
 {
-	mutest_start_test(name, desc, file, line, func, "inverted ");
+	ctest_start_test(name, desc, file, line, func, "inverted ");
 	test_head->inverted = 0;
 	return &test_head->jmp;
 }
 
-struct mutest_jmp_wrapper* mutest_internal_start_inverted_test(const char *name, const char *desc,
+struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *desc,
 		const char *file, int line, const char *func)
 {
-	mutest_start_test(name, desc, file, line, func, "inverted ");
+	ctest_start_test(name, desc, file, line, func, "inverted ");
 	test_head->inverted = 1;
 	return &test_head->jmp;
 }
 
 
-void mutest_internal_test_jumped(const char *name, const char *desc)
+void ctest_internal_test_jumped(const char *name, const char *desc)
 {
 	if(!test_head) {
-		fprintf(stderr, "Internal jump error: somehow mutest_start didn't complete?");
+		fprintf(stderr, "Internal jump error: somehow ctest_start didn't complete?");
 		exit(244);
 	}
 	
@@ -291,11 +291,11 @@ void mutest_internal_test_jumped(const char *name, const char *desc)
  * completion, that should be considered a failure.
  */
 
-int mutest_internal_test_finished(const char *name, const char *desc)
+int ctest_internal_test_finished(const char *name, const char *desc)
 {
 	if(!test_head) {
 		// how could we end up here without a test_head??
-		fprintf(stderr, "Internal finish error: somehow mutest_start didn't complete?");
+		fprintf(stderr, "Internal finish error: somehow ctest_start didn't complete?");
 		exit(244);
 	}
 	
@@ -314,7 +314,7 @@ int mutest_internal_test_finished(const char *name, const char *desc)
 }
 
 
-void print_mutest_results()
+void print_ctest_results()
 {
 	if(test_failures == 0) {
 		printf("All OK.  %d test%s run, %d successe%s (%d assertion%s).\n",
@@ -331,13 +331,13 @@ void print_mutest_results()
 
 
 /** You should have already run all tests.  This call will print their
- * results (print_mutest_results()) and exit with the number of tests
+ * results (print_ctest_results()) and exit with the number of tests
  * that failed as the error code (up to 100).
  */
 
-void mutest_exit()
+void ctest_exit()
 {
-	print_mutest_results();
+	print_ctest_results();
 	exit(test_failures < 100 ? test_failures : 100);
 }
 
@@ -353,7 +353,7 @@ void mutest_exit()
  * without doing anything.
  */
 
-int mutest_should_run_tests(int argc, char **argv)
+int ctest_should_run_tests(int argc, char **argv)
 {
 	if(argc > 1 && strcmp(argv[1],"--run-unit-tests") == 0) {
 		return 1;
@@ -363,7 +363,7 @@ int mutest_should_run_tests(int argc, char **argv)
 }
 
 
-void mutest_show_failures()
+void ctest_show_failures()
 {
 	show_failures = 1;
 }

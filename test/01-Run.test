@@ -1,6 +1,6 @@
-# Makes sure mutest's unit tests can be run as normal
+# Makes sure unit tests can be run as normal
 
-$mutest
+$ctest
 
 STDOUT:
 All OK.  24 tests run, 24 successes (138 assertions).

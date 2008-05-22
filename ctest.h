@@ -1,4 +1,4 @@
-/* mutest.h
+/* ctest.h
  * Scott Bronson
  * 6 Mar 2006
  * 
@@ -7,37 +7,37 @@
  * See http://en.wikipedia.org/wiki/MIT_License for more.
  */
 
-/* @file mutest.h
+/* @file ctest.h
  * 
  * This file declares the routines used by your application to
  * cause your unit tests to be run.
  */
 
 
-/* @file mutest.h
+/* @file ctest.h
  *
  * This file contains the declarations and all the Assert macros
- * required to use mutest in your own applications.
+ * required to use ctest in your own applications.
  *
- * To compile mutest to run its own unit tests, do this:
+ * To compile ctest to run its own unit tests, do this:
  * 
  * <pre>
  * 	$ make
- *  cc -g -Wall -Werror mutest.c main.c mutest_tests.c -o mutest
- * 	$ ./mutest
+ *  cc -g -Wall -Werror ctest.c main.c ctest_tests.c -o ctest
+ * 	$ ./ctest
  * 	4 tests run, 4 successes (132 assertions).
  * </pre>
  *
  * If your non-gcc compiler complains about a missing __func__ macro,
  * add -D__func__='"test"' to the compiler's command line.
  *
- * See ::mutest_tests for instructions on how to add mutest's
+ * See ::ctest_tests for instructions on how to add ctest's
  * built-in unit tests to your application's test suite.
  */
 
 
-#ifndef MUTEST_H
-#define MUTEST_H
+#ifndef CTEST_H
+#define CTEST_H
 
 
 /** Determines if user wants to run unit tests.  Returns 1 if unit
@@ -49,38 +49,38 @@
  * determine how to run the tests and set run-time flags appropriately.
  */
 
-int mutest_should_run_tests(int argc, char **argv);
+int ctest_should_run_tests(int argc, char **argv);
 
 
 /** Prints the results of a test run.
  */
 
-void print_mutest_results();
+void print_ctest_results();
 
 
-/** Run your unit tests, then call mutest_exit to print the result and quit.
+/** Run your unit tests, then call ctest_exit to print the result and quit.
  */
 
-void mutest_exit();
+void ctest_exit();
 
 
-/** mutest's built-in test suite.
+/** ctest's built-in test suite.
  *
- * This allows you to add the mutest unit test suite to your application's
- * test suites.  This way, you can ensure that mutest's unit tests pass
+ * This allows you to add the ctest unit test suite to your application's
+ * test suites.  This way, you can ensure that ctest's unit tests pass
  * before running your application's.  This is for the especially pedantic. :)
  *
  * Unfortunately, there is one test that cannot be run if you do this:
- * ensuring that mutest properly handles empty test suites.
- * Other than this one test, adding mutest_tests
- * to your application's test suite is equivalent to causing mutest to
- * compile and run its unit tests as described in mutest.h.
+ * ensuring that ctest properly handles empty test suites.
+ * Other than this one test, adding ctest_tests
+ * to your application's test suite is equivalent to causing ctest to
+ * compile and run its unit tests as described in ctest.h.
  */
 
-void run_mutest_unit_tests();
+void run_ctest_unit_tests();
 
 
 // TODO: this is a hack.  Handle it better.
-void mutest_show_failures();
+void ctest_show_failures();
 
 #endif

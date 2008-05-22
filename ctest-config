@@ -1,18 +1,18 @@
 #!/usr/bin/perl -w
 
-# mutest-config
+# ctest-config
 # Scott Bronson
 # 5 Mar 2007
 
 # This file is copyright (C) 2007 Scott Bronson
 # It is released under the MIT license.
 #
-# mutest-config outputs the files required to compile the specified
-# flavor of mutest.
+# ctest-config outputs the files required to compile the specified
+# flavor of ctest.
 #
-# This allows the mutest project to rename and remove support files
+# This allows the ctest project to rename and remove support files
 # without causing breakage.  (we're not too worried about
-# files like 'mu_assert.h" which the user must #include anyway.
+# files like 'ct_assert.h" which the user must #include anyway.
 # we're worried about being able to refactor support files
 # without breaking everyone's build scripts -- a surprisingly
 # common occurrence)
@@ -42,11 +42,11 @@ sub usage() {
 # All files that can be produced, grouped by type and flavor.
 my $per_flavor_files = {
 	default => {
-		c => ['mutest.c'],
-		h => ['mutest.h', 'mutest_test.h'],
+		c => ['ctest.c'],
+		h => ['ctest.h', 'ctest_test.h'],
 	},
 	assert => {
-		h => ['mu_assert.h'],
+		h => ['ct_assert.h'],
 		t => ['test_assert.c'],
 	},
 };

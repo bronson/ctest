@@ -1,4 +1,4 @@
-/* mu_assert.h
+/* ct_assert.h
  * Scott Bronson
  * 6 Mar 2006
  *
@@ -8,9 +8,9 @@
  */
 
 
-/* @file mu_assert.h
+/* @file ct_assert.h
  *
- * This is a flavor for performing unit test asserts.
+ * This is a ctest flavor file.
  *
  * It provides CamelCase Assert macros:
  * 
@@ -31,16 +31,16 @@
  * etc.
  * </pre>
  * 
- * This was mutest's original assert format.
+ * This was ctest's (actually zutest's) original assert format.
  *
  * TODO: is there a way to add a message?
  */
 
 
-#ifndef MUTEST_ASSERT_H
-#define MUTEST_ASSERT_H
+#ifndef CTEST_ASSERT_H
+#define CTEST_ASSERT_H
 
-#include "mutest_test.h"
+#include "ctest_test.h"
 
 #if WIN32
 // Microsoft's compiler doesn't support __func__.
@@ -86,9 +86,9 @@
 
 // Pointers...
 #define AssertPtr(p)  AssertFmt(p != (void*)0, \
-		#p" != NULL" MUTBECAUSE #p" is NULL!")
+		#p" != NULL" CTBECAUSE #p" is NULL!")
 #define AssertNull(p) AssertFmt(p == (void*)0, \
-		#p" == NULL" MUTBECAUSE #p"==0x%lX!", p)
+		#p" == NULL" CTBECAUSE #p"==0x%lX!", p)
 #define AssertNonNull(p) AssertPtr(p)
 
 #define AssertPtrNull(p) AssertNull(p)
@@ -126,18 +126,18 @@
 
 // ensures a string is non-null but zero-length
 #define AssertStrEmpty(p) do { \
-		mutest_assert_prepare(__FILE__, __LINE__, __func__, #p " is empty"); \
-		if(!(p)) { mutest_assert_failed(#p" is empty" MUTBECAUSE #p " is NULL!"); } \
-		else if((p)[0]) { mutest_assert_failed(#p" is empty" MUTBECAUSE #p " is: %s",p); } \
-		else mutest_assert_succeeded(); \
+		ctest_assert_prepare(__FILE__, __LINE__, __func__, #p " is empty"); \
+		if(!(p)) { ctest_assert_failed(#p" is empty" CTBECAUSE #p " is NULL!"); } \
+		else if((p)[0]) { ctest_assert_failed(#p" is empty" CTBECAUSE #p " is: %s",p); } \
+		else ctest_assert_succeeded(); \
 	} while(0)
 
 // ensures a string is non-null and non-zero-length
 #define AssertStrNonEmpty(p) do { \
-		mutest_assert_prepare(__FILE__, __LINE__, __func__, #p " is non-empty"); \
-		if(!(p)) { mutest_assert_failed(#p" is nonempty" MUTBECAUSE #p " is NULL!"); } \
-		else if(!(p)[0]) { mutest_assert_failed(#p" is nonempty" MUTBECAUSE #p"[0] is 0!"); } \
-		else mutest_assert_succeeded(); \
+		ctest_assert_prepare(__FILE__, __LINE__, __func__, #p " is non-empty"); \
+		if(!(p)) { ctest_assert_failed(#p" is nonempty" CTBECAUSE #p " is NULL!"); } \
+		else if(!(p)[0]) { ctest_assert_failed(#p" is nonempty" CTBECAUSE #p"[0] is 0!"); } \
+		else ctest_assert_succeeded(); \
 	} while(0)
 
 
@@ -206,30 +206,32 @@
 // helper macros, not intended to be called directly.
 //
 
-//#define MUTBECAUSE " failed because "
-#define MUTBECAUSE " failed. "
+#ifndef CTBECAUSE
+//#define CTBECAUSE " failed because "
+#define CTBECAUSE " failed. "
+#endif
 
 
 // If the expression returns false, it is printed in the failure message.
 #define Assert(x) do { \
-		mutest_assert_prepare(__FILE__, __LINE__, __func__, #x); \
-		if(x) { mutest_assert_succeeded(); } else { mutest_assert_failed(#x); } } while(0)
+		ctest_assert_prepare(__FILE__, __LINE__, __func__, #x); \
+		if(x) { ctest_assert_succeeded(); } else { ctest_assert_failed(#x); } } while(0)
 
 // If the expression returns false, the given format string is printed.
 // This is the same as Assert, just with much more helpful error messages.
 // For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
 #define AssertFmt(x,...) do { \
-		mutest_assert_prepare(__FILE__, __LINE__, __func__, #x); \
-		if(x) { mutest_assert_succeeded(); } else { mutest_assert_failed(__VA_ARGS__); } } while(0)
+		ctest_assert_prepare(__FILE__, __LINE__, __func__, #x); \
+		if(x) { ctest_assert_succeeded(); } else { ctest_assert_failed(__VA_ARGS__); } } while(0)
 
 
 #define AssertExpType(x,op,y,type,fmt) \
-	AssertFmt((type)(x) op (type)(y), #x" "#op" "#y MUTBECAUSE \
+	AssertFmt((type)(x) op (type)(y), #x" "#op" "#y CTBECAUSE \
 	#x"=="fmt" and "#y"=="fmt"!", (type)(x),(type)(y))
 // The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll
 // special-case checking against 0: "x==0 failed because x==1"
 #define AssertExpToZero(x,op,type,fmt) \
-	AssertFmt((type)(x) op 0,#x" "#op" 0" MUTBECAUSE #x"=="fmt"!", (type)(x))
+	AssertFmt((type)(x) op 0,#x" "#op" 0" CTBECAUSE #x"=="fmt"!", (type)(x))
 
 
 #define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")
@@ -239,12 +241,12 @@
 #define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		// can't use %p because some libc print "0x" first and some don't
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
-	#x" "#opn" "#y MUTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
+	#x" "#opn" "#y CTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
 
 
 // If you want your app to run the unit tests for this test flavor,
 // add the following test to your test deck.
-extern void mutest_test_assert_flavor();
+extern void ctest_test_assert_flavor();
 
 
 #endif

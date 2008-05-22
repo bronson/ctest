@@ -1,7 +1,7 @@
 # Makefile
 # 28 Feb 2007
 #
-# Makefile to compile a standalone version of mutest.
+# Makefile to compile a standalone version of ctest.
 #
 # Copyright (C) 2007 Scott Bronson
 # This file is released under the MIT License.
@@ -9,19 +9,19 @@
 
 COPTS=-g -Wall -Werror
 
-CSRC=main.c mutest_tests.c $(shell ./mutest-config -c -t)
-CHDR=$(shell ./mutest-config -h)
+CSRC=main.c ctest_tests.c $(shell ./ctest-config -c -t)
+CHDR=$(shell ./ctest-config -h)
 
-all: mutest
+all: ctest
 
-mutest: $(CSRC) $(CHDR) Makefile
-	$(CC) $(COPTS) $(CSRC) -o mutest
+ctest: $(CSRC) $(CHDR) Makefile
+	$(CC) $(COPTS) $(CSRC) -o ctest
 
 # This uses the tmtest command to perform some functional testing.
 # You can ignore it if you don't have tmtest installed.
-test: mutest
-	./mutest
+test: ctest
+	./ctest
 	tmtest
 
 clean:
-	rm -f mutest
+	rm -f ctest

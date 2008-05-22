@@ -2,7 +2,7 @@
  * Scott Bronson
  * 6 Mar 2006
  * 
- * Tests the AssertEqual(a,b) style tests from mutest_Assert.h
+ * Tests the AssertEqual(a,b) style tests from ctest_Assert.h
  * 
  * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
@@ -11,7 +11,7 @@
 
 #include <string.h>
 
-#include "mu_assert.h"
+#include "ct_assert.h"
 
 
 void test_assert_int()
@@ -27,7 +27,7 @@ void test_assert_int()
 	AssertLE(b,a);
 	AssertLE(c,a);
 	
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertEQ(a,b);
 		AssertNE(a,c);
 		AssertGT(a,c);
@@ -40,32 +40,32 @@ void test_assert_int()
 
 	AssertZero(z);
 	AssertNonzero(a);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertZero(a);
 		AssertNonzero(z);
 	}
 
 	AssertPositive(a);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertPositive(z)
 		AssertPositive(n)
 	}
 
 	AssertNonPositive(n);
 	AssertNonPositive(z);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertNonPositive(a)
 	}
 
 	AssertNegative(n);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertNegative(z)
 		AssertNegative(a)
 	}
 
 	AssertNonNegative(a);
 	AssertNonNegative(z);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertNonNegative(n)
 	}
 }
@@ -84,7 +84,7 @@ void test_assert_hex()
 	AssertHexLE(b,a);
 	AssertHexLE(c,a);
 
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertHexEQ(a,b);
 		AssertHexNE(a,c);
 		AssertHexGT(a,c);
@@ -97,32 +97,32 @@ void test_assert_hex()
 
 	AssertHexZero(z);
 	AssertHexNonzero(a);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertHexZero(a);
 		AssertHexNonzero(z);
 	}
 
 	AssertHexPositive(a);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertHexPositive(z);
 		AssertHexPositive(n);
 	}
 
 	AssertHexNonPositive(n);
 	AssertHexNonPositive(z);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertHexNonPositive(a);
 	}
 
 	AssertHexNegative(n);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertHexNegative(z);
 		AssertHexNegative(a);
 	}	
 
 	AssertHexNonNegative(a);
 	AssertHexNonNegative(z);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertHexNonNegative(n);
 	}
 }
@@ -139,7 +139,7 @@ void test_assert_ptr()
 	AssertPtr(ap);
 	AssertNull(n);
 
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertPtr(n);
 		AssertNull(ap);
 	}
@@ -153,7 +153,7 @@ void test_assert_ptr()
 	AssertPtrLE(bp,ap);
 	AssertPtrLE(cp,ap);
 
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertPtrEQ(ap,bp);
 		AssertPtrNE(ap,cp);
 		AssertPtrGT(ap,cp);
@@ -179,7 +179,7 @@ void test_assert_float()
 	AssertFloatLE(b,a);
 	AssertFloatLE(c,a);
 
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertFloatEQ(a,b);
 		AssertFloatNE(a,c);
 		AssertFloatGT(a,c);
@@ -199,7 +199,7 @@ void test_assert_float()
 	AssertDoubleLE(b,a);
 	AssertDoubleLE(c,a);
 
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertDoubleEQ(a,b);
 		AssertDoubleNE(a,c);
 		AssertDoubleGT(a,c);
@@ -229,7 +229,7 @@ void test_assert_strings()
 	AssertStrLE(b,a);
 	AssertStrLE(c,a);
 
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertStrEQ(a,b);
 		AssertStrNE(a,c);
 		AssertStrGT(a,c);
@@ -241,38 +241,38 @@ void test_assert_strings()
 	}
 
 	AssertStrEmpty(e);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertStrEmpty(a);
 		AssertStrEmpty(n);
 	}
 
 	AssertStrNonEmpty(a);
-	mutest_start_inverted(0, 0) {
+	ctest_start_inverted(0, 0) {
 		AssertStrNonEmpty(e);
 		AssertStrNonEmpty(n);
 	}
 }
 
 
-void mutest_test_assert_flavor()
+void ctest_test_assert_flavor()
 {
-	mutest_start("AssertInt", "Tests Assert int macros") {
+	ctest_start("AssertInt", "Tests Assert int macros") {
 		test_assert_int();
 	}
 	
-	mutest_start("AssertHex", "Tests AssertHex macros") {
+	ctest_start("AssertHex", "Tests AssertHex macros") {
 		test_assert_hex();
 	}
 	
-	mutest_start("AssertPtr", "Tests AssertPtr macros") {
+	ctest_start("AssertPtr", "Tests AssertPtr macros") {
 		test_assert_ptr();
 	}
 	
-	mutest_start("AssertFloat", "Tests AssertFloat macros") {
+	ctest_start("AssertFloat", "Tests AssertFloat macros") {
 		test_assert_float();
 	}
 	
-	mutest_start("AssertStr", "Tests AssertStr macros") {
+	ctest_start("AssertStr", "Tests AssertStr macros") {
 		test_assert_strings();
 	}
 };
