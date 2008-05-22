@@ -1,5 +1,4 @@
 TODO:
-- get rid of desc.  ctest_start("name") is sufficient.
 - Fix ctest_show_failures, so gross
 - I should probably get rid of __func__ -- it's not very useful anymore.
 - Call them assert files, not flavor files!  What a dumb name.

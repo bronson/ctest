@@ -27,7 +27,7 @@ void test_assert_int()
 	AssertLE(b,a);
 	AssertLE(c,a);
 	
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertEQ(a,b);
 		AssertNE(a,c);
 		AssertGT(a,c);
@@ -40,32 +40,32 @@ void test_assert_int()
 
 	AssertZero(z);
 	AssertNonzero(a);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertZero(a);
 		AssertNonzero(z);
 	}
 
 	AssertPositive(a);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertPositive(z)
 		AssertPositive(n)
 	}
 
 	AssertNonPositive(n);
 	AssertNonPositive(z);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertNonPositive(a)
 	}
 
 	AssertNegative(n);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertNegative(z)
 		AssertNegative(a)
 	}
 
 	AssertNonNegative(a);
 	AssertNonNegative(z);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertNonNegative(n)
 	}
 }
@@ -84,7 +84,7 @@ void test_assert_hex()
 	AssertHexLE(b,a);
 	AssertHexLE(c,a);
 
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertHexEQ(a,b);
 		AssertHexNE(a,c);
 		AssertHexGT(a,c);
@@ -97,32 +97,32 @@ void test_assert_hex()
 
 	AssertHexZero(z);
 	AssertHexNonzero(a);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertHexZero(a);
 		AssertHexNonzero(z);
 	}
 
 	AssertHexPositive(a);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertHexPositive(z);
 		AssertHexPositive(n);
 	}
 
 	AssertHexNonPositive(n);
 	AssertHexNonPositive(z);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertHexNonPositive(a);
 	}
 
 	AssertHexNegative(n);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertHexNegative(z);
 		AssertHexNegative(a);
 	}	
 
 	AssertHexNonNegative(a);
 	AssertHexNonNegative(z);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertHexNonNegative(n);
 	}
 }
@@ -139,7 +139,7 @@ void test_assert_ptr()
 	AssertPtr(ap);
 	AssertNull(n);
 
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertPtr(n);
 		AssertNull(ap);
 	}
@@ -153,7 +153,7 @@ void test_assert_ptr()
 	AssertPtrLE(bp,ap);
 	AssertPtrLE(cp,ap);
 
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertPtrEQ(ap,bp);
 		AssertPtrNE(ap,cp);
 		AssertPtrGT(ap,cp);
@@ -179,7 +179,7 @@ void test_assert_float()
 	AssertFloatLE(b,a);
 	AssertFloatLE(c,a);
 
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertFloatEQ(a,b);
 		AssertFloatNE(a,c);
 		AssertFloatGT(a,c);
@@ -199,7 +199,7 @@ void test_assert_float()
 	AssertDoubleLE(b,a);
 	AssertDoubleLE(c,a);
 
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertDoubleEQ(a,b);
 		AssertDoubleNE(a,c);
 		AssertDoubleGT(a,c);
@@ -229,7 +229,7 @@ void test_assert_strings()
 	AssertStrLE(b,a);
 	AssertStrLE(c,a);
 
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertStrEQ(a,b);
 		AssertStrNE(a,c);
 		AssertStrGT(a,c);
@@ -241,13 +241,13 @@ void test_assert_strings()
 	}
 
 	AssertStrEmpty(e);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertStrEmpty(a);
 		AssertStrEmpty(n);
 	}
 
 	AssertStrNonEmpty(a);
-	ctest_start_inverted(0, 0) {
+	ctest_start_inverted(0) {
 		AssertStrNonEmpty(e);
 		AssertStrNonEmpty(n);
 	}
@@ -256,23 +256,23 @@ void test_assert_strings()
 
 void ctest_test_assert_flavor()
 {
-	ctest_start("AssertInt", "Tests Assert int macros") {
+	ctest_start("AssertInt") {
 		test_assert_int();
 	}
 	
-	ctest_start("AssertHex", "Tests AssertHex macros") {
+	ctest_start("AssertHex") {
 		test_assert_hex();
 	}
 	
-	ctest_start("AssertPtr", "Tests AssertPtr macros") {
+	ctest_start("AssertPtr") {
 		test_assert_ptr();
 	}
 	
-	ctest_start("AssertFloat", "Tests AssertFloat macros") {
+	ctest_start("AssertFloat") {
 		test_assert_float();
 	}
 	
-	ctest_start("AssertStr", "Tests AssertStr macros") {
+	ctest_start("AssertStr") {
 		test_assert_strings();
 	}
 };
