@@ -70,7 +70,7 @@ int ctest_should_run_tests(int argc, char **argv);
  * ensuring that ctest properly handles empty test suites.
  */
 
-void run_ctest_unit_tests();
+void ctest_run_unit_tests();
 
 
 // TODO: this is a hack.  Handle it better.

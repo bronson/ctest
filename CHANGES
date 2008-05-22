@@ -1,6 +1,5 @@
 TODO:
 - get rid of desc.  ctest_start("name") is sufficient.
-- rename run_ctest_unit_tests to ctest_run_unit_tests
 - Fix ctest_show_failures, so gross
 - I should probably get rid of __func__ -- it's not very useful anymore.
 - Call them assert files, not flavor files!  What a dumb name.
@@ -21,6 +20,7 @@ TODO:
 - Add some functional tests to check the command line arguments.
 - Make sure to try compiling with gcc set to pedantic C99 as well.
 - Don't malloc on every test and assert.  Keep a cache or something.
+- combine some of these stupid tiny files.
 - Add support for the NOTESTS macro.
 - Make localizable by allowing CTBECAUSE to be redefined
   And also remove "is" and "and" from test macros.

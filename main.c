@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 		ctest_show_failures();
 	}
 
-	run_ctest_unit_tests();
+	ctest_run_unit_tests();
 	ctest_exit();
 	
 	// this will never be reached

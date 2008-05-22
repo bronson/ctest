@@ -21,7 +21,7 @@
 #include "ctest.h"
 
 
-void run_ctest_unit_tests()
+void ctest_run_unit_tests()
 {
 	// Ensure that we can hit asserts without first calling ctest_start.
 	AssertEQ(1,1);
