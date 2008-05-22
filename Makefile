@@ -9,8 +9,8 @@
 
 COPTS=-g -Wall -Werror
 
-CSRC=main.c ctest_tests.c $(shell ./ctest-config -c -t)
-CHDR=$(shell ./ctest-config -h)
+CSRC=main.c ctest_tests.c ctest.c test_assert.c
+CHDR=ctest.h ct_assert.h ctest_test.h
 
 all: ctest
 

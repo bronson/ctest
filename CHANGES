@@ -1,5 +1,4 @@
 TODO:
-- Get rid of mutest-config...  it's a complex solution to a simple problem.
 - MAKE SURE that we print a decent error if the user forgot to call start_test.
 	(actually, why don't we just bail out completely?)
 - I should probably get rid of __func__ -- it's not very useful anymore.
@@ -34,6 +33,7 @@ TODO:
 
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.
+- Get rid of mutest-config.  it was a complex solution to a simple problem.
 
 Version 0.71, 20 Oct 2007
 - created the mutest_start macro, cleaned up the assertion routines.
