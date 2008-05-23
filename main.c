@@ -17,14 +17,14 @@
 int main(int argc, char **argv)
 {
 	if(argc > 1) {
-		// "ctest -f" prints all the failures in the ctest unit tests.
-		// This allows you to check the output of each macro.
+		/* "ctest -f" prints all the failures in the ctest unit tests. */
+		/* This allows you to check the output of each macro. */
 		ctest_show_failures();
 	}
 
 	ctest_run_unit_tests();
 	ctest_exit();
 	
-	// this will never be reached
+	/* this will never be reached */
 	return 0;
 }

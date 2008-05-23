@@ -8,6 +8,7 @@
 # See http://www.opensource.org/licenses/mit-license.php
 
 COPTS=-g -Wall -Werror
+# COPTS+=-ansi -pedantic
 
 CSRC=main.c ctest_tests.c ctest.c test_assert.c
 CHDR=ctest.h ct_assert.h ctest_test.h

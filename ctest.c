@@ -57,36 +57,58 @@
  * more hassle.
  */
 
-// Metrics
-static int tests_run = 0;					///< The number of tests that we have attempted.
-static int test_successes = 0;				///< The number of successful tests run
-static int test_failures = 0;				///< The number of failed tests run.
-static int assertions_run = 0;				///< The number of assertions that have been attempted.
-static int assertion_successes = 0;		///< The number of assertions that have passed (if inverted, failed assertions are counted as having succeeded).
-static int assertion_failures = 0;			///< The number of assertions that have failed (if inverted, successful assertions are counted as failures).
 
-// Options
-static int show_failures = 0; 	///< Set this to 1 to print the failures.  This allows you to view the output of each failure to ensure it looks OK.
+/** The number of tests that we have attempted. */
+static int tests_run = 0;
+/** The number of successful tests run. */
+static int test_successes = 0;
+/** The number of failed tests run. */
+static int test_failures = 0;
+/** The number of assertions that have been attempted. */
+static int assertions_run = 0;
+/** The number of assertions that have passed. */
+static int assertion_successes = 0;
+/** The number of assertions that have failed. */
+static int assertion_failures = 0;
+
+/** Set this to 1 to print the failures.  This allows you to view the output of each failure to ensure it looks OK. */
+static int show_failures = 0;
 static int verbose = 0;
 
 
-
 struct test {
-	struct test *next;			///< usesd to maintain singly linked list of tests off ::test_head.
-	struct ctest_jmp_wrapper jmp;	///< used to longjump out of the current test if an assertion fails.
-	const char *name;			///< the name of the test or NULL if none was supplied
-	int finished;				///< True if we've already run the test in its entirety, false if not.  Needed because ctest_internal_test_finished() must be called twice: once when the test block is entered, and once when the block is exited.  We're only interested in the exit.
-	int inverted;				///< True if we should treat a failure as success and vice-versa (for testing ctest itself)
-	int implicit;				///< True if the test struct was created due to assert being called outside of ctest_start.  The test should be disposed when the assert completes.
+	/** usesd to maintain singly linked list of tests off ::test_head. */
+	struct test *next;
+	/** used to longjump out of the current test if an assertion fails. */
+	struct ctest_jmp_wrapper jmp;
+	/** the name of the test or NULL if none was supplied */
+	const char *name;
+	/** True if we've already run the test in its entirety, false if not.  Needed because ctest_internal_test_finished() must be called twice: once when the test block is entered, and once when the block is exited.  We're only interested in the exit. */
+	int finished;
+	/** True if we should treat a failure as success and vice-versa (for testing ctest itself) */
+	int inverted;
+	/** True if the test struct was created due to assert being called outside of ctest_start.  The test should be disposed when the assert completes. */
+	int implicit;
 };
-struct test *test_head;					///< tests are listed of this list head, from most nested to least nested.
+/** tests are listed off this list head, from most nested to least nested. */
+struct test *test_head;
+
+
+/**
+ * Link the given test into the stack of running tests.
+ * Tests are linked from most nested to least nested off test_head.
+ */
 
 static void test_push(struct test *test)
 {
-	// link the test into the stack of running tests
 	test->next = test_head;
 	test_head = test;
 }
+
+
+/**
+ * Dispose of the current test_head moving the next test in the chain into its place.
+ */
 
 static void test_pop()
 {
@@ -94,6 +116,11 @@ static void test_pop()
 	test_head = test->next;
 	free(test);
 }
+
+
+/**
+ * Print verbose information about the running tests and assertions.
+ */
 
 static void test_print(const char *fmt, ...)
 {
@@ -104,7 +131,7 @@ static void test_print(const char *fmt, ...)
 		return;
 	}
 	
-	// first, print indentation
+	/* print indentation */
 	for(test=test_head; test; test=test->next) {
 		if(!test->implicit) {
 			fprintf(stderr, "  ");
@@ -119,26 +146,30 @@ static void test_print(const char *fmt, ...)
 
 
 struct assert {
+	/** Links to the next assertion in the chain */
 	struct assert *next;
-	const char *file;	///< the filename of the current assertion (as given by the prepare function)
-	int line;			///< the line number of the current assertion
+	/** the filename of the current assertion (as given by the prepare function) */
+	const char *file;
+	/** the line number of the current assertion */
+	int line;
 };
-struct assert *assert_head;	  ///< assertions are listed off this list head, from most nested to least nested.
+/** assertions are listed off this list head, from most nested to least nested. */
+struct assert *assert_head;
 
 
 /** Add an assert to the list of asserts currently being checked.
  *
- *  Why do asserts nest?  Because sometimes you want to create an
- *  assert based on other asserts.
+ *  Why do asserts nest?  I guess because sometimes you want to create an
+ *  assert based on other asserts.  TODO: can nesting asserts be removed?
  */
 
 static void assert_push(struct assert *assert)
 {
-	// link the test into the stack of running tests
 	assert->next = assert_head;
 	assert_head = assert;
 }
 
+/** Pop the topmost assert and dispose of it, move the next one into place */
 static void assert_pop()
 {
 	struct assert *assert = assert_head;
@@ -146,21 +177,26 @@ static void assert_pop()
 	free(assert);
 }
 
+
+/** Prepare to test an assertion.  This does all the common work
+ *  like ensuring a test is ready to go and printing the status..
+ */
+
 void ctest_assert_prepare(const char *file, int line, const char *assertion)
 {
 	struct assert* assert;
 
 	if(!test_head) {
-		// We were called without a surrounding ctest_start block
+		/* We were called without a surrounding ctest_start block */
 		if(setjmp(ctest_internal_start_test(0, file, line, 1)->jmp)) {
                         ctest_internal_test_jumped();
-			// we'll exit if any assertion fails, just like assert().
+			/* we'll exit if any assertion fails, just like assert(). */
 			exit(0);
                 }
 		
 		test_head->implicit = 1;
-		// fake the first call to internal_test_finished.
-		// The real call will come when the assert resolves.
+		/* fake the first call to internal_test_finished. */
+		/* The real call will come when the assert resolves. */
 		ctest_internal_test_finished();
 	}
 
@@ -181,6 +217,9 @@ void ctest_assert_prepare(const char *file, int line, const char *assertion)
 }
 
 
+/** This gets called if the assertion set up with ctest_assert_prepare()
+ *  failed.  It bails out of the current test.
+ */
 
 void ctest_assert_failed(const char *msg, ...)
 {
@@ -207,13 +246,12 @@ void ctest_assert_failed(const char *msg, ...)
 	}
 	
 	if(test_head->inverted) {
-		// test was inverted and it failed so return normally!
-		// don't need to worry about implicit tests since it's impossible to invert them.
+		/* test was inverted and it failed so return normally! */
+		/* don't worry about implicit tests since it's impossible to invert them. */
 		assertion_successes += 1;
 		return;
 	}
 	
-	// we need to jump out of this start_test block
 	assertion_failures += 1;
 	longjmp(test_head->jmp.jmp, 1);
 }
@@ -306,7 +344,7 @@ void ctest_internal_test_jumped(const char *name)
 	}
 	
 	if(!test_head->implicit) {
-		// don't count successes or failures for implicit tests.
+		/* don't count successes or failures for implicit tests. */
 		if(test_head->inverted) {
 			test_successes += 1;
 		} else {
@@ -331,18 +369,18 @@ void ctest_internal_test_jumped(const char *name)
 int ctest_internal_test_finished(const char *name)
 {
 	if(!test_head) {
-		// how could we end up here without a test_head??
+		/* how could we end up here without a test_head?? */
 		fprintf(stderr, "Internal finish error: somehow ctest_start didn't complete?\n");
 		exit(244);
 	}
 	
 	if(!test_head->finished) {
-		// we haven't run the test yet, so run it.
+		/* we haven't run the test yet, so run it. */
 		test_head->finished = 1;
 		return 1;
 	}
 	
-	// Test has run, check the result.
+	/* Test has run, check the result. */
 	if(!test_head->implicit) {
 		test_successes += 1;
 		test_pop();

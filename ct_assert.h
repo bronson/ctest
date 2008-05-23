@@ -40,11 +40,11 @@
 
 #include "ctest_test.h"
 
-//
-//      Macros to test your app:
-//
+/*
+ *      Use these macros to test your app.
+ */
 
-// integers, longs, chars...
+/* integers, longs, chars */
 #define AssertEQ(x,y) AssertOp(x,==,y)
 #define AssertNE(x,y) AssertOp(x,!=,y)
 #define AssertGT(x,y) AssertOp(x,>,y)
@@ -60,7 +60,7 @@
 #define AssertNonNegative(x) AssertOpToZero(x,>=);
 #define AssertNonPositive(x) AssertOpToZero(x,<=);
 
-// Also integers but failure values are printed in hexadecimal rather than decimal.
+/* Also integers but failure values are printed in hexadecimal rather than decimal. */
 #define AssertHexEQ(x,y) AssertHexOp(x,==,y)
 #define AssertHexNE(x,y) AssertHexOp(x,!=,y)
 #define AssertHexGT(x,y) AssertHexOp(x,>,y)
@@ -76,7 +76,7 @@
 #define AssertHexNonNegative(x) AssertHexOpToZero(x,>=);
 #define AssertHexNonPositive(x) AssertHexOpToZero(x,<=);
 
-// Pointers...
+/* Pointers */
 #define AssertPtr(p)  AssertFmt(p != (void*)0, \
 		#p" != NULL" CTBECAUSE #p" is NULL!")
 #define AssertNull(p) AssertFmt(p == (void*)0, \
@@ -92,15 +92,15 @@
 #define AssertPtrLT(x,y) AssertPtrOp(x,<,y)
 #define AssertPtrLE(x,y) AssertPtrOp(x,<=,y)
 
-// These work with floats and doubles
-// (everything is handled internally as double)
+/* Floats and doubles */
+/* (everything is handled internally as double) */
 #define AssertFloatEQ(x,y) AssertFloatOp(x,==,y)
 #define AssertFloatNE(x,y) AssertFloatOp(x,!=,y)
 #define AssertFloatGT(x,y) AssertFloatOp(x,>,y)
 #define AssertFloatGE(x,y) AssertFloatOp(x,>=,y)
 #define AssertFloatLT(x,y) AssertFloatOp(x,<,y)
 #define AssertFloatLE(x,y) AssertFloatOp(x,<=,y)
-// supply Doubles so people don't worry about precision when they see Float
+/* supply Doubles so people don't worry about precision when they see Float */
 #define AssertDoubleEQ(x,y) AssertFloatOp(x,==,y)
 #define AssertDoubleNE(x,y) AssertFloatOp(x,!=,y)
 #define AssertDoubleGT(x,y) AssertFloatOp(x,>,y)
@@ -108,7 +108,7 @@
 #define AssertDoubleLT(x,y) AssertFloatOp(x,<,y)
 #define AssertDoubleLE(x,y) AssertFloatOp(x,<=,y)
 
-// Strings (uses strcmp)...
+/* Strings (uses strcmp) */
 #define AssertStrEQ(x,y) AssertStrOp(x,eq,==,y)
 #define AssertStrNE(x,y) AssertStrOp(x,ne,!=,y)
 #define AssertStrGT(x,y) AssertStrOp(x,gt,>,y)
@@ -116,7 +116,7 @@
 #define AssertStrLT(x,y) AssertStrOp(x,lt,<,y)
 #define AssertStrLE(x,y) AssertStrOp(x,le,<=,y)
 
-// ensures a string is non-null but zero-length
+/* ensures a string is non-null but zero-length */
 #define AssertStrEmpty(p) do { \
 		ctest_assert_prepare(__FILE__, __LINE__, #p " is empty"); \
 		if(!(p)) { ctest_assert_failed(#p" is empty" CTBECAUSE #p " is NULL!"); } \
@@ -124,7 +124,7 @@
 		else ctest_assert_succeeded(); \
 	} while(0)
 
-// ensures a string is non-null and non-zero-length
+/* ensures a string is non-null and non-zero-length */
 #define AssertStrNonEmpty(p) do { \
 		ctest_assert_prepare(__FILE__, __LINE__, #p " is non-empty"); \
 		if(!(p)) { ctest_assert_failed(#p" is nonempty" CTBECAUSE #p " is NULL!"); } \
@@ -134,9 +134,9 @@
 
 
 
-// Now let's spell some of those macros out...
+/* Now let's spell some of those macros out... */
 
-// I think that "Equal" looks better than "EQ".
+/* I think that "Equal" looks better than "EQ". */
 #define AssertEqual(x,y) AssertEQ(x,y)
 #define AssertHexEqual(x,y) AssertHexEQ(x,y)
 #define AssertPtrEqual(x,y) AssertPtrEQ(x,y)
@@ -151,7 +151,7 @@
 #define AssertDoubleNotEqual(x,y) AssertFloatNE(x,y)
 #define AssertStrNotEqual(x,y) AssertStrNE(x,y)
 
-// And GreaterThan looks a little better than GT
+/* And GreaterThan looks a little better than GT */
 #define AssertGreaterThan(x,y) AssertGT(x,y)
 #define AssertHexGreaterThan(x,y) AssertHexGT(x,y)
 #define AssertPtrGreaterThan(x,y) AssertPtrGT(x,y)
@@ -165,7 +165,7 @@
 #define AssertDoubleLessThan(x,y) AssertFloatLT(x,y)
 #define AssertStrLessThan(x,y) AssertStrLT(x,y)
 
-// GreaterThanOrEqualTo starts getting silly but we'll provide it
+/* GreaterThanOrEqualTo starts getting silly but we'll provide it */
 #define AssertGreaterThanOrEqualTo(x,y) AssertGE(x,y)
 #define AssertHexGreaterThanOrEqualTo(x,y) AssertHexGE(x,y)
 #define AssertPtrGreaterThanOrEqualTo(x,y) AssertPtrGE(x,y)
@@ -179,7 +179,7 @@
 #define AssertDoubleLessThanOrEqualTo(x,y) AssertFloatLE(x,y)
 #define AssertStrLessThanOrEqualTo(x,y) AssertStrLE(x,y)
 
-// Some people don't like the "To" on the end.  No problem.
+/* Some people don't like the "To" on the end.  No problem. */
 #define AssertGreaterThanOrEqual(x,y) AssertGE(x,y)
 #define AssertHexGreaterThanOrEqual(x,y) AssertHexGE(x,y)
 #define AssertPtrGreaterThanOrEqual(x,y) AssertPtrGE(x,y)
@@ -194,24 +194,25 @@
 #define AssertStrLessThanOrEqual(x,y) AssertStrLE(x,y)
 
 
-//
-// helper macros, not intended to be called directly.
-//
+/*
+ * helper macros, not intended to be called directly.
+ */
 
 #ifndef CTBECAUSE
-//#define CTBECAUSE " failed because "
+/*#define CTBECAUSE " failed because "*/
 #define CTBECAUSE " failed. "
 #endif
 
 
-// If the expression returns false, it is printed in the failure message.
+/* If the expression returns false, it is printed in the failure message. */
 #define Assert(x) do { \
 		ctest_assert_prepare(__FILE__, __LINE__, #x); \
 		if(x) { ctest_assert_succeeded(); } else { ctest_assert_failed(#x); } } while(0)
 
-// If the expression returns false, the given format string is printed.
-// This is the same as Assert, just with much more helpful error messages.
-// For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
+/* If the expression returns false, the given format string is printed.
+ * This is the same as Assert, just with much more helpful error messages.
+ * For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
+ */
 #define AssertFmt(x,...) do { \
 		ctest_assert_prepare(__FILE__, __LINE__, #x); \
 		if(x) { ctest_assert_succeeded(); } else { ctest_assert_failed(__VA_ARGS__); } } while(0)
@@ -220,8 +221,8 @@
 #define AssertExpType(x,op,y,type,fmt) \
 	AssertFmt((type)(x) op (type)(y), #x" "#op" "#y CTBECAUSE \
 	#x"=="fmt" and "#y"=="fmt"!", (type)(x),(type)(y))
-// The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll
-// special-case checking against 0: "x==0 failed because x==1"
+/* The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll */
+/* special-case checking against 0: "x==0 failed because x==1" */
 #define AssertExpToZero(x,op,type,fmt) \
 	AssertFmt((type)(x) op 0,#x" "#op" 0" CTBECAUSE #x"=="fmt"!", (type)(x))
 
@@ -230,15 +231,16 @@
 #define AssertHexOp(x,op,y) AssertExpType(x,op,y,long,"0x%lX")
 #define AssertOpToZero(x,op) AssertExpToZero(x,op,long,"%ld")
 #define AssertHexOpToZero(x,op) AssertExpToZero(x,op,long,"0x%lX")
-#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		// can't use %p because some libc print "0x" first and some don't
+#define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		/* can't use %p because some libc print "0x" first and some don't */
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
 	#x" "#opn" "#y CTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
 
 
-// If you want to run the unit tests for these asserts before using
-// them in your own test deck, call this function.  That should reduces
-// any chance an upgrade or compiler issues will silently break them.
+/* If you want to run the unit tests for these asserts before using
+ * them in your own test deck, call this function.  That should reduces
+ * any chance an upgrade or compiler issues will silently break them.
+ */
 extern void ctest_test_asserts();
 
 

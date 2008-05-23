@@ -1,6 +1,4 @@
 TODO:
-- AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
-- Make a homepage for it, replace the URL in the readme file.
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,
@@ -14,7 +12,9 @@ TODO:
  *    quiet=2, suite results not printed
  *    quiet=3, summary not printed.
 - Add some functional tests to check the command line arguments.
+- Add ability to easily run tests with different levels of verbosity.
 - Make sure to try compiling with gcc set to pedantic C99 as well.
+- Write the fork-to-test-assert-fail-outside-ctest_start code.
 - Don't malloc on every test and assert.  Keep a cache or something.
 - combine some of these stupid tiny files.
 - Add support for the NOTESTS macro.
@@ -25,14 +25,24 @@ TODO:
 - Add the ability to temporarily disable tests but leave them in the test deck.
 - Add ability to specify an optional timeout.
 - There's got to be a better API than show_inversions
+- Add an epsilon to the floating point comparisons?
+  This is a little scary...  it can confuse the heck out of you if 
+  you don't know exactly what's going on.  Don't add until someone wants it.
+- AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
+  It won't be easy...  They work well.
 - Make ctest's asserts behave more like regular asserts when used outside
   a ctest_start block.
 - Add the ability to fork before each test.  It's a pretty useless feature
+- Add ability to run only the named test or tests.
+	 --skip or --only to select tests to run,
   but some guys seem pretty hot about this.
 - Can I get rid of nesting asserts?  That would make things simpler.
 - It's lame that I need to declare the test function and start the test
   separately.  Make a macro so I can just cunit_test(ints) { ... }
 - Fix ctest_show_failures, so gross
+- Make a homepage for it, replace the URL in the readme file.
+- Instead of creating an implicit test structure, I should just prepare
+  the assert without the test and then worry about it if it fails.
 
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.

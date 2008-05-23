@@ -20,9 +20,10 @@
 #include <stdio.h>
 
 
-/// This is very sad: because there are setjmp implementations that
-/// store jmp_buf as an array instead of a struct, I have to wrap
-/// it in a struct to be able to pass it between functions.
+/* This is sad: because there are setjmp implementations that store jmp_buf
+ * as an array instead of a struct, I have to wrap it in a struct to be able
+ * to reliably pass the whole thing between functions.
+ */
 struct ctest_jmp_wrapper {
         jmp_buf jmp;
 };
@@ -44,8 +45,9 @@ struct ctest_jmp_wrapper {
  * </pre>
  */
 
-// The for loop is so that ctest_internal_test_finished() called
-// when the flow of control exits the block that follows ctest_start.
+/* The for loop is so that ctest_internal_test_finished() called
+ * when the flow of control exits the block that follows ctest_start.
+ */
 #define ctest_start(name) 									\
 		if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__,0)->jmp)) {	\
 			ctest_internal_test_jumped();							\
@@ -98,11 +100,12 @@ void ctest_assert_failed(const char *msg, ...);
 void ctest_assert_succeeded();
 
 
-// The following routines are not meant to be called directly; they are used
-// by the mutest_start() macro and subject to change.
-struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int impromptou);		///< only used by ctest_start()
-struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *file, int line);		///< only used by ctest_start();
-void ctest_internal_test_jumped();				///< only used by ctest_start()
-int ctest_internal_test_finished();			///< only used by ctest_start()
+/* The following routines are not meant to be called directly; they are used
+ * by the mutest_start() macro and highly subject to change.
+ */
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int impromptou);
+struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *file, int line);
+void ctest_internal_test_jumped();
+int ctest_internal_test_finished();
 
 #endif

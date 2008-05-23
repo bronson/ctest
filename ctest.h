@@ -73,7 +73,7 @@ int ctest_should_run_tests(int argc, char **argv);
 void ctest_run_unit_tests();
 
 
-// TODO: this is a hack.  Handle it better.
+/* TODO: this is a hack.  Handle it better. */
 void ctest_show_failures();
 
 #endif
