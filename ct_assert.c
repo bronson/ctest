@@ -256,6 +256,13 @@ void test_assert_strings()
 }
 
 
+int nested_assert()
+{
+	AssertEqual(12, 12);
+	return 42;
+}
+
+
 void ctest_test_asserts()
 {
 	ctest_start("AssertInt") {
@@ -277,4 +284,12 @@ void ctest_test_asserts()
 	ctest_start("AssertStr") {
 		test_assert_strings();
 	}
+
+	ctest_start("AssertNesting") {
+		// This makes sure that we can assert on a function result,
+		// even if that function makes other assert calls.
+		// (this is why ctest used to support nested asserts)
+		AssertEqual(nested_assert(), nested_assert());
+	}
 };
+

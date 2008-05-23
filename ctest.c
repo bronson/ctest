@@ -70,11 +70,6 @@ static int assertion_successes = 0;
 /** The number of assertions that have failed. */
 static int assertion_failures = 0;
 
-/** the filename of the current assertion (as given by the prepare function) */
-const char *assert_file;
-/** the line number of the current assertion */
-int assert_line;
-
 
 /** Set this to 1 to print the failures.  This allows you to view the output of each failure to ensure it looks OK. */
 static int show_failures = 0;
@@ -145,28 +140,20 @@ static void test_print(const char *fmt, ...)
 }
 
 
-/** Prepare to test an assertion.  This does all the common work
- *  like ensuring a test is ready to go and printing the status..
- */
-
-void ctest_assert_prepare(const char *file, int line, const char *assertion)
+static void assert_failed(const char *file, int line, const char *assertion)
 {
-	if(!file) {
-		fprintf(stderr, "A null file was passed to ctest_assert_prepare!\n");
-		exit(240);
-	}
-
-	if(assert_file) {
-		fprintf(stderr, "Tried to prepare an assert at %s:%d but the previous assert "
-			"at %s:%d hasn't finished!\n", file, line, assert_file, assert_line);
-		exit(237);
-	}
-
-	assert_file = file;
-	assert_line = line;
-	
 	assertions_run += 1;
-	test_print("%d. checking %s at %s:%d\n",
+	assertion_failures += 1;
+	longjmp(test_head->jmp.jmp, 1);
+}
+
+
+static void assert_succeeded(const char *file, int line, const char *assertion)
+{
+	assertions_run += 1;
+	assertion_successes += 1;
+
+        test_print("%d. assert %s at %s:%d succeeded\n",
 			assertions_run, assertion, file, line);
 }
 
@@ -175,56 +162,38 @@ void ctest_assert_prepare(const char *file, int line, const char *assertion)
  *  failed.  It bails out of the current test.
  */
 
-void ctest_assert_failed(const char *msg, ...)
+void ctest_assert_failed(const char *file, int line, const char *msg, ...)
 {
 	va_list ap;
 	
-	if(!assert_file) {
-		fprintf(stderr, "assert failed without ctest_assert_prepare being called first!\n");
-		exit(242);
-	}
-	
 	if(!(test_head && test_head->inverted) || show_failures) {
-		fprintf(stderr, "%s:%d: assert ", assert_file, assert_line);
+		fprintf(stderr, "%s:%d: assert ", file, line);
 		va_start(ap, msg);
 		vfprintf(stderr, msg, ap);
 		va_end(ap);
 		fputc('\n', stderr);
 	}
 	
-	assert_file = NULL;
-
 	if(!test_head) {
 		/* Assert failed and wasn't wrapped in a test.  Bail immediatley. */
 		exit(1); /* 1 means a single test failed */
 	}
 	
 	if(test_head->inverted) {
-		/* test was inverted and it failed so return normally! */
-		assertion_successes += 1;
-		return;
+		assert_succeeded(file, line, "(inverted)");
+	} else {
+		assert_failed(file, line, "(inverted)");
 	}
-	
-	assertion_failures += 1;
-	longjmp(test_head->jmp.jmp, 1);
 }
 
 
-void ctest_assert_succeeded()
+void ctest_assert_succeeded(const char *file, int line, const char *assertion)
 {
-	if(!assert_file) {
-		fprintf(stderr, "assert succeeded without ctest_assert_prepare being called first!\n");
-		exit(241);
-	}
-	
-	assert_file = NULL;
-	
 	if(test_head && test_head->inverted) {
-		assertion_failures += 1;
-		longjmp(test_head->jmp.jmp, 1);
+		assert_failed(file, line, assertion);
+	} else {
+		assert_succeeded(file, line, assertion);
 	}
-	
-	assertion_successes += 1;
 }
 
 
@@ -238,14 +207,6 @@ static void ctest_start_test(const char *name, const char *file, int line, const
 	
 	if(!name || !name[0]) {
 		name = "(unnamed)";
-	}
-	
-	if(assert_file) {
-		fprintf(stderr, "Previous assertion at %s:%d hasn't reported a result!\n",
-				assert_file, assert_line);
-		fprintf(stderr, "Unable to start a new test %s at %s:%d.\n",
-				name, file, line);
-		exit(238);
 	}
 	
 	test->name = name;

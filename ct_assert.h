@@ -118,18 +118,16 @@
 
 /* ensures a string is non-null but zero-length */
 #define AssertStrEmpty(p) do { \
-		ctest_assert_prepare(__FILE__, __LINE__, #p " is empty"); \
-		if(!(p)) { ctest_assert_failed(#p" is empty" CTBECAUSE #p " is NULL!"); } \
-		else if((p)[0]) { ctest_assert_failed(#p" is empty" CTBECAUSE #p " is: %s",p); } \
-		else ctest_assert_succeeded(); \
+		if(!(p)) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty" CTBECAUSE #p " is NULL!"); } \
+		else if((p)[0]) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty" CTBECAUSE #p " is: %s",p); } \
+		else ctest_assert_succeeded(__FILE__, __LINE__, #p); \
 	} while(0)
 
 /* ensures a string is non-null and non-zero-length */
 #define AssertStrNonEmpty(p) do { \
-		ctest_assert_prepare(__FILE__, __LINE__, #p " is non-empty"); \
-		if(!(p)) { ctest_assert_failed(#p" is nonempty" CTBECAUSE #p " is NULL!"); } \
-		else if(!(p)[0]) { ctest_assert_failed(#p" is nonempty" CTBECAUSE #p"[0] is 0!"); } \
-		else ctest_assert_succeeded(); \
+		if(!(p)) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty" CTBECAUSE #p " is NULL!"); } \
+		else if(!(p)[0]) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty" CTBECAUSE #p"[0] is 0!"); } \
+		else ctest_assert_succeeded(__FILE__, __LINE__, #p); \
 	} while(0)
 
 
@@ -206,16 +204,18 @@
 
 /* If the expression returns false, it is printed in the failure message. */
 #define Assert(x) do { \
-		ctest_assert_prepare(__FILE__, __LINE__, #x); \
-		if(x) { ctest_assert_succeeded(); } else { ctest_assert_failed(#x); } } while(0)
+		if(x) { ctest_assert_succeeded(__FILE__, __LINE__, #x); } \
+		else { ctest_assert_failed(__FILE__, __LINE__, #x); } \
+	} while(0)
 
 /* If the expression returns false, the given format string is printed.
  * This is the same as Assert, just with much more helpful error messages.
  * For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
  */
 #define AssertFmt(x,...) do { \
-		ctest_assert_prepare(__FILE__, __LINE__, #x); \
-		if(x) { ctest_assert_succeeded(); } else { ctest_assert_failed(__VA_ARGS__); } } while(0)
+		if(x) { ctest_assert_succeeded(__FILE__, __LINE__, #x); } \
+		else { ctest_assert_failed(__FILE__, __LINE__, __VA_ARGS__); } \
+	} while(0)
 
 
 #define AssertExpType(x,op,y,type,fmt) \

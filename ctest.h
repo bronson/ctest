@@ -127,34 +127,16 @@ struct ctest_jmp_wrapper {
 		} else for(; ctest_internal_test_finished(); )
 
 
-/** Prepares ctest to check an assertion
- * 
- * Mostly it just increments the numer of assertions counter
- * and prints the assertion if verbose is enabled.
- * 
- * You must make sure that ctest_assert_succeeded() or ctest_assert_failed()
- * will be called before ctest_assert_prepare() or ctest_start() can possibly
- * be called.
+/** Indicates that an assertion has failed.
  */
 
-void ctest_assert_prepare(const char *file, int line, const char *assertion);
+void ctest_assert_failed(const char *file, int line, const char *msg, ...);
 
 
-/** Causes the current assertion to fail.
- *
- * You must have previously called ctest_assert_prepare().
- * Pass the message that should be printed as a printf format string.
+/** Indicates that an assertion has succeeded.
  */
 
-void ctest_assert_failed(const char *msg, ...);
-
-
-/** Causes the current assertion to finish with success.
- * 
- * You must have previously called ctest_assert_prepare().
- */
-
-void ctest_assert_succeeded();
+void ctest_assert_succeeded(const char *file, int line, const char *assertion);
 
 
 /* The following routines are not meant to be called directly; they are used
