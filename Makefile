@@ -10,8 +10,8 @@
 COPTS=-g -Wall -Werror
 # COPTS+=-ansi -pedantic
 
-CSRC=main.c ctest_tests.c ctest.c test_assert.c
-CHDR=ctest.h ct_assert.h ctest_test.h
+CSRC=main.c ctest.c ct_assert.c
+CHDR=ctest.h ct_assert.h
 
 all: ctest
 

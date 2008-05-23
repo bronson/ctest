@@ -15,7 +15,6 @@
 #include <string.h>
 
 #include "ctest.h"
-#include "ctest_test.h"
 
 
 /** @file ctest.c

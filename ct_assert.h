@@ -38,7 +38,7 @@
 #ifndef CTEST_ASSERT_H
 #define CTEST_ASSERT_H
 
-#include "ctest_test.h"
+#include "ctest.h"
 
 /*
  *      Use these macros to test your app.

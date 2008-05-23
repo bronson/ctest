@@ -1,4 +1,5 @@
 TODO:
+- Get setjmp.h and 
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,

@@ -3,15 +3,17 @@
  * 6 Mar 2006
  * 
  * Tests the AssertEqual(a,b) style tests from ctest_Assert.h
+ *
+ * This file is 100% ct_assert unit tests.  Don't include it in your
+ * app unless you want to call the unit tests yourself.
  * 
  * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
  * See http://www.opensource.org/licenses/mit-license.php
  */
 
-#include <string.h>
-
 #include "ct_assert.h"
+#include <string.h>
 
 
 void test_assert_int()
