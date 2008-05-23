@@ -1,5 +1,7 @@
 TODO:
-- Get setjmp.h and 
+- It's lame that I need to declare the test function and start the test
+  separately.  Make a macro so I can just cunit_test(ints) { ... }
+- Create a prefs structure instead of just having globals scattered everywhere.
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,
@@ -14,17 +16,15 @@ TODO:
  *    quiet=3, summary not printed.
 - Add some functional tests to check the command line arguments.
 - Add ability to easily run tests with different levels of verbosity.
-- Make sure to try compiling with gcc set to pedantic C99 as well.
+- Add the ability to temporarily disable tests but leave them in the test deck.
+- Add ability to run only the named test or tests.
+	 --skip or --only to select tests to run,
 - Write the fork-to-test-assert-fail-outside-ctest_start code.
+  Nope!  No forking.  Too complex.  Maybe can write a func test for this?
 - Don't malloc on every test and assert.  Keep a cache or something.
-- combine some of these stupid tiny files.
 - Add support for the NOTESTS macro.
 - Make localizable by allowing CTBECAUSE to be redefined
   And also remove "is" and "and" from test macros.
-- Make tests check for signals.  int/fp /0 and bus errors.
-- Create a prefs structure instead of just having globals scattered everywhere.
-- Add the ability to temporarily disable tests but leave them in the test deck.
-- Add ability to specify an optional timeout.
 - There's got to be a better API than show_inversions
 - Add an epsilon to the floating point comparisons?
   This is a little scary...  it can confuse the heck out of you if
@@ -33,17 +33,13 @@ TODO:
   It won't be easy...  They work well.
 - Make ctest's asserts behave more like regular asserts when used outside
   a ctest_start block.
-- Add the ability to fork before each test.  It's a pretty useless feature
-- Add ability to run only the named test or tests.
-	 --skip or --only to select tests to run,
-  but some guys seem pretty hot about this.
-- Can I get rid of nesting asserts?  That would make things simpler.
-- It's lame that I need to declare the test function and start the test
-  separately.  Make a macro so I can just cunit_test(ints) { ... }
+- Add the optional ability to fork before each test.  It's a pretty useless
+  feature but some guys seem pretty hot about this.
+- Optionally install signal handlers.  int/fp /0 and bus errors.
+  Can we recover just like we do for failed asserts?
+- Add ability to specify an optional timeout.
 - Fix ctest_show_failures, so gross
 - Make a homepage for it, replace the URL in the readme file.
-- Instead of creating an implicit test structure, I should just prepare
-  the assert without the test and then worry about it if it fails.
 
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.
