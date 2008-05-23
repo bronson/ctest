@@ -26,7 +26,7 @@ TODO:
 - Add ability to specify an optional timeout.
 - There's got to be a better API than show_inversions
 - Add an epsilon to the floating point comparisons?
-  This is a little scary...  it can confuse the heck out of you if 
+  This is a little scary...  it can confuse the heck out of you if
   you don't know exactly what's going on.  Don't add until someone wants it.
 - AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
   It won't be easy...  They work well.
@@ -47,6 +47,9 @@ TODO:
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.
 - Get rid of mutest-config.  it was a complex solution to a simple problem.
+- Now compiled with -pedantic.  Straight ANSI C, not even any // comments.
+- Can now run asserts without having them wrapped in ctest_start
+  (if the assert fails, the app exits immediately).
 
 Version 0.71, 20 Oct 2007
 - created the mutest_start macro, cleaned up the assertion routines.

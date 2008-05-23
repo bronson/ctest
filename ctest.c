@@ -87,8 +87,6 @@ struct test {
 	int finished;
 	/** True if we should treat a failure as success and vice-versa (for testing ctest itself) */
 	int inverted;
-	/** True if the test struct was created due to assert being called outside of ctest_start.  The test should be disposed when the assert completes. */
-	int implicit;
 };
 /** tests are listed off this list head, from most nested to least nested. */
 struct test *test_head;
@@ -133,9 +131,7 @@ static void test_print(const char *fmt, ...)
 	
 	/* print indentation */
 	for(test=test_head; test; test=test->next) {
-		if(!test->implicit) {
-			fprintf(stderr, "  ");
-		}
+		fprintf(stderr, "  ");
 	}
 	
 	va_start(ap, fmt);
@@ -186,20 +182,6 @@ void ctest_assert_prepare(const char *file, int line, const char *assertion)
 {
 	struct assert* assert;
 
-	if(!test_head) {
-		/* We were called without a surrounding ctest_start block */
-		if(setjmp(ctest_internal_start_test(0, file, line, 1)->jmp)) {
-                        ctest_internal_test_jumped();
-			/* we'll exit if any assertion fails, just like assert(). */
-			exit(0);
-                }
-		
-		test_head->implicit = 1;
-		/* fake the first call to internal_test_finished. */
-		/* The real call will come when the assert resolves. */
-		ctest_internal_test_finished();
-	}
-
 	assert = malloc(sizeof(struct assert));
 	if(!assert) {
 		fprintf(stderr, "Out of memory allocating struct assert!\n");
@@ -230,7 +212,7 @@ void ctest_assert_failed(const char *msg, ...)
 		exit(243);
 	}
 	
-	if(!test_head->inverted || show_failures) {
+	if(!(test_head && test_head->inverted) || show_failures) {
 		fprintf(stderr, "%s:%d: assert ", assert_head->file, assert_head->line);
 		va_start(ap, msg);
 		vfprintf(stderr, msg, ap);
@@ -241,13 +223,12 @@ void ctest_assert_failed(const char *msg, ...)
 	assert_pop();
 
 	if(!test_head) {
-		fprintf(stderr, "assert_failed with a nil test_head.  This should be impossible!\n");
-		exit(242);
+		/* Assert failed and wasn't wrapped in a test.  Bail immediatley. */
+		exit(1);
 	}
 	
 	if(test_head->inverted) {
 		/* test was inverted and it failed so return normally! */
-		/* don't worry about implicit tests since it's impossible to invert them. */
 		assertion_successes += 1;
 		return;
 	}
@@ -266,26 +247,16 @@ void ctest_assert_succeeded()
 	
 	assert_pop();
 	
-	if(!test_head) {
-		fprintf(stderr, "assert_succeeded with a nil test_head.  This should be impossible!\n");
-		exit(240);
-	}
-
-	if(test_head->inverted) {
+	if(test_head && test_head->inverted) {
 		assertion_failures += 1;
 		longjmp(test_head->jmp.jmp, 1);
 	}
 	
 	assertion_successes += 1;
-
-	if(test_head->implicit) {
-                ctest_internal_test_finished();
-	}
 }
 
 
-static void ctest_start_test(const char *name, const char *file, int line,
-	const char *inv, int implicit)
+static void ctest_start_test(const char *name, const char *file, int line, const char *inv)
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
@@ -308,21 +279,18 @@ static void ctest_start_test(const char *name, const char *file, int line,
 	test->name = name;
 	test->finished = 0;
 	test->inverted = 0;
-	test->implicit = implicit;
 	
-	if(!implicit) {
-		tests_run += 1;
-		test_print("t%d. starting %stest %s at %s:%d {\n",
-				tests_run, inv, name, file, line);
-	}
+	tests_run += 1;
+	test_print("t%d. starting %stest %s at %s:%d {\n",
+			tests_run, inv, name, file, line);
 
 	test_push(test);
 }
 
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name,
-		const char *file, int line, int implicit)
+		const char *file, int line)
 {
-	ctest_start_test(name, file, line, "", implicit);
+	ctest_start_test(name, file, line, "");
 	test_head->inverted = 0;
 	return &test_head->jmp;
 }
@@ -330,7 +298,7 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name,
 struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name,
 		const char *file, int line)
 {
-	ctest_start_test(name, file, line, "inverted ", 0);
+	ctest_start_test(name, file, line, "inverted ");
 	test_head->inverted = 1;
 	return &test_head->jmp;
 }
@@ -343,19 +311,14 @@ void ctest_internal_test_jumped(const char *name)
 		exit(244);
 	}
 	
-	if(!test_head->implicit) {
-		/* don't count successes or failures for implicit tests. */
-		if(test_head->inverted) {
-			test_successes += 1;
-		} else {
-			test_failures += 1;
-		}
-
-		test_pop();
-		test_print("}\n");
+	if(test_head->inverted) {
+		test_successes += 1;
 	} else {
-		test_pop();
+		test_failures += 1;
 	}
+
+	test_pop();
+	test_print("}\n");
 }
 
 
@@ -380,14 +343,9 @@ int ctest_internal_test_finished(const char *name)
 		return 1;
 	}
 	
-	/* Test has run, check the result. */
-	if(!test_head->implicit) {
-		test_successes += 1;
-		test_pop();
-		test_print("}\n");
-	} else {
-		test_pop();
-	}
+	test_successes += 1;
+	test_pop();
+	test_print("}\n");
 
 	return 0;
 }
