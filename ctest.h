@@ -105,26 +105,26 @@ struct ctest_jmp_wrapper {
 /* The for loop is so that ctest_internal_test_finished() called
  * when the flow of control exits the block that follows ctest_start.
  */
-#define ctest_start(name) 									\
-		if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__)->jmp)) {	\
-			ctest_internal_test_jumped();							\
-		} else for(; ctest_internal_test_finished(); )
+#define ctest_start(name) \
+	if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__, 0)->jmp)) { \
+		ctest_internal_test_jumped(); \
+	} else for(; ctest_internal_test_finished(); )
 
 
 /** Starts a new test with reversed results.
  * 
  * i.e. if the assertion succeeds, the test fails because
- * the assertion was actually supposed to fail.  And if the
+ * the assertion was actually *supposed* to fail.  And if the
  * assertion fails, the test succeeds.
  * 
- * This is only used for testing ctest itself.  You should never have
- * a need to call this routine directly.  That would be perverse.
+ * This is only used for testing ctest itself.  You should never
+ * need to call this routine directly.  That would be perverse.
  */
 
-#define ctest_start_inverted(name) 									\
-		if(setjmp(ctest_internal_start_inverted_test(name, __FILE__,__LINE__)->jmp)) {	\
-			ctest_internal_test_jumped();									\
-		} else for(; ctest_internal_test_finished(); )
+#define ctest_start_inverted(name) \
+	if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__, 1)->jmp)) { \
+		ctest_internal_test_jumped(); \
+	} else for(; ctest_internal_test_finished(); )
 
 
 /** Indicates that an assertion has been run with the given result.
@@ -137,8 +137,7 @@ void ctest_assert_fmt(int result, const char *file, int line, const char *msg, .
 /* The following routines are not meant to be called directly; they are used
  * by the mutest_start() macro and highly subject to change.
  */
-struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line);
-struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name, const char *file, int line);
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int inverted);
 void ctest_internal_test_jumped();
 int ctest_internal_test_finished();
 

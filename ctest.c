@@ -175,7 +175,7 @@ void ctest_assert_fmt(int result, const char *file, int line, const char *msg, .
 }
 
 
-static void ctest_start_test(const char *name, const char *file, int line, const char *inv)
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int inverted)
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
@@ -189,28 +189,13 @@ static void ctest_start_test(const char *name, const char *file, int line, const
 	
 	test->name = name;
 	test->finished = 0;
-	test->inverted = 0;
+	test->inverted = inverted;
 	
 	metrics.tests_run += 1;
 	test_print("t%d. starting %stest %s at %s:%d {\n",
-			metrics.tests_run, inv, name, file, line);
+		metrics.tests_run, inverted ? "inverted " : "", name, file, line);
 
 	test_push(test);
-}
-
-struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name,
-		const char *file, int line)
-{
-	ctest_start_test(name, file, line, "");
-	test_head->inverted = 0;
-	return &test_head->jmp;
-}
-
-struct ctest_jmp_wrapper* ctest_internal_start_inverted_test(const char *name,
-		const char *file, int line)
-{
-	ctest_start_test(name, file, line, "inverted ");
-	test_head->inverted = 1;
 	return &test_head->jmp;
 }
 
