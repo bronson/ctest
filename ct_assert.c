@@ -263,14 +263,14 @@ void test_assert_strings()
 static void* multi_ptr()
 {
 	ctest_multi_calls += 1;
-	return ctest_multi_calls == 1 ? multi_ptr : NULL;
+	return ctest_multi_calls == 1 ? &ctest_multi_calls : NULL;
 }
 
 
 static void* multi_null()
 {
 	ctest_multi_calls += 1;
-	return ctest_multi_calls == 1 ? NULL : multi_null;
+	return ctest_multi_calls == 1 ? NULL : &ctest_multi_calls;
 }
 
 
@@ -355,10 +355,10 @@ void ctest_test_asserts()
 	}
 
 	ctest_start("AssertNesting") {
-		// This makes sure that we can assert on a function result,
-		// even if that function makes other assert calls.
-		// (this is why ctest used to support nested asserts)
+		/* This makes sure that we can assert on a function result,
+		 * even if that function makes other assert calls.
+		 * (this is why ctest used to support nested asserts) */
 		AssertEqual(nested_assert(), nested_assert());
 	}
-};
+}
 

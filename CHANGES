@@ -18,23 +18,10 @@ TODO:
 	 --skip or --only to select tests to run,
 - Write the fork-to-test-assert-fail-outside-ctest_start code.
   Nope!  No forking.  Too complex.  Maybe can write a func test for this?
-- Don't malloc on every test and assert.  Keep a cache or something.
-- Add support for the NOTESTS macro.
-- Make localizable by allowing CTBECAUSE to be redefined
-  And also remove "is" and "and" from test macros.
-- There's got to be a better API than show_inversions
-- Add an epsilon to the floating point comparisons?
-  This is a little scary...  it can confuse the heck out of you if
-  you don't know exactly what's going on.  Don't add until someone wants it.
-- AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
-  It won't be easy...  They work well.
-- Make ctest's asserts behave more like regular asserts when used outside
-  a ctest_start block.
-- Add the optional ability to fork before each test.  It's a pretty useless
-  feature but some guys seem pretty hot about this.
+- Get rid of the vsprintf potential buffer overflow.
+- Don't malloc on every test.  Keep a cache or something.
 - Optionally install signal handlers.  int/fp /0 and bus errors.
   Can we recover just like we do for failed asserts?
-- Add ability to specify an optional timeout.
 - Make a homepage for it, replace the URL in the readme file.
 
 Version 0.8, IN PROGRESS
@@ -61,8 +48,22 @@ Version 0.61, 30 Apr 2006
 - first version worth releasing
 
 
-Would be nice but might not happen:
+Would be nice but might never happen:
+- Add the optional ability to fork before each test.  It's a pretty useless
+  feature but some guys seem pretty hot about this.
+  - "A test could crash and fool the framework into thinking that it passed!"
+    - Erm, you're probably more likely to be hit by lightning.
+  - This would allow the ability to specify an optional timeout.
+- AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
+  - It won't be easy...  They work well.
 - It's lame that I need to declare the test function and start the test
   separately.  Make a macro so I can just cunit_test(ints) { ... }
   - I can't figure out an acceptable macro.  :(  It's especially hard
     because the function and the for loop can't share the same '}'.
+- Add an epsilon to the floating point comparisons?
+  - This is a little scary...  it can confuse the heck out of you if
+    you don't know exactly what's going on, make things MORE complex.
+  - Don't add until someone wants it and knows how to do it right.
+- Make ctest's asserts behave more like regular asserts when used outside
+  a ctest_start block.  Raise signals, disappear when NDEBUG is set, etc.
+  - not worth the trouble: just #include <assert.h> if you want asserts.

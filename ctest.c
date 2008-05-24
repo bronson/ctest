@@ -163,10 +163,13 @@ void ctest_assert(int result, const char *file, int line, const char *msg)
 void ctest_assert_fmt(int result, const char *file, int line, const char *msg, ...)
 {
 	va_list ap;
-	char buf[1024];
+	char buf[BUFSIZ];
 
 	va_start(ap, msg);
-	vsnprintf(buf, sizeof(buf), msg, ap);
+	/* Thanks to awful standardization, I don't get to use vsnprintf.
+         * For now we have an extremely unlikely but potential buffer overflow.
+         * Longer term, should probably figure out how to get rid of varargs entirely. */
+	vsprintf(buf, msg, ap);
 	va_end(ap);
 
 	ctest_assert(result, file, line, buf);
