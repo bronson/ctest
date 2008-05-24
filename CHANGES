@@ -1,5 +1,4 @@
 TODO:
-- Create a prefs structure instead of just having globals scattered everywhere.
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,
@@ -36,7 +35,6 @@ TODO:
 - Optionally install signal handlers.  int/fp /0 and bus errors.
   Can we recover just like we do for failed asserts?
 - Add ability to specify an optional timeout.
-- Fix ctest_show_failures, so gross
 - Make a homepage for it, replace the URL in the readme file.
 
 Version 0.8, IN PROGRESS
@@ -45,6 +43,7 @@ Version 0.8, IN PROGRESS
 - Now compiled with -pedantic.  Straight ANSI C, not even any // comments.
 - Can now run asserts without having them wrapped in ctest_start
   (if the assert fails, the app exits immediately).
+- Added ctest_preferences to provide more control over how ctest runs.
 
 Version 0.71, 20 Oct 2007
 - created the mutest_start macro, cleaned up the assertion routines.

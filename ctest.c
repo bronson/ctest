@@ -69,9 +69,7 @@ static struct {
 } metrics;
 
 
-/** Set this to 1 to print the failures.  This allows you to view the output of each failure to ensure it looks OK. */
-static int show_failures = 0;
-static int verbose = 0;
+struct ctest_preferences ctest_preferences;
 
 
 struct test {
@@ -115,7 +113,7 @@ static void test_pop()
 
 
 /**
- * Print verbose information about the running tests and assertions.
+ * Print information about the running tests and assertions.
  */
 
 static void test_print(const char *fmt, ...)
@@ -123,7 +121,7 @@ static void test_print(const char *fmt, ...)
 	va_list ap;
 	struct test *test;
 	
-	if(!verbose) {
+	if(!ctest_preferences.verbosity) {
 		return;
 	}
 	
@@ -140,7 +138,7 @@ static void test_print(const char *fmt, ...)
 
 void ctest_assert(int result, const char *file, int line, const char *msg)
 {
-	if(!result && show_failures) {
+	if(!result && ctest_preferences.show_failures) {
 		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
 	}
 
@@ -293,11 +291,5 @@ int ctest_should_run_tests(int argc, char **argv)
 	}
 
 	return 0;
-}
-
-
-void ctest_show_failures()
-{
-	show_failures = 1;
 }
 

@@ -33,6 +33,22 @@
 #ifndef CTEST_H
 #define CTEST_H
 
+#include <setjmp.h>
+#include <stdio.h>
+
+
+/** You can change ctest's run-time behavior at any time by modifying
+ *  this structure.  For instance, ctest_preferences.verbosity = 4;
+ */
+extern struct ctest_preferences {
+	/** 0=normal verbosity (show failures and a one-line summary at the end.
+         *  Increase this number to increase the amount of information printed. */
+	int verbosity;
+	/** Set this to 1 to print the failures.  This tells ctest to display the
+         *  output of each inverted failure to ensure it looks OK. */
+	int show_failures;
+} ctest_preferences;
+
 
 /** Call your unit test routines, then call ctest_exit
  *  to print the results and quit.  Testing is that easy!
@@ -65,16 +81,6 @@ int ctest_should_run_tests(int argc, char **argv);
  */
 
 void ctest_run_unit_tests();
-
-
-/* TODO: this is a hack.  Handle it better. */
-void ctest_show_failures();
-
-
-
-
-#include <setjmp.h>
-#include <stdio.h>
 
 
 /* This is sad: because there are setjmp implementations that store jmp_buf
