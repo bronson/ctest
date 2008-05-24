@@ -208,9 +208,10 @@
 	} while(0)
 
 
-#define AssertExpType(x,op,y,type,fmt) \
-	AssertArgs((type)(x) op (type)(y), #x" "#op" "#y " with " \
-	#x"="fmt" and "#y"="fmt, (type)(x), (type)(y))
+#define AssertExpType(x,op,y,type,fmt) do { \
+	type xv = (x); type yv = (y); \
+	AssertArgs(xv op yv, #x" "#op" "#y " with " #x"="fmt" and "#y"="fmt, xv, yv); \
+	} while(0)
 /* The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll */
 /* special-case checking against 0: "x==0 failed because x==1" */
 #define AssertExpToZero(x,op,type,fmt) \
