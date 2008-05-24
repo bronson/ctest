@@ -83,14 +83,25 @@
 		#p" == NULL with " #p "==0x%lX!", pv, NULL); } while(0)
 #define AssertNonNull(p) AssertPtr(p)
 
+#define AssertPointer(p) AssertPtr(p)
 #define AssertPtrNull(p) AssertNull(p)
 #define AssertPtrNonNull(p) AssertNonNull(p)
+#define AssertPointerNull(p) AssertNull(p)
+#define AssertPointerNonNull(p) AssertNonNull(p)
+
 #define AssertPtrEQ(x,y) AssertPtrOp(x,==,y)
 #define AssertPtrNE(x,y) AssertPtrOp(x,!=,y)
 #define AssertPtrGT(x,y) AssertPtrOp(x,>,y)
 #define AssertPtrGE(x,y) AssertPtrOp(x,>=,y)
 #define AssertPtrLT(x,y) AssertPtrOp(x,<,y)
 #define AssertPtrLE(x,y) AssertPtrOp(x,<=,y)
+
+#define AssertPointerEQ(x,y) AssertPtrEQ(x,y)
+#define AssertPointerNE(x,y) AssertPtrNE(x,y)
+#define AssertPointerGT(x,y) AssertPtrGT(x,y)
+#define AssertPointerGE(x,y) AssertPtrGE(x,y)
+#define AssertPointerLT(x,y) AssertPtrLT(x,y)
+#define AssertPointerLE(x,y) AssertPtrLE(x,y)
 
 /* Floats and doubles */
 /* (everything is handled internally as double) */
@@ -116,6 +127,13 @@
 #define AssertStrLT(x,y) AssertStrOp(x,lt,<,y)
 #define AssertStrLE(x,y) AssertStrOp(x,le,<=,y)
 
+#define AssertStringEQ(x,y) AssertStrEQ(x,y)
+#define AssertStringNE(x,y) AssertStrNE(x,y)
+#define AssertStringGT(x,y) AssertStrGT(x,y)
+#define AssertStringGE(x,y) AssertStrGE(x,y)
+#define AssertStringLT(x,y) AssertStrLT(x,y)
+#define AssertStringLE(x,y) AssertStrLE(x,y)
+
 /* ensures a string is non-null but zero-length */
 #define AssertStrEmpty(p) do { char *pv = (void*)(p); \
 		if(!(pv)) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty with " #p " set to NULL"); } \
@@ -130,6 +148,8 @@
 		else ctest_assert_succeeded_fmt(__FILE__, __LINE__, #p"is empty with " #p " set to \"%s\"", pv, NULL); \
 	} while(0)
 
+#define AssertStringEmpty(x) AssertStrEmpty(x)
+#define AssertStringNonEmpty(x) AssertStrNonEmpty(x)
 
 
 /* Now let's spell some of those macros out... */
@@ -138,58 +158,74 @@
 #define AssertEqual(x,y) AssertEQ(x,y)
 #define AssertHexEqual(x,y) AssertHexEQ(x,y)
 #define AssertPtrEqual(x,y) AssertPtrEQ(x,y)
+#define AssertPointerEqual(x,y) AssertPtrEQ(x,y)
 #define AssertFloatEqual(x,y) AssertFloatEQ(x,y)
 #define AssertDoubleEqual(x,y) AssertFloatEQ(x,y)
 #define AssertStrEqual(x,y) AssertStrEQ(x,y)
+#define AssertStringEqual(x,y) AssertStrEQ(x,y)
 
 #define AssertNotEqual(x,y) AssertNE(x,y)
 #define AssertHexNotEqual(x,y) AssertHexNE(x,y)
 #define AssertPtrNotEqual(x,y) AssertPtrNE(x,y)
+#define AssertPointerNotEqual(x,y) AssertPtrNE(x,y)
 #define AssertFloatNotEqual(x,y) AssertFloatNE(x,y)
 #define AssertDoubleNotEqual(x,y) AssertFloatNE(x,y)
 #define AssertStrNotEqual(x,y) AssertStrNE(x,y)
+#define AssertStringNotEqual(x,y) AssertStrNE(x,y)
 
 /* And GreaterThan looks a little better than GT */
 #define AssertGreaterThan(x,y) AssertGT(x,y)
 #define AssertHexGreaterThan(x,y) AssertHexGT(x,y)
 #define AssertPtrGreaterThan(x,y) AssertPtrGT(x,y)
+#define AssertPointerGreaterThan(x,y) AssertPtrGT(x,y)
 #define AssertFloatGreaterThan(x,y) AssertFloatGT(x,y)
 #define AssertDoubleGreaterThan(x,y) AssertFloatGT(x,y)
 #define AssertStrGreaterThan(x,y) AssertStrGT(x,y)
+#define AssertStringGreaterThan(x,y) AssertStrGT(x,y)
 #define AssertLessThan(x,y) AssertLT(x,y)
 #define AssertHexLessThan(x,y) AssertHexLT(x,y)
 #define AssertPtrLessThan(x,y) AssertPtrLT(x,y)
+#define AssertPointerLessThan(x,y) AssertPtrLT(x,y)
 #define AssertFloatLessThan(x,y) AssertFloatLT(x,y)
 #define AssertDoubleLessThan(x,y) AssertFloatLT(x,y)
 #define AssertStrLessThan(x,y) AssertStrLT(x,y)
+#define AssertStringLessThan(x,y) AssertStrLT(x,y)
 
 /* GreaterThanOrEqualTo starts getting silly but we'll provide it */
 #define AssertGreaterThanOrEqualTo(x,y) AssertGE(x,y)
 #define AssertHexGreaterThanOrEqualTo(x,y) AssertHexGE(x,y)
 #define AssertPtrGreaterThanOrEqualTo(x,y) AssertPtrGE(x,y)
+#define AssertPointerGreaterThanOrEqualTo(x,y) AssertPtrGE(x,y)
 #define AssertFloatGreaterThanOrEqualTo(x,y) AssertFloatGE(x,y)
 #define AssertDoubleGreaterThanOrEqualTo(x,y) AssertFloatGE(x,y)
 #define AssertStrGreaterThanOrEqualTo(x,y) AssertStrGE(x,y)
+#define AssertStringGreaterThanOrEqualTo(x,y) AssertStrGE(x,y)
 #define AssertLessThanOrEqualTo(x,y) AssertLE(x,y)
 #define AssertHexLessThanOrEqualTo(x,y) AssertHexLE(x,y)
 #define AssertPtrLessThanOrEqualTo(x,y) AssertPtrLE(x,y)
+#define AssertPointerLessThanOrEqualTo(x,y) AssertPtrLE(x,y)
 #define AssertFloatLessThanOrEqualTo(x,y) AssertFloatLE(x,y)
 #define AssertDoubleLessThanOrEqualTo(x,y) AssertFloatLE(x,y)
 #define AssertStrLessThanOrEqualTo(x,y) AssertStrLE(x,y)
+#define AssertStringLessThanOrEqualTo(x,y) AssertStrLE(x,y)
 
 /* Some people don't like the "To" on the end.  No problem. */
 #define AssertGreaterThanOrEqual(x,y) AssertGE(x,y)
 #define AssertHexGreaterThanOrEqual(x,y) AssertHexGE(x,y)
 #define AssertPtrGreaterThanOrEqual(x,y) AssertPtrGE(x,y)
+#define AssertPointerGreaterThanOrEqual(x,y) AssertPtrGE(x,y)
 #define AssertFloatGreaterThanOrEqual(x,y) AssertFloatGE(x,y)
 #define AssertDoubleGreaterThanOrEqual(x,y) AssertFloatGE(x,y)
 #define AssertStrGreaterThanOrEqual(x,y) AssertStrGE(x,y)
+#define AssertStringGreaterThanOrEqual(x,y) AssertStrGE(x,y)
 #define AssertLessThanOrEqual(x,y) AssertLE(x,y)
 #define AssertHexLessThanOrEqual(x,y) AssertHexLE(x,y)
 #define AssertPtrLessThanOrEqual(x,y) AssertPtrLE(x,y)
+#define AssertPointerLessThanOrEqual(x,y) AssertPtrLE(x,y)
 #define AssertFloatLessThanOrEqual(x,y) AssertFloatLE(x,y)
 #define AssertDoubleLessThanOrEqual(x,y) AssertFloatLE(x,y)
 #define AssertStrLessThanOrEqual(x,y) AssertStrLE(x,y)
+#define AssertStringLessThanOrEqual(x,y) AssertStrLE(x,y)
 
 
 /*
