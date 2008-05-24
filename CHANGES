@@ -1,6 +1,4 @@
 TODO:
-- Try to get rid of variadic macros! That definitely affects what C compilers
-  we can run on.
 - It's lame that I need to declare the test function and start the test
   separately.  Make a macro so I can just cunit_test(ints) { ... }
 - Create a prefs structure instead of just having globals scattered everywhere.

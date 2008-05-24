@@ -130,13 +130,15 @@ struct ctest_jmp_wrapper {
 /** Indicates that an assertion has failed.
  */
 
-void ctest_assert_failed(const char *file, int line, const char *msg, ...);
+void ctest_assert_failed(const char *file, int line, const char *msg);
+void ctest_assert_failed_fmt(const char *file, int line, const char *msg, ...);
 
 
 /** Indicates that an assertion has succeeded.
  */
 
-void ctest_assert_succeeded(const char *file, int line, const char *assertion);
+void ctest_assert_succeeded(const char *file, int line, const char *msg);
+void ctest_assert_succeeded_fmt(const char *file, int line, const char *msg, ...);
 
 
 /* The following routines are not meant to be called directly; they are used

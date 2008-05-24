@@ -77,10 +77,10 @@
 #define AssertHexNonPositive(x) AssertHexOpToZero(x,<=);
 
 /* Pointers */
-#define AssertPtr(p)  AssertFmt(p != (void*)0, \
-		#p" != NULL" CTBECAUSE #p" is NULL!")
-#define AssertNull(p) AssertFmt(p == (void*)0, \
-		#p" == NULL" CTBECAUSE #p"==0x%lX!", p)
+#define AssertPtr(p)  AssertArgs(p != (void*)0, \
+		#p" != NULL with " #p "==0x%lX!", p, NULL)
+#define AssertNull(p) AssertArgs(p == (void*)0, \
+		#p" == NULL with " #p "==0x%lX!", p, NULL)
 #define AssertNonNull(p) AssertPtr(p)
 
 #define AssertPtrNull(p) AssertNull(p)
@@ -118,15 +118,15 @@
 
 /* ensures a string is non-null but zero-length */
 #define AssertStrEmpty(p) do { \
-		if(!(p)) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty" CTBECAUSE #p " is NULL!"); } \
-		else if((p)[0]) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty" CTBECAUSE #p " is: %s",p); } \
+		if(!(p)) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty with " #p " set to NULL"); } \
+		else if((p)[0]) { ctest_assert_failed_fmt(__FILE__, __LINE__, #p " is empty with " #p " set to \"%s\"", p, NULL); } \
 		else ctest_assert_succeeded(__FILE__, __LINE__, #p); \
 	} while(0)
 
 /* ensures a string is non-null and non-zero-length */
 #define AssertStrNonEmpty(p) do { \
-		if(!(p)) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty" CTBECAUSE #p " is NULL!"); } \
-		else if(!(p)[0]) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty" CTBECAUSE #p"[0] is 0!"); } \
+		if(!(p)) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty with " #p " set to NULL"); } \
+		else if(!(p)[0]) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty with " #p"[0] set to 0"); } \
 		else ctest_assert_succeeded(__FILE__, __LINE__, #p); \
 	} while(0)
 
@@ -196,35 +196,25 @@
  * helper macros, not intended to be called directly.
  */
 
-#ifndef CTBECAUSE
-/*#define CTBECAUSE " failed because "*/
-#define CTBECAUSE " failed. "
-#endif
-
-
 /* If the expression returns false, it is printed in the failure message. */
 #define Assert(x) do { \
 		if(x) { ctest_assert_succeeded(__FILE__, __LINE__, #x); } \
 		else { ctest_assert_failed(__FILE__, __LINE__, #x); } \
 	} while(0)
 
-/* If the expression returns false, the given format string is printed.
- * This is the same as Assert, just with much more helpful error messages.
- * For instance: AssertFmt(isdigit(x), "isdigit but x=='%c'", x);
- */
-#define AssertFmt(x,...) do { \
-		if(x) { ctest_assert_succeeded(__FILE__, __LINE__, #x); } \
-		else { ctest_assert_failed(__FILE__, __LINE__, __VA_ARGS__); } \
+#define AssertArgs(x,str,arg1,arg2) do { \
+		if(x) { ctest_assert_succeeded_fmt(__FILE__, __LINE__, str, arg1, arg2); } \
+		else { ctest_assert_failed_fmt(__FILE__, __LINE__, str, arg1, arg2); } \
 	} while(0)
 
 
 #define AssertExpType(x,op,y,type,fmt) \
-	AssertFmt((type)(x) op (type)(y), #x" "#op" "#y CTBECAUSE \
-	#x"=="fmt" and "#y"=="fmt"!", (type)(x),(type)(y))
+	AssertArgs((type)(x) op (type)(y), #x" "#op" "#y " with " \
+	#x"="fmt" and "#y"="fmt, (type)(x), (type)(y))
 /* The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll */
 /* special-case checking against 0: "x==0 failed because x==1" */
 #define AssertExpToZero(x,op,type,fmt) \
-	AssertFmt((type)(x) op 0,#x" "#op" 0" CTBECAUSE #x"=="fmt"!", (type)(x))
+	AssertArgs((type)(x) op 0,#x" "#op" 0 with " #x"="fmt, (type)(x), NULL)
 
 
 #define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")
@@ -233,8 +223,8 @@
 #define AssertHexOpToZero(x,op) AssertExpToZero(x,op,long,"0x%lX")
 #define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		/* can't use %p because some libc print "0x" first and some don't */
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
-#define AssertStrOp(x,opn,op,y) AssertFmt(strcmp(x,y) op 0, \
-	#x" "#opn" "#y CTBECAUSE #x" is \"%s\" and "#y" is \"%s\"!",x,y)
+#define AssertStrOp(x,opn,op,y) AssertArgs(strcmp(x,y) op 0, \
+	#x" "#opn" "#y " with " #x"=\"%s\" and "#y"=\"%s\"",x,y)
 
 
 /* If you want to run the unit tests for these asserts before using

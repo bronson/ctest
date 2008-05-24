@@ -153,7 +153,7 @@ static void assert_succeeded(const char *file, int line, const char *assertion)
 	assertions_run += 1;
 	assertion_successes += 1;
 
-        test_print("%d. assert %s at %s:%d succeeded\n",
+        test_print("%d. assert %s at %s:%d: success\n",
 			assertions_run, assertion, file, line);
 }
 
@@ -162,16 +162,10 @@ static void assert_succeeded(const char *file, int line, const char *assertion)
  *  failed.  It bails out of the current test.
  */
 
-void ctest_assert_failed(const char *file, int line, const char *msg, ...)
+void ctest_assert_failed(const char *file, int line, const char *msg)
 {
-	va_list ap;
-	
 	if(!(test_head && test_head->inverted) || show_failures) {
-		fprintf(stderr, "%s:%d: assert ", file, line);
-		va_start(ap, msg);
-		vfprintf(stderr, msg, ap);
-		va_end(ap);
-		fputc('\n', stderr);
+		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
 	}
 	
 	if(!test_head) {
@@ -180,9 +174,9 @@ void ctest_assert_failed(const char *file, int line, const char *msg, ...)
 	}
 	
 	if(test_head->inverted) {
-		assert_succeeded(file, line, "(inverted)");
+		assert_succeeded(file, line, msg);
 	} else {
-		assert_failed(file, line, "(inverted)");
+		assert_failed(file, line, msg);
 	}
 }
 
@@ -194,6 +188,32 @@ void ctest_assert_succeeded(const char *file, int line, const char *assertion)
 	} else {
 		assert_succeeded(file, line, assertion);
 	}
+}
+
+
+void ctest_assert_failed_fmt(const char *file, int line, const char *msg, ...)
+{
+	va_list ap;
+	char buf[1024];
+
+	va_start(ap, msg);
+	vsnprintf(buf, sizeof(buf), msg, ap);
+	va_end(ap);
+
+	ctest_assert_failed(file, line, buf);
+}
+
+
+void ctest_assert_succeeded_fmt(const char *file, int line, const char *msg, ...)
+{
+	va_list ap;
+	char buf[1024];
+
+	va_start(ap, msg);
+	vsnprintf(buf, sizeof(buf), msg, ap);
+	va_end(ap);
+
+	ctest_assert_succeeded(file, line, buf);
 }
 
 
