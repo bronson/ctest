@@ -16,6 +16,10 @@
 #include <string.h>
 
 
+/* used to ensure assert macros don't evaluate their arguments more than once */
+int ctest_multi_calls;
+
+
 void test_assert_int()
 {
 	int a=4, b=3, c=4, z=0, n=-1;
@@ -256,7 +260,68 @@ void test_assert_strings()
 }
 
 
-int nested_assert()
+static void* multi_ptr()
+{
+	ctest_multi_calls += 1;
+	return ctest_multi_calls == 1 ? multi_ptr : NULL;
+}
+
+
+static void* multi_null()
+{
+	ctest_multi_calls += 1;
+	return ctest_multi_calls == 1 ? NULL : multi_null;
+}
+
+
+static const char *multi_str()
+{
+	ctest_multi_calls += 1;
+	return ctest_multi_calls == 1 ? "yep" : "";
+}
+
+
+static const char* multi_str_empty()
+{
+	ctest_multi_calls += 1;
+	return ctest_multi_calls == 1 ? "" : "nope";
+}
+
+
+/* This test makes sure that assert macros only evaluate their arguments once. */
+void test_assert_args()
+{
+	int i;
+
+	/* This takes care of everything handled by AssertExpType */
+	i=1;
+	AssertEQ(i++, 1);
+	i=1;
+	AssertEQ(++i, 2);
+
+	ctest_multi_calls = 0;
+	AssertPtr(multi_ptr());
+	AssertEQ(ctest_multi_calls, 1);
+
+	ctest_multi_calls = 0;
+	AssertNull(multi_null());
+	AssertEQ(ctest_multi_calls, 1);
+
+	ctest_multi_calls = 0;
+	AssertStrEQ(multi_str(), "yep");
+	AssertEQ(ctest_multi_calls, 1);
+
+	ctest_multi_calls = 0;
+	AssertStrEmpty(multi_str_empty());
+	AssertEQ(ctest_multi_calls, 1);
+
+	ctest_multi_calls = 0;
+	AssertStrNonEmpty(multi_str());
+	AssertEQ(ctest_multi_calls, 1);
+}
+
+
+static int nested_assert()
 {
 	AssertEqual(12, 12);
 	return 42;
@@ -283,6 +348,10 @@ void ctest_test_asserts()
 	
 	ctest_start("AssertStr") {
 		test_assert_strings();
+	}
+
+	ctest_start("AssertArgs") {
+		test_assert_args();
 	}
 
 	ctest_start("AssertNesting") {
