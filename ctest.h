@@ -127,18 +127,11 @@ struct ctest_jmp_wrapper {
 		} else for(; ctest_internal_test_finished(); )
 
 
-/** Indicates that an assertion has failed.
+/** Indicates that an assertion has been run with the given result.
  */
 
-void ctest_assert_failed(const char *file, int line, const char *msg);
-void ctest_assert_failed_fmt(const char *file, int line, const char *msg, ...);
-
-
-/** Indicates that an assertion has succeeded.
- */
-
-void ctest_assert_succeeded(const char *file, int line, const char *msg);
-void ctest_assert_succeeded_fmt(const char *file, int line, const char *msg, ...);
+void ctest_assert(int result, const char *file, int line, const char *msg);
+void ctest_assert_fmt(int result, const char *file, int line, const char *msg, ...);
 
 
 /* The following routines are not meant to be called directly; they are used

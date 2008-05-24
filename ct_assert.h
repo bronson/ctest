@@ -136,16 +136,16 @@
 
 /* ensures a string is non-null but zero-length */
 #define AssertStrEmpty(p) do { char *pv = (void*)(p); \
-		if(!(pv)) { ctest_assert_failed(__FILE__, __LINE__, #p" is empty with " #p " set to NULL"); } \
-		else if((pv)[0]) { ctest_assert_failed_fmt(__FILE__, __LINE__, #p " is empty with " #p " set to \"%s\"", pv, NULL); } \
-		else ctest_assert_succeeded_fmt(__FILE__, __LINE__, #p" is empty with " #p"[0]=0"); \
+		if(!(pv)) { ctest_assert(0, __FILE__, __LINE__, #p" is empty with " #p " set to NULL"); } \
+		else if((pv)[0]) { ctest_assert_fmt(0, __FILE__, __LINE__, #p " is empty with " #p " set to \"%s\"", pv, NULL); } \
+		else ctest_assert_fmt(1, __FILE__, __LINE__, #p" is empty with " #p"[0]=0"); \
 	} while(0)
 
 /* ensures a string is non-null and non-zero-length */
 #define AssertStrNonEmpty(p) do { char *pv = (void*)(p); \
-		if(!(pv)) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty with " #p " set to NULL"); } \
-		else if(!(pv)[0]) { ctest_assert_failed(__FILE__, __LINE__, #p" is nonempty with " #p"[0] set to 0"); } \
-		else ctest_assert_succeeded_fmt(__FILE__, __LINE__, #p"is empty with " #p " set to \"%s\"", pv, NULL); \
+		if(!(pv)) { ctest_assert(0, __FILE__, __LINE__, #p" is nonempty with " #p " set to NULL"); } \
+		else if(!(pv)[0]) { ctest_assert(0, __FILE__, __LINE__, #p" is nonempty with " #p"[0] set to 0"); } \
+		else ctest_assert_fmt(1, __FILE__, __LINE__, #p"is empty with " #p " set to \"%s\"", pv, NULL); \
 	} while(0)
 
 #define AssertStringEmpty(x) AssertStrEmpty(x)
@@ -234,13 +234,13 @@
 
 /* If the expression returns false, it is printed in the failure message. */
 #define Assert(x) do { \
-		if(x) { ctest_assert_succeeded(__FILE__, __LINE__, #x); } \
-		else { ctest_assert_failed(__FILE__, __LINE__, #x); } \
+		if(x) { ctest_assert(1, __FILE__, __LINE__, #x); } \
+		else { ctest_assert(0, __FILE__, __LINE__, #x); } \
 	} while(0)
 
 #define AssertArgs(x,str,arg1,arg2) do { \
-		if(x) { ctest_assert_succeeded_fmt(__FILE__, __LINE__, str, arg1, arg2); } \
-		else { ctest_assert_failed_fmt(__FILE__, __LINE__, str, arg1, arg2); } \
+		if(x) { ctest_assert_fmt(1, __FILE__, __LINE__, str, arg1, arg2); } \
+		else { ctest_assert_fmt(0, __FILE__, __LINE__, str, arg1, arg2); } \
 	} while(0)
 
 

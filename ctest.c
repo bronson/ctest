@@ -140,58 +140,33 @@ static void test_print(const char *fmt, ...)
 }
 
 
-static void assert_failed(const char *file, int line, const char *assertion)
+void ctest_assert(int result, const char *file, int line, const char *msg)
 {
-	assertions_run += 1;
-	assertion_failures += 1;
-	longjmp(test_head->jmp.jmp, 1);
-}
-
-
-static void assert_succeeded(const char *file, int line, const char *assertion)
-{
-	assertions_run += 1;
-	assertion_successes += 1;
-
-        test_print("%d. assert %s at %s:%d: success\n",
-			assertions_run, assertion, file, line);
-}
-
-
-/** This gets called if the assertion set up with ctest_assert_prepare()
- *  failed.  It bails out of the current test.
- */
-
-void ctest_assert_failed(const char *file, int line, const char *msg)
-{
-	if(!(test_head && test_head->inverted) || show_failures) {
+	if(!result && show_failures) {
 		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
 	}
-	
-	if(!test_head) {
-		/* Assert failed and wasn't wrapped in a test.  Bail immediatley. */
-		exit(1); /* 1 means a single test failed */
-	}
-	
-	if(test_head->inverted) {
-		assert_succeeded(file, line, msg);
+
+	if(test_head && test_head->inverted)
+		result = !result;
+
+	assertions_run += 1;
+	if(result) {
+		assertion_successes += 1;
+		test_print("%d. assert %s at %s:%d: success\n",
+				assertions_run, msg, file, line);
 	} else {
-		assert_failed(file, line, msg);
+		assertion_failures += 1;
+		if(test_head) {
+			/* longjump to abort this test */
+			longjmp(test_head->jmp.jmp, 1);
+		} else {
+			exit(1); /* 1 because a single test failed */
+		}
 	}
 }
 
 
-void ctest_assert_succeeded(const char *file, int line, const char *assertion)
-{
-	if(test_head && test_head->inverted) {
-		assert_failed(file, line, assertion);
-	} else {
-		assert_succeeded(file, line, assertion);
-	}
-}
-
-
-void ctest_assert_failed_fmt(const char *file, int line, const char *msg, ...)
+void ctest_assert_fmt(int result, const char *file, int line, const char *msg, ...)
 {
 	va_list ap;
 	char buf[1024];
@@ -200,20 +175,7 @@ void ctest_assert_failed_fmt(const char *file, int line, const char *msg, ...)
 	vsnprintf(buf, sizeof(buf), msg, ap);
 	va_end(ap);
 
-	ctest_assert_failed(file, line, buf);
-}
-
-
-void ctest_assert_succeeded_fmt(const char *file, int line, const char *msg, ...)
-{
-	va_list ap;
-	char buf[1024];
-
-	va_start(ap, msg);
-	vsnprintf(buf, sizeof(buf), msg, ap);
-	va_end(ap);
-
-	ctest_assert_succeeded(file, line, buf);
+	ctest_assert(result, file, line, buf);
 }
 
 
