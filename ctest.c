@@ -57,18 +57,16 @@
  */
 
 
-/** The number of tests that we have attempted. */
-static int tests_run = 0;
-/** The number of successful tests run. */
-static int test_successes = 0;
-/** The number of failed tests run. */
-static int test_failures = 0;
-/** The number of assertions that have been attempted. */
-static int assertions_run = 0;
-/** The number of assertions that have passed. */
-static int assertion_successes = 0;
-/** The number of assertions that have failed. */
-static int assertion_failures = 0;
+static struct {
+	/** The number of tests that we have attempted. */
+	int tests_run;
+	/** The number of successful tests run. */
+	int test_successes;
+	/** The number of failed tests run. */
+	int test_failures;
+	/** The number of assertions that have been attempted. */
+	int assertions_run;
+} metrics;
 
 
 /** Set this to 1 to print the failures.  This allows you to view the output of each failure to ensure it looks OK. */
@@ -149,13 +147,11 @@ void ctest_assert(int result, const char *file, int line, const char *msg)
 	if(test_head && test_head->inverted)
 		result = !result;
 
-	assertions_run += 1;
+	metrics.assertions_run += 1;
 	if(result) {
-		assertion_successes += 1;
 		test_print("%d. assert %s at %s:%d: success\n",
-				assertions_run, msg, file, line);
+				metrics.assertions_run, msg, file, line);
 	} else {
-		assertion_failures += 1;
 		if(test_head) {
 			/* longjump to abort this test */
 			longjmp(test_head->jmp.jmp, 1);
@@ -195,9 +191,9 @@ static void ctest_start_test(const char *name, const char *file, int line, const
 	test->finished = 0;
 	test->inverted = 0;
 	
-	tests_run += 1;
+	metrics.tests_run += 1;
 	test_print("t%d. starting %stest %s at %s:%d {\n",
-			tests_run, inv, name, file, line);
+			metrics.tests_run, inv, name, file, line);
 
 	test_push(test);
 }
@@ -227,9 +223,9 @@ void ctest_internal_test_jumped(const char *name)
 	}
 	
 	if(test_head->inverted) {
-		test_successes += 1;
+		metrics.test_successes += 1;
 	} else {
-		test_failures += 1;
+		metrics.test_failures += 1;
 	}
 
 	test_pop();
@@ -258,7 +254,7 @@ int ctest_internal_test_finished(const char *name)
 		return 1;
 	}
 	
-	test_successes += 1;
+	metrics.test_successes += 1;
 	test_pop();
 	test_print("}\n");
 
@@ -268,17 +264,17 @@ int ctest_internal_test_finished(const char *name)
 
 void print_ctest_results()
 {
-	if(test_failures == 0) {
+	if(metrics.test_failures == 0) {
 		printf("All OK.  %d test%s run, %d successe%s (%d assertion%s).\n",
-				tests_run, (tests_run == 1 ? "" : "s"),
-				test_successes, (test_successes == 1 ? "" : "s"),
-				assertions_run, (assertions_run == 1 ? "" : "s"));
+			metrics.tests_run, (metrics.tests_run == 1 ? "" : "s"),
+			metrics.test_successes, (metrics.test_successes == 1 ? "" : "s"),
+			metrics.assertions_run, (metrics.assertions_run == 1 ? "" : "s"));
 		return;
 	}
 
 	printf("ERROR: %d failure%s in %d test%s run!\n",
-			test_failures, (test_failures == 1 ? "" : "s"), 
-			tests_run, (tests_run == 1 ? "" : "s"));
+			metrics.test_failures, (metrics.test_failures == 1 ? "" : "s"), 
+			metrics.tests_run, (metrics.tests_run == 1 ? "" : "s"));
 }
 
 
@@ -290,7 +286,7 @@ void print_ctest_results()
 void ctest_exit()
 {
 	print_ctest_results();
-	exit(test_failures < 100 ? test_failures : 100);
+	exit(metrics.test_failures < 100 ? metrics.test_failures : 100);
 }
 
 

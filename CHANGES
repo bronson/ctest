@@ -1,6 +1,4 @@
 TODO:
-- It's lame that I need to declare the test function and start the test
-  separately.  Make a macro so I can just cunit_test(ints) { ... }
 - Create a prefs structure instead of just having globals scattered everywhere.
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
@@ -62,3 +60,10 @@ Version 0.62, 22 Jan 2007
 
 Version 0.61, 30 Apr 2006 
 - first version worth releasing
+
+
+Would be nice but might not happen:
+- It's lame that I need to declare the test function and start the test
+  separately.  Make a macro so I can just cunit_test(ints) { ... }
+  - I can't figure out an acceptable macro.  :(  It's especially hard
+    because the function and the for loop can't share the same '}'.
