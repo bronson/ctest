@@ -201,24 +201,6 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 }
 
 
-void ctest_internal_test_jumped(const char *name)
-{
-	if(!test_head) {
-		fprintf(stderr, "Internal jump error: somehow ctest_start didn't complete?\n");
-		exit(244);
-	}
-	
-	if(test_head->inverted) {
-		metrics.test_successes += 1;
-	} else {
-		metrics.test_failures += 1;
-	}
-
-	test_pop();
-	test_print("}\n");
-}
-
-
 /** Called when the test has been completed without longjumping.
  * 
  * Note that this does not automatically mean that the test has succeeded!
@@ -226,7 +208,7 @@ void ctest_internal_test_jumped(const char *name)
  * completion, that should be considered a failure.
  */
 
-int ctest_internal_test_finished(const char *name)
+int ctest_internal_finish_test(int failure)
 {
 	if(!test_head) {
 		/* how could we end up here without a test_head?? */
@@ -240,7 +222,12 @@ int ctest_internal_test_finished(const char *name)
 		return 1;
 	}
 	
-	metrics.test_successes += 1;
+	if(!failure || test_head->inverted) {
+		metrics.test_successes += 1;
+	} else {
+		metrics.test_failures += 1;
+	}
+
 	test_pop();
 	test_print("}\n");
 
@@ -255,12 +242,11 @@ void print_ctest_results()
 			metrics.tests_run, (metrics.tests_run == 1 ? "" : "s"),
 			metrics.test_successes, (metrics.test_successes == 1 ? "" : "s"),
 			metrics.assertions_run, (metrics.assertions_run == 1 ? "" : "s"));
-		return;
-	}
-
-	printf("ERROR: %d failure%s in %d test%s run!\n",
+	} else {
+		printf("ERROR: %d failure%s in %d test%s run!\n",
 			metrics.test_failures, (metrics.test_failures == 1 ? "" : "s"), 
 			metrics.tests_run, (metrics.tests_run == 1 ? "" : "s"));
+	}
 }
 
 

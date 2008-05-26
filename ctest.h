@@ -113,8 +113,8 @@ struct ctest_jmp_wrapper {
  */
 #define ctest_start(name) \
 	if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__, 0)->jmp)) { \
-		ctest_internal_test_jumped(); \
-	} else for(; ctest_internal_test_finished(); )
+		ctest_internal_finish_test(1); \
+	} else for(; ctest_internal_finish_test(0); )
 
 
 /** Starts a new test with reversed results.
@@ -129,8 +129,8 @@ struct ctest_jmp_wrapper {
 
 #define ctest_start_inverted(name) \
 	if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__, 1)->jmp)) { \
-		ctest_internal_test_jumped(); \
-	} else for(; ctest_internal_test_finished(); )
+		ctest_internal_finish_test(1); \
+	} else for(; ctest_internal_finish_test(0); )
 
 
 /** Indicates that an assertion has been run with the given result.
@@ -141,10 +141,9 @@ void ctest_assert_fmt(int result, const char *file, int line, const char *msg, .
 
 
 /* The following routines are not meant to be called directly; they are used
- * by the mutest_start() macro and highly subject to change.
+ * by the ctest_start() macro and always subject to change.
  */
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int inverted);
-void ctest_internal_test_jumped();
-int ctest_internal_test_finished();
+int ctest_internal_finish_test(int failure);
 
 #endif
