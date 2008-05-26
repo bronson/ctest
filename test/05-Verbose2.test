@@ -1,0 +1,175 @@
+# Makes sure even more verbose output works.  Also see the alternate test
+# that ensures -v -v does the same thing.
+
+$ctest -vv | SANITIZE
+
+STDOUT:
+1. assert 1 == 1 with 1=1 and 1=1 at main.c:NNN: success
+1. Running AssertInt at ctassert.c:NNN {
+  2. assert a == c with a=4 and c=4 at ctassert.c:NNN: success
+  3. assert a != b with a=4 and b=3 at ctassert.c:NNN: success
+  4. assert a > b with a=4 and b=3 at ctassert.c:NNN: success
+  5. assert a >= b with a=4 and b=3 at ctassert.c:NNN: success
+  6. assert a >= c with a=4 and c=4 at ctassert.c:NNN: success
+  7. assert b < a with b=3 and a=4 at ctassert.c:NNN: success
+  8. assert b <= a with b=3 and a=4 at ctassert.c:NNN: success
+  9. assert c <= a with c=4 and a=4 at ctassert.c:NNN: success
+  10. inverted assert a == b with a=4 and b=3 at ctassert.c:NNN: success
+  11. inverted assert a != c with a=4 and c=4 at ctassert.c:NNN: success
+  12. inverted assert a > c with a=4 and c=4 at ctassert.c:NNN: success
+  13. inverted assert b > c with b=3 and c=4 at ctassert.c:NNN: success
+  14. inverted assert b >= a with b=3 and a=4 at ctassert.c:NNN: success
+  15. inverted assert c < a with c=4 and a=4 at ctassert.c:NNN: success
+  16. inverted assert c < b with c=4 and b=3 at ctassert.c:NNN: success
+  17. inverted assert a <= b with a=4 and b=3 at ctassert.c:NNN: success
+  18. assert z == 0 with z=0 at ctassert.c:NNN: success
+  19. assert a != 0 with a=4 at ctassert.c:NNN: success
+  20. inverted assert a == 0 with a=4 at ctassert.c:NNN: success
+  21. inverted assert z != 0 with z=0 at ctassert.c:NNN: success
+  22. assert a > 0 with a=4 at ctassert.c:NNN: success
+  23. inverted assert z > 0 with z=0 at ctassert.c:NNN: success
+  24. inverted assert n > 0 with n=-1 at ctassert.c:NNN: success
+  25. assert n <= 0 with n=-1 at ctassert.c:NNN: success
+  26. assert z <= 0 with z=0 at ctassert.c:NNN: success
+  27. inverted assert a <= 0 with a=4 at ctassert.c:NNN: success
+  28. assert n < 0 with n=-1 at ctassert.c:NNN: success
+  29. inverted assert z < 0 with z=0 at ctassert.c:NNN: success
+  30. inverted assert a < 0 with a=4 at ctassert.c:NNN: success
+  31. assert a >= 0 with a=4 at ctassert.c:NNN: success
+  32. assert z >= 0 with z=0 at ctassert.c:NNN: success
+  33. inverted assert n >= 0 with n=-1 at ctassert.c:NNN: success
+}
+2. Running AssertHex at ctassert.c:NNN {
+  34. assert a == c with a=0xHEXDIGIT and c=0xHEXDIGIT at ctassert.c:NNN: success
+  35. assert a != b with a=0xHEXDIGIT and b=0xHEXDIGIT at ctassert.c:NNN: success
+  36. assert a > b with a=0xHEXDIGIT and b=0xHEXDIGIT at ctassert.c:NNN: success
+  37. assert a >= b with a=0xHEXDIGIT and b=0xHEXDIGIT at ctassert.c:NNN: success
+  38. assert a >= c with a=0xHEXDIGIT and c=0xHEXDIGIT at ctassert.c:NNN: success
+  39. assert b < a with b=0xHEXDIGIT and a=0xHEXDIGIT at ctassert.c:NNN: success
+  40. assert b <= a with b=0xHEXDIGIT and a=0xHEXDIGIT at ctassert.c:NNN: success
+  41. assert c <= a with c=0xHEXDIGIT and a=0xHEXDIGIT at ctassert.c:NNN: success
+  42. inverted assert a == b with a=0xHEXDIGIT and b=0xHEXDIGIT at ctassert.c:NNN: success
+  43. inverted assert a != c with a=0xHEXDIGIT and c=0xHEXDIGIT at ctassert.c:NNN: success
+  44. inverted assert a > c with a=0xHEXDIGIT and c=0xHEXDIGIT at ctassert.c:NNN: success
+  45. inverted assert b > c with b=0xHEXDIGIT and c=0xHEXDIGIT at ctassert.c:NNN: success
+  46. inverted assert b >= a with b=0xHEXDIGIT and a=0xHEXDIGIT at ctassert.c:NNN: success
+  47. inverted assert c < a with c=0xHEXDIGIT and a=0xHEXDIGIT at ctassert.c:NNN: success
+  48. inverted assert c < b with c=0xHEXDIGIT and b=0xHEXDIGIT at ctassert.c:NNN: success
+  49. inverted assert a <= b with a=0xHEXDIGIT and b=0xHEXDIGIT at ctassert.c:NNN: success
+  50. assert z == 0 with z=0xHEXDIGIT at ctassert.c:NNN: success
+  51. assert a != 0 with a=0xHEXDIGIT at ctassert.c:NNN: success
+  52. inverted assert a == 0 with a=0xHEXDIGIT at ctassert.c:NNN: success
+  53. inverted assert z != 0 with z=0xHEXDIGIT at ctassert.c:NNN: success
+  54. assert a > 0 with a=0xHEXDIGIT at ctassert.c:NNN: success
+  55. inverted assert z > 0 with z=0xHEXDIGIT at ctassert.c:NNN: success
+  56. inverted assert n > 0 with n=0xHEXDIGIT at ctassert.c:NNN: success
+  57. assert n <= 0 with n=0xHEXDIGIT at ctassert.c:NNN: success
+  58. assert z <= 0 with z=0xHEXDIGIT at ctassert.c:NNN: success
+  59. inverted assert a <= 0 with a=0xHEXDIGIT at ctassert.c:NNN: success
+  60. assert n < 0 with n=0xHEXDIGIT at ctassert.c:NNN: success
+  61. inverted assert z < 0 with z=0xHEXDIGIT at ctassert.c:NNN: success
+  62. inverted assert a < 0 with a=0xHEXDIGIT at ctassert.c:NNN: success
+  63. assert a >= 0 with a=0xHEXDIGIT at ctassert.c:NNN: success
+  64. assert z >= 0 with z=0xHEXDIGIT at ctassert.c:NNN: success
+  65. inverted assert n >= 0 with n=0xHEXDIGIT at ctassert.c:NNN: success
+}
+3. Running AssertPtr at ctassert.c:NNN {
+  66. assert ap != NULL with ap==0xHEXDIGIT! at ctassert.c:NNN: success
+  67. assert n == NULL with n==0xHEXDIGIT! at ctassert.c:NNN: success
+  68. inverted assert n != NULL with n==0xHEXDIGIT! at ctassert.c:NNN: success
+  69. inverted assert ap == NULL with ap==0xHEXDIGIT! at ctassert.c:NNN: success
+  70. assert ap == cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT at ctassert.c:NNN: success
+  71. assert ap != bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT at ctassert.c:NNN: success
+  72. assert ap > bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT at ctassert.c:NNN: success
+  73. assert ap >= bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT at ctassert.c:NNN: success
+  74. assert ap >= cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT at ctassert.c:NNN: success
+  75. assert bp < ap with bp=0xHEXDIGIT and ap=0xHEXDIGIT at ctassert.c:NNN: success
+  76. assert bp <= ap with bp=0xHEXDIGIT and ap=0xHEXDIGIT at ctassert.c:NNN: success
+  77. assert cp <= ap with cp=0xHEXDIGIT and ap=0xHEXDIGIT at ctassert.c:NNN: success
+  78. inverted assert ap == bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT at ctassert.c:NNN: success
+  79. inverted assert ap != cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT at ctassert.c:NNN: success
+  80. inverted assert ap > cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT at ctassert.c:NNN: success
+  81. inverted assert bp > cp with bp=0xHEXDIGIT and cp=0xHEXDIGIT at ctassert.c:NNN: success
+  82. inverted assert bp >= ap with bp=0xHEXDIGIT and ap=0xHEXDIGIT at ctassert.c:NNN: success
+  83. inverted assert cp < ap with cp=0xHEXDIGIT and ap=0xHEXDIGIT at ctassert.c:NNN: success
+  84. inverted assert cp < bp with cp=0xHEXDIGIT and bp=0xHEXDIGIT at ctassert.c:NNN: success
+  85. inverted assert ap <= bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT at ctassert.c:NNN: success
+}
+4. Running AssertFloat at ctassert.c:NNN {
+  86. assert a == c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  87. assert a != b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  88. assert a > b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  89. assert a >= b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  90. assert a >= c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  91. assert b < a with b=0.000300 and a=0.000400 at ctassert.c:NNN: success
+  92. assert b <= a with b=0.000300 and a=0.000400 at ctassert.c:NNN: success
+  93. assert c <= a with c=0.000400 and a=0.000400 at ctassert.c:NNN: success
+  94. inverted assert a == b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  95. inverted assert a != c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  96. inverted assert a > c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  97. inverted assert b > c with b=0.000300 and c=0.000400 at ctassert.c:NNN: success
+  98. inverted assert b >= a with b=0.000300 and a=0.000400 at ctassert.c:NNN: success
+  99. inverted assert c < a with c=0.000400 and a=0.000400 at ctassert.c:NNN: success
+  100. inverted assert c < b with c=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  101. inverted assert a <= b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  102. assert a == c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  103. assert a != b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  104. assert a > b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  105. assert a >= b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  106. assert a >= c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  107. assert b < a with b=0.000300 and a=0.000400 at ctassert.c:NNN: success
+  108. assert b <= a with b=0.000300 and a=0.000400 at ctassert.c:NNN: success
+  109. assert c <= a with c=0.000400 and a=0.000400 at ctassert.c:NNN: success
+  110. inverted assert a == b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  111. inverted assert a != c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  112. inverted assert a > c with a=0.000400 and c=0.000400 at ctassert.c:NNN: success
+  113. inverted assert b > c with b=0.000300 and c=0.000400 at ctassert.c:NNN: success
+  114. inverted assert b >= a with b=0.000300 and a=0.000400 at ctassert.c:NNN: success
+  115. inverted assert c < a with c=0.000400 and a=0.000400 at ctassert.c:NNN: success
+  116. inverted assert c < b with c=0.000400 and b=0.000300 at ctassert.c:NNN: success
+  117. inverted assert a <= b with a=0.000400 and b=0.000300 at ctassert.c:NNN: success
+}
+5. Running AssertStr at ctassert.c:NNN {
+  118. assert a eq c with a="Bogozity" and c="Bogozity" at ctassert.c:NNN: success
+  119. assert a ne b with a="Bogozity" and b="Arclamp" at ctassert.c:NNN: success
+  120. assert a gt b with a="Bogozity" and b="Arclamp" at ctassert.c:NNN: success
+  121. assert a ge b with a="Bogozity" and b="Arclamp" at ctassert.c:NNN: success
+  122. assert a ge c with a="Bogozity" and c="Bogozity" at ctassert.c:NNN: success
+  123. assert b lt a with b="Arclamp" and a="Bogozity" at ctassert.c:NNN: success
+  124. assert b le a with b="Arclamp" and a="Bogozity" at ctassert.c:NNN: success
+  125. assert c le a with c="Bogozity" and a="Bogozity" at ctassert.c:NNN: success
+  126. inverted assert a eq b with a="Bogozity" and b="Arclamp" at ctassert.c:NNN: success
+  127. inverted assert a ne c with a="Bogozity" and c="Bogozity" at ctassert.c:NNN: success
+  128. inverted assert a gt c with a="Bogozity" and c="Bogozity" at ctassert.c:NNN: success
+  129. inverted assert b gt c with b="Arclamp" and c="Bogozity" at ctassert.c:NNN: success
+  130. inverted assert b ge a with b="Arclamp" and a="Bogozity" at ctassert.c:NNN: success
+  131. inverted assert c lt a with c="Bogozity" and a="Bogozity" at ctassert.c:NNN: success
+  132. inverted assert c lt b with c="Bogozity" and b="Arclamp" at ctassert.c:NNN: success
+  133. inverted assert a le b with a="Bogozity" and b="Arclamp" at ctassert.c:NNN: success
+  134. assert e is empty with e[0]=0 at ctassert.c:NNN: success
+  135. inverted assert a is empty with a set to "Bogozity" at ctassert.c:NNN: success
+  136. inverted assert n is empty with n set to NULL at ctassert.c:NNN: success
+  137. assert ais empty with a set to "Bogozity" at ctassert.c:NNN: success
+  138. inverted assert e is nonempty with e[0] set to 0 at ctassert.c:NNN: success
+  139. inverted assert n is nonempty with n set to NULL at ctassert.c:NNN: success
+}
+6. Running AssertArgs at ctassert.c:NNN {
+  140. assert i++ == 1 with i++=1 and 1=1 at ctassert.c:NNN: success
+  141. assert ++i == 2 with ++i=2 and 2=2 at ctassert.c:NNN: success
+  142. assert multi_ptr() != NULL with multi_ptr()==0xHEXDIGIT! at ctassert.c:NNN: success
+  143. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+  144. assert multi_null() == NULL with multi_null()==0xHEXDIGIT! at ctassert.c:NNN: success
+  145. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+  146. assert multi_str() eq "yep" with multi_str()="yep" and "yep"="yep" at ctassert.c:NNN: success
+  147. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+  148. assert multi_str_empty() is empty with multi_str_empty()[0]=0 at ctassert.c:NNN: success
+  149. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+  150. assert multi_str()is empty with multi_str() set to "yep" at ctassert.c:NNN: success
+  151. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+}
+7. Running AssertNesting at ctassert.c:NNN {
+  152. assert 12 == 12 with 12=12 and 12=12 at ctassert.c:NNN: success
+  153. assert 12 == 12 with 12=12 and 12=12 at ctassert.c:NNN: success
+  154. assert nested_assert() == nested_assert() with nested_assert()=42 and nested_assert()=42 at ctassert.c:NNN: success
+}
+All OK.  7 tests run, 7 successes (154 assertions).

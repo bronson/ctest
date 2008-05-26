@@ -12,82 +12,77 @@
 # # $tmtest --show-unit-fails > >(sed s/0x[A-Z0-9][A-Z0-9]*/0xHEXDIGIT/g) 2>&1
 
 
-$ctest --show-failures 2>&1 | \
-	sed s/0x[A-Fa-f0-9][A-Fa-f0-9]*/0xHEXDIGIT/g | \
-	sed s/^.*\\.c:[0-9]\*:/test.c:NNN:/
-	# first sed: hide all hex digits: 0xDECAFBAD
-	# second sed: hide filename and line numbers
-
+$ctest --show-failures 2>&1 | SANITIZE
 
 STDOUT:
-test.c:NNN: assert failed: a == b with a=4 and b=3!
-test.c:NNN: assert failed: a != c with a=4 and c=4!
-test.c:NNN: assert failed: a > c with a=4 and c=4!
-test.c:NNN: assert failed: b > c with b=3 and c=4!
-test.c:NNN: assert failed: b >= a with b=3 and a=4!
-test.c:NNN: assert failed: c < a with c=4 and a=4!
-test.c:NNN: assert failed: c < b with c=4 and b=3!
-test.c:NNN: assert failed: a <= b with a=4 and b=3!
-test.c:NNN: assert failed: a == 0 with a=4!
-test.c:NNN: assert failed: z != 0 with z=0!
-test.c:NNN: assert failed: z > 0 with z=0!
-test.c:NNN: assert failed: n > 0 with n=-1!
-test.c:NNN: assert failed: a <= 0 with a=4!
-test.c:NNN: assert failed: z < 0 with z=0!
-test.c:NNN: assert failed: a < 0 with a=4!
-test.c:NNN: assert failed: n >= 0 with n=-1!
-test.c:NNN: assert failed: a == b with a=0xHEXDIGIT and b=0xHEXDIGIT!
-test.c:NNN: assert failed: a != c with a=0xHEXDIGIT and c=0xHEXDIGIT!
-test.c:NNN: assert failed: a > c with a=0xHEXDIGIT and c=0xHEXDIGIT!
-test.c:NNN: assert failed: b > c with b=0xHEXDIGIT and c=0xHEXDIGIT!
-test.c:NNN: assert failed: b >= a with b=0xHEXDIGIT and a=0xHEXDIGIT!
-test.c:NNN: assert failed: c < a with c=0xHEXDIGIT and a=0xHEXDIGIT!
-test.c:NNN: assert failed: c < b with c=0xHEXDIGIT and b=0xHEXDIGIT!
-test.c:NNN: assert failed: a <= b with a=0xHEXDIGIT and b=0xHEXDIGIT!
-test.c:NNN: assert failed: a == 0 with a=0xHEXDIGIT!
-test.c:NNN: assert failed: z != 0 with z=0xHEXDIGIT!
-test.c:NNN: assert failed: z > 0 with z=0xHEXDIGIT!
-test.c:NNN: assert failed: n > 0 with n=0xHEXDIGIT!
-test.c:NNN: assert failed: a <= 0 with a=0xHEXDIGIT!
-test.c:NNN: assert failed: z < 0 with z=0xHEXDIGIT!
-test.c:NNN: assert failed: a < 0 with a=0xHEXDIGIT!
-test.c:NNN: assert failed: n >= 0 with n=0xHEXDIGIT!
-test.c:NNN: assert failed: n != NULL with n==0xHEXDIGIT!!
-test.c:NNN: assert failed: ap == NULL with ap==0xHEXDIGIT!!
-test.c:NNN: assert failed: ap == bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT!
-test.c:NNN: assert failed: ap != cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT!
-test.c:NNN: assert failed: ap > cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT!
-test.c:NNN: assert failed: bp > cp with bp=0xHEXDIGIT and cp=0xHEXDIGIT!
-test.c:NNN: assert failed: bp >= ap with bp=0xHEXDIGIT and ap=0xHEXDIGIT!
-test.c:NNN: assert failed: cp < ap with cp=0xHEXDIGIT and ap=0xHEXDIGIT!
-test.c:NNN: assert failed: cp < bp with cp=0xHEXDIGIT and bp=0xHEXDIGIT!
-test.c:NNN: assert failed: ap <= bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT!
-test.c:NNN: assert failed: a == b with a=0.000400 and b=0.000300!
-test.c:NNN: assert failed: a != c with a=0.000400 and c=0.000400!
-test.c:NNN: assert failed: a > c with a=0.000400 and c=0.000400!
-test.c:NNN: assert failed: b > c with b=0.000300 and c=0.000400!
-test.c:NNN: assert failed: b >= a with b=0.000300 and a=0.000400!
-test.c:NNN: assert failed: c < a with c=0.000400 and a=0.000400!
-test.c:NNN: assert failed: c < b with c=0.000400 and b=0.000300!
-test.c:NNN: assert failed: a <= b with a=0.000400 and b=0.000300!
-test.c:NNN: assert failed: a == b with a=0.000400 and b=0.000300!
-test.c:NNN: assert failed: a != c with a=0.000400 and c=0.000400!
-test.c:NNN: assert failed: a > c with a=0.000400 and c=0.000400!
-test.c:NNN: assert failed: b > c with b=0.000300 and c=0.000400!
-test.c:NNN: assert failed: b >= a with b=0.000300 and a=0.000400!
-test.c:NNN: assert failed: c < a with c=0.000400 and a=0.000400!
-test.c:NNN: assert failed: c < b with c=0.000400 and b=0.000300!
-test.c:NNN: assert failed: a <= b with a=0.000400 and b=0.000300!
-test.c:NNN: assert failed: a eq b with a="Bogozity" and b="Arclamp"!
-test.c:NNN: assert failed: a ne c with a="Bogozity" and c="Bogozity"!
-test.c:NNN: assert failed: a gt c with a="Bogozity" and c="Bogozity"!
-test.c:NNN: assert failed: b gt c with b="Arclamp" and c="Bogozity"!
-test.c:NNN: assert failed: b ge a with b="Arclamp" and a="Bogozity"!
-test.c:NNN: assert failed: c lt a with c="Bogozity" and a="Bogozity"!
-test.c:NNN: assert failed: c lt b with c="Bogozity" and b="Arclamp"!
-test.c:NNN: assert failed: a le b with a="Bogozity" and b="Arclamp"!
-test.c:NNN: assert failed: a is empty with a set to "Bogozity"!
-test.c:NNN: assert failed: n is empty with n set to NULL!
-test.c:NNN: assert failed: e is nonempty with e[0] set to 0!
-test.c:NNN: assert failed: n is nonempty with n set to NULL!
+ctassert.c:NNN: assert failed: a == b with a=4 and b=3!
+ctassert.c:NNN: assert failed: a != c with a=4 and c=4!
+ctassert.c:NNN: assert failed: a > c with a=4 and c=4!
+ctassert.c:NNN: assert failed: b > c with b=3 and c=4!
+ctassert.c:NNN: assert failed: b >= a with b=3 and a=4!
+ctassert.c:NNN: assert failed: c < a with c=4 and a=4!
+ctassert.c:NNN: assert failed: c < b with c=4 and b=3!
+ctassert.c:NNN: assert failed: a <= b with a=4 and b=3!
+ctassert.c:NNN: assert failed: a == 0 with a=4!
+ctassert.c:NNN: assert failed: z != 0 with z=0!
+ctassert.c:NNN: assert failed: z > 0 with z=0!
+ctassert.c:NNN: assert failed: n > 0 with n=-1!
+ctassert.c:NNN: assert failed: a <= 0 with a=4!
+ctassert.c:NNN: assert failed: z < 0 with z=0!
+ctassert.c:NNN: assert failed: a < 0 with a=4!
+ctassert.c:NNN: assert failed: n >= 0 with n=-1!
+ctassert.c:NNN: assert failed: a == b with a=0xHEXDIGIT and b=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a != c with a=0xHEXDIGIT and c=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a > c with a=0xHEXDIGIT and c=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: b > c with b=0xHEXDIGIT and c=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: b >= a with b=0xHEXDIGIT and a=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: c < a with c=0xHEXDIGIT and a=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: c < b with c=0xHEXDIGIT and b=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a <= b with a=0xHEXDIGIT and b=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a == 0 with a=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: z != 0 with z=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: z > 0 with z=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: n > 0 with n=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a <= 0 with a=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: z < 0 with z=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a < 0 with a=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: n >= 0 with n=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: n != NULL with n==0xHEXDIGIT!!
+ctassert.c:NNN: assert failed: ap == NULL with ap==0xHEXDIGIT!!
+ctassert.c:NNN: assert failed: ap == bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: ap != cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: ap > cp with ap=0xHEXDIGIT and cp=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: bp > cp with bp=0xHEXDIGIT and cp=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: bp >= ap with bp=0xHEXDIGIT and ap=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: cp < ap with cp=0xHEXDIGIT and ap=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: cp < bp with cp=0xHEXDIGIT and bp=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: ap <= bp with ap=0xHEXDIGIT and bp=0xHEXDIGIT!
+ctassert.c:NNN: assert failed: a == b with a=0.000400 and b=0.000300!
+ctassert.c:NNN: assert failed: a != c with a=0.000400 and c=0.000400!
+ctassert.c:NNN: assert failed: a > c with a=0.000400 and c=0.000400!
+ctassert.c:NNN: assert failed: b > c with b=0.000300 and c=0.000400!
+ctassert.c:NNN: assert failed: b >= a with b=0.000300 and a=0.000400!
+ctassert.c:NNN: assert failed: c < a with c=0.000400 and a=0.000400!
+ctassert.c:NNN: assert failed: c < b with c=0.000400 and b=0.000300!
+ctassert.c:NNN: assert failed: a <= b with a=0.000400 and b=0.000300!
+ctassert.c:NNN: assert failed: a == b with a=0.000400 and b=0.000300!
+ctassert.c:NNN: assert failed: a != c with a=0.000400 and c=0.000400!
+ctassert.c:NNN: assert failed: a > c with a=0.000400 and c=0.000400!
+ctassert.c:NNN: assert failed: b > c with b=0.000300 and c=0.000400!
+ctassert.c:NNN: assert failed: b >= a with b=0.000300 and a=0.000400!
+ctassert.c:NNN: assert failed: c < a with c=0.000400 and a=0.000400!
+ctassert.c:NNN: assert failed: c < b with c=0.000400 and b=0.000300!
+ctassert.c:NNN: assert failed: a <= b with a=0.000400 and b=0.000300!
+ctassert.c:NNN: assert failed: a eq b with a="Bogozity" and b="Arclamp"!
+ctassert.c:NNN: assert failed: a ne c with a="Bogozity" and c="Bogozity"!
+ctassert.c:NNN: assert failed: a gt c with a="Bogozity" and c="Bogozity"!
+ctassert.c:NNN: assert failed: b gt c with b="Arclamp" and c="Bogozity"!
+ctassert.c:NNN: assert failed: b ge a with b="Arclamp" and a="Bogozity"!
+ctassert.c:NNN: assert failed: c lt a with c="Bogozity" and a="Bogozity"!
+ctassert.c:NNN: assert failed: c lt b with c="Bogozity" and b="Arclamp"!
+ctassert.c:NNN: assert failed: a le b with a="Bogozity" and b="Arclamp"!
+ctassert.c:NNN: assert failed: a is empty with a set to "Bogozity"!
+ctassert.c:NNN: assert failed: n is empty with n set to NULL!
+ctassert.c:NNN: assert failed: e is nonempty with e[0] set to 0!
+ctassert.c:NNN: assert failed: n is nonempty with n set to NULL!
 All OK.  7 tests run, 7 successes (154 assertions).

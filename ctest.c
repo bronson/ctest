@@ -131,10 +131,12 @@ void ctest_assert(int success, const char *file, int line, const char *msg)
 
 	metrics.assertions_run += 1;
 	if(success) {
-		if(ctest_preferences.verbosity >= 1) {
+		if(ctest_preferences.verbosity >= 2) {
 			print_test_indentation();
-			printf("%d. assert %s at %s:%d: success\n",
-					metrics.assertions_run, msg, file, line);
+			printf("%d. %sassert %s at %s:%d: success\n",
+				metrics.assertions_run, 
+				ctest_preferences.inverted ? "inverted " : "",
+				msg, file, line);
 		}
 	} else {
 		if(test_head) {
@@ -181,8 +183,9 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 	metrics.tests_run += 1;
 	if(ctest_preferences.verbosity >= 1) {
 		print_test_indentation();
-		printf("t%d. starting test %s at %s:%d {\n",
-			metrics.tests_run, name, file, line);
+		printf("%d. Running %s at %s:%d%s\n",
+			metrics.tests_run, name, file, line,
+			ctest_preferences.verbosity >= 2 ? " {" : "");
 	}
 
 	test_push(test);
@@ -212,7 +215,7 @@ int ctest_internal_finish_test(int success)
 
 	test_pop();
 
-	if(ctest_preferences.verbosity >= 1) {
+	if(ctest_preferences.verbosity >= 2) {
 		print_test_indentation();
 		printf("}\n");
 	}

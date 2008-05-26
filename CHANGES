@@ -2,9 +2,6 @@ TODO:
 - I hate ctest_start.  Is there any way to declare a function as a
   unit test, allow nesting, and allocate everything on the stack?
 - Don't malloc on every test.  Keep a cache or something.
-- -v 0: just print the one-line result (the default)
-  -v 1: print the names of the tests that are being run and their results.
-  -v 2: print the asserts that are being run as well.
 - Get rid of the vsprintf potential buffer overflow (and stdarg?).
 - Optionally install signal handlers.  int/fp /0 and bus errors.
   Can we recover just like we do for failed asserts?

@@ -1,0 +1,13 @@
+# Ensures slightly more verbose output is correct.
+
+$ctest -v | SANITIZE
+
+STDOUT:
+1. Running AssertInt at ctassert.c:NNN
+2. Running AssertHex at ctassert.c:NNN
+3. Running AssertPtr at ctassert.c:NNN
+4. Running AssertFloat at ctassert.c:NNN
+5. Running AssertStr at ctassert.c:NNN
+6. Running AssertArgs at ctassert.c:NNN
+7. Running AssertNesting at ctassert.c:NNN
+All OK.  7 tests run, 7 successes (154 assertions).
