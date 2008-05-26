@@ -69,20 +69,6 @@ void ctest_exit();
 int ctest_should_run_tests(int argc, char **argv);
 
 
-
-/** ctest's built-in test suite.
- *
- * This allows you to call ctest's unit test suite from your application's
- * test suites.  This lets you ensure that ctest's unit tests pass
- * before running your application's.
- *
- * Well, there is one test that cannot be run if you do this:
- * ensuring that ctest properly handles empty test suites.
- */
-
-void ctest_run_unit_tests();
-
-
 /* This is sad: because there are setjmp implementations that store jmp_buf
  * as an array instead of a struct, I have to wrap it in a struct to be able
  * to reliably pass the whole thing between functions.
