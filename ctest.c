@@ -112,27 +112,13 @@ static void test_pop()
 }
 
 
-/**
- * Print information about the running tests and assertions.
- */
-
-static void test_print(const char *fmt, ...)
+static void print_test_indentation()
 {
-	va_list ap;
 	struct test *test;
-	
-	if(!ctest_preferences.verbosity) {
-		return;
-	}
-	
-	/* print indentation */
+
 	for(test=test_head; test; test=test->next) {
-		fprintf(stderr, "  ");
+		printf("  ");
 	}
-	
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	va_end(ap);
 }
 
 
@@ -147,8 +133,11 @@ void ctest_assert(int result, const char *file, int line, const char *msg)
 
 	metrics.assertions_run += 1;
 	if(result) {
-		test_print("%d. assert %s at %s:%d: success\n",
-				metrics.assertions_run, msg, file, line);
+		if(ctest_preferences.verbosity >= 1) {
+			print_test_indentation();
+			printf("%d. assert %s at %s:%d: success\n",
+					metrics.assertions_run, msg, file, line);
+		}
 	} else {
 		if(test_head) {
 			/* longjump to abort this test */
@@ -193,8 +182,11 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 	test->inverted = inverted;
 	
 	metrics.tests_run += 1;
-	test_print("t%d. starting %stest %s at %s:%d {\n",
-		metrics.tests_run, inverted ? "inverted " : "", name, file, line);
+	if(ctest_preferences.verbosity >= 1) {
+		print_test_indentation();
+		printf("t%d. starting %stest %s at %s:%d {\n",
+			metrics.tests_run, inverted ? "inverted " : "", name, file, line);
+	}
 
 	test_push(test);
 	return &test_head->jmp;
@@ -229,7 +221,11 @@ int ctest_internal_finish_test(int failure)
 	}
 
 	test_pop();
-	test_print("}\n");
+
+	if(ctest_preferences.verbosity >= 1) {
+		print_test_indentation();
+		printf("}\n");
+	}
 
 	return 0;
 }
