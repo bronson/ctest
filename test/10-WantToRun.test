@@ -1,0 +1,13 @@
+# Ensures that ctest_read_args return true when the user
+# explicitly asks to start the unit test.
+
+$ctest --ctest
+echo :--:
+$ctest --run-unit-tests
+
+STDOUT:
+ctest_read_args returned true!
+All OK.  7 tests run, 7 successes (154 assertions).
+:--:
+ctest_read_args returned true!
+All OK.  7 tests run, 7 successes (154 assertions).

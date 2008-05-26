@@ -17,10 +17,8 @@
 
 int main(int argc, char **argv)
 {
-	if(argc > 1) {
-		/* "ctest -f" prints all the failures in the ctest unit tests. */
-		/* This allows you to check the output of each macro. */
-		ctest_preferences.show_failures = 1;
+	if(ctest_read_args(argc, argv)) {
+		printf("ctest_read_args returned true!\n");
 	}
 
 	/* Ensure that we can hit asserts without first calling ctest_start. */

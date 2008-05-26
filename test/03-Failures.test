@@ -12,7 +12,7 @@
 # # $tmtest --show-unit-fails > >(sed s/0x[A-Z0-9][A-Z0-9]*/0xHEXDIGIT/g) 2>&1
 
 
-$ctest -f 2>&1 | \
+$ctest --show-failures 2>&1 | \
 	sed s/0x[A-Fa-f0-9][A-Fa-f0-9]*/0xHEXDIGIT/g | \
 	sed s/^.*\\.c:[0-9]\*:/test.c:NNN:/
 	# first sed: hide all hex digits: 0xDECAFBAD

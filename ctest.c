@@ -248,23 +248,53 @@ void ctest_exit()
 }
 
 
-/**
- * Examines the command-line arguments.  If "--run-unit-tests" is
- * the first argument, then it runs the unit tests (further arguments
- * may affect how the tests are processed).  This routine exits with
- * a nonzero result code if any test fails; otherwise it exits with 0.
- * It never returns.
+/** Parses command-line arguments into ctest_preferences. 
+ * 
+ * Intended to be called before your application's command-line handling.
  *
- * If --run-unit-tests is not on the command line, this routine returns
- * without doing anything.
+ * Returns true if the user specified that unit tests should be run,
+ * false if not.  Feel free to ignore the function result and implement
+ * your own way of deciding whether or not to run the tests.
+ *
+ * Arguments:
+ *  * --ctest, --run-unit-tests: run unit tests and exit instead of starting the app.
+ *  * -v: be more verbose.  Specify multiple to increase the verbosity.
+ *  * --show-failures: print the output when inverted tests fail.
+ *        Allows you to see ctest's output for failing tests.
+ *
+ * NOTE: this routine does not display any errors.  If you mis-type, the
+ * argument will be silently ignored.
  */
 
-int ctest_should_run_tests(int argc, char **argv)
+int ctest_read_args(int argc, char **argv)
 {
-	if(argc > 1 && strcmp(argv[1],"--run-unit-tests") == 0) {
-		return 1;
+	char *curarg;
+	int return_value = 0;
+
+	/* Don't use getopt because it's not on very many platforms.
+	 * Just do something super-simple.
+	 */
+	while(argc--) {
+		curarg = *argv++;
+
+		if(strcmp(curarg, "--ctest") == 0 ||
+		   strcmp(curarg, "--run-unit-tests") == 0) {
+			return_value = 1;
+		} else if(strcmp(curarg, "--show-failures") == 0) {
+			ctest_preferences.show_failures = 1;
+		} else if(*curarg == '-') {
+			switch(*++curarg) {
+			case 'v':
+				while(*curarg++ == 'v')
+					ctest_preferences.verbosity += 1;
+				break;
+			default: ; /* do nothing */
+			}
+		} else {
+			/* unknown argument */
+		}
 	}
 
-	return 0;
+	return return_value;
 }
 

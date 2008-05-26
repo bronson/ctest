@@ -66,7 +66,7 @@ void ctest_exit();
  *  should be run or not.
  */
 
-int ctest_read_args(int argc, const char **argv);
+int ctest_read_args(int argc, char **argv);
 
 
 /* This is sad: because there are setjmp implementations that store jmp_buf
