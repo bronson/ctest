@@ -1,4 +1,6 @@
 TODO:
+- I hate ctest_start.  Is there any way to declare a function as a
+  unit test, allow nesting, and allocate everything on the stack?
 - Add routine to parse cmdline args.
   --test will initiate unit testing (optional arg).
      --list lists unit tests,

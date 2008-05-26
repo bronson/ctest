@@ -12,7 +12,7 @@
  * See http://www.opensource.org/licenses/mit-license.php
  */
 
-#include "ct_assert.h"
+#include "ctassert.h"
 #include <string.h>
 
 
@@ -332,7 +332,7 @@ static int nested_assert()
 }
 
 
-void ctest_test_asserts()
+void run_ctassert_tests()
 {
 	ctest_start("AssertInt") {
 		test_assert_int();

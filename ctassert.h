@@ -1,4 +1,4 @@
-/* ct_assert.h
+/* ctassert.h
  * Scott Bronson
  * 6 Mar 2006
  *
@@ -8,7 +8,7 @@
  */
 
 
-/* @file ct_assert.h
+/* @file ctassert.h
  *
  * This file provides CamelCase Assert macros:
  * 
@@ -269,7 +269,7 @@
  * them in your own test deck, call this function.  That should reduces
  * any chance an upgrade or compiler issues will silently break them.
  */
-extern void ctest_test_asserts();
+extern void run_ctassert_tests();
 
 
 #endif

@@ -12,8 +12,7 @@
  */
 
 #include "ctest.h"
-
-#include "ct_assert.h"
+#include "ctassert.h"
 
 
 int main(int argc, char **argv)
@@ -27,12 +26,8 @@ int main(int argc, char **argv)
 	/* Ensure that we can hit asserts without first calling ctest_start. */
 	AssertEQ(1,1);
 
-	/* TODO: write a test to fork and make sure that a failing
-	 * assert causes the app to exit immediately.
-	 */
-
 	/* Run unit tests for all assert files we know about */
-	ctest_test_asserts();
+	run_ctassert_tests();
 
 	ctest_exit();
 	

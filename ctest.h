@@ -20,13 +20,10 @@
  * 
  * <pre>
  * 	$ make
- *  cc -g -Wall -Werror ctest.c main.c ctest_tests.c -o ctest
+ *  cc -g -Wall -Werror ctest.c main.c ctassert.c -o ctest
  * 	$ ./ctest
  * 	4 tests run, 4 successes (132 assertions).
  * </pre>
- *
- * See ::ctest_tests for instructions on how to add ctest's
- * built-in unit tests to your application's test suite.
  */
 
 
@@ -60,16 +57,16 @@ extern struct ctest_preferences {
 void ctest_exit();
 
 
-/** Determines if user wants to run unit tests.  Returns 1 if unit
- * tests should be run, 0 if not.  Feel free to ignore this routine
- * and make your own decision on whether to run the unit tests.
+/** This routine parses all the arguments in argv and fills in
+ *  ::ctest_preferences appropriately.
  *
- * If the first arg passed to your program is "--run-unit-tests", this 
- * function return true.  It may also parse subsequent argumets to
- * determine how to run the tests and set run-time flags appropriately.
+ *  If this routine notices a --run-unit-tests argument, it returns true
+ *  suggesting that unit tests should be run.  Feel free to ignore this
+ *  result and implement some other way of deciding whether unit tests
+ *  should be run or not.
  */
 
-int ctest_should_run_tests(int argc, char **argv);
+int ctest_read_args(int argc, const char **argv);
 
 
 /* This is sad: because there are setjmp implementations that store jmp_buf
