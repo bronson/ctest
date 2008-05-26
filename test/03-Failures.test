@@ -90,4 +90,4 @@ test.c:NNN: assert failed: a is empty with a set to "Bogozity"!
 test.c:NNN: assert failed: n is empty with n set to NULL!
 test.c:NNN: assert failed: e is nonempty with e[0] set to 0!
 test.c:NNN: assert failed: n is nonempty with n set to NULL!
-All OK.  26 tests run, 26 successes (154 assertions).
+All OK.  7 tests run, 7 successes (154 assertions).

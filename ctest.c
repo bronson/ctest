@@ -81,8 +81,6 @@ struct test {
 	const char *name;
 	/** True if we've already run the test in its entirety, false if not.  Needed because ctest_internal_test_finished() must be called twice: once when the test block is entered, and once when the block is exited.  We're only interested in the exit. */
 	int finished;
-	/** True if we should treat a failure as success and vice-versa (for testing ctest itself) */
-	int inverted;
 };
 /** tests are listed off this list head, from most nested to least nested. */
 struct test *test_head;
@@ -128,7 +126,7 @@ void ctest_assert(int result, const char *file, int line, const char *msg)
 		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
 	}
 
-	if(test_head && test_head->inverted)
+	if(ctest_preferences.inverted)
 		result = !result;
 
 	metrics.assertions_run += 1;
@@ -165,7 +163,7 @@ void ctest_assert_fmt(int result, const char *file, int line, const char *msg, .
 }
 
 
-struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line, int inverted)
+struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line)
 {
 	struct test* test = malloc(sizeof(struct test));
 	if(!test) {
@@ -179,26 +177,18 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 	
 	test->name = name;
 	test->finished = 0;
-	test->inverted = inverted;
 	
 	metrics.tests_run += 1;
 	if(ctest_preferences.verbosity >= 1) {
 		print_test_indentation();
-		printf("t%d. starting %stest %s at %s:%d {\n",
-			metrics.tests_run, inverted ? "inverted " : "", name, file, line);
+		printf("t%d. starting test %s at %s:%d {\n",
+			metrics.tests_run, name, file, line);
 	}
 
 	test_push(test);
 	return &test_head->jmp;
 }
 
-
-/** Called when the test has been completed without longjumping.
- * 
- * Note that this does not automatically mean that the test has succeeded!
- * If the sense of the test has been inverted, and if it then proceeds to
- * completion, that should be considered a failure.
- */
 
 int ctest_internal_finish_test(int failure)
 {
@@ -214,7 +204,7 @@ int ctest_internal_finish_test(int failure)
 		return 1;
 	}
 	
-	if(!failure || test_head->inverted) {
+	if(!failure || ctest_preferences.inverted) {
 		metrics.test_successes += 1;
 	} else {
 		metrics.test_failures += 1;

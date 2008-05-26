@@ -16,6 +16,10 @@
 #include <string.h>
 
 
+/** just a stupid little trick to potentially make the test more readable. */
+#define ctest_invert while((ctest_preferences.inverted = !ctest_preferences.inverted) != 0)
+
+
 /* used to ensure assert macros don't evaluate their arguments more than once */
 int ctest_multi_calls;
 
@@ -33,7 +37,7 @@ void test_assert_int()
 	AssertLE(b,a);
 	AssertLE(c,a);
 	
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertEQ(a,b);
 		AssertNE(a,c);
 		AssertGT(a,c);
@@ -46,32 +50,32 @@ void test_assert_int()
 
 	AssertZero(z);
 	AssertNonzero(a);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertZero(a);
 		AssertNonzero(z);
 	}
 
 	AssertPositive(a);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertPositive(z)
 		AssertPositive(n)
 	}
 
 	AssertNonPositive(n);
 	AssertNonPositive(z);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertNonPositive(a)
 	}
 
 	AssertNegative(n);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertNegative(z)
 		AssertNegative(a)
 	}
 
 	AssertNonNegative(a);
 	AssertNonNegative(z);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertNonNegative(n)
 	}
 }
@@ -90,7 +94,7 @@ void test_assert_hex()
 	AssertHexLE(b,a);
 	AssertHexLE(c,a);
 
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertHexEQ(a,b);
 		AssertHexNE(a,c);
 		AssertHexGT(a,c);
@@ -103,32 +107,32 @@ void test_assert_hex()
 
 	AssertHexZero(z);
 	AssertHexNonzero(a);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertHexZero(a);
 		AssertHexNonzero(z);
 	}
 
 	AssertHexPositive(a);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertHexPositive(z);
 		AssertHexPositive(n);
 	}
 
 	AssertHexNonPositive(n);
 	AssertHexNonPositive(z);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertHexNonPositive(a);
 	}
 
 	AssertHexNegative(n);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertHexNegative(z);
 		AssertHexNegative(a);
 	}	
 
 	AssertHexNonNegative(a);
 	AssertHexNonNegative(z);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertHexNonNegative(n);
 	}
 }
@@ -145,7 +149,7 @@ void test_assert_ptr()
 	AssertPtr(ap);
 	AssertNull(n);
 
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertPtr(n);
 		AssertNull(ap);
 	}
@@ -159,7 +163,7 @@ void test_assert_ptr()
 	AssertPtrLE(bp,ap);
 	AssertPtrLE(cp,ap);
 
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertPtrEQ(ap,bp);
 		AssertPtrNE(ap,cp);
 		AssertPtrGT(ap,cp);
@@ -185,7 +189,7 @@ void test_assert_float()
 	AssertFloatLE(b,a);
 	AssertFloatLE(c,a);
 
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertFloatEQ(a,b);
 		AssertFloatNE(a,c);
 		AssertFloatGT(a,c);
@@ -205,7 +209,7 @@ void test_assert_float()
 	AssertDoubleLE(b,a);
 	AssertDoubleLE(c,a);
 
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertDoubleEQ(a,b);
 		AssertDoubleNE(a,c);
 		AssertDoubleGT(a,c);
@@ -235,7 +239,7 @@ void test_assert_strings()
 	AssertStrLE(b,a);
 	AssertStrLE(c,a);
 
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertStrEQ(a,b);
 		AssertStrNE(a,c);
 		AssertStrGT(a,c);
@@ -247,13 +251,13 @@ void test_assert_strings()
 	}
 
 	AssertStrEmpty(e);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertStrEmpty(a);
 		AssertStrEmpty(n);
 	}
 
 	AssertStrNonEmpty(a);
-	ctest_start_inverted(0) {
+	ctest_invert {
 		AssertStrNonEmpty(e);
 		AssertStrNonEmpty(n);
 	}

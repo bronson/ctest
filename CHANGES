@@ -31,6 +31,7 @@ Version 0.8, IN PROGRESS
 - Can now run asserts without having them wrapped in ctest_start
   (if the assert fails, the app exits immediately).
 - Added ctest_preferences to provide more control over how ctest runs.
+- moved test inversion from the public API to an obscure prefs item.
 
 Version 0.71, 20 Oct 2007
 - created the mutest_start macro, cleaned up the assertion routines.
