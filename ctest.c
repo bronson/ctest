@@ -120,17 +120,17 @@ static void print_test_indentation()
 }
 
 
-void ctest_assert(int result, const char *file, int line, const char *msg)
+void ctest_assert(int success, const char *file, int line, const char *msg)
 {
-	if(!result && ctest_preferences.show_failures) {
+	if(!success && ctest_preferences.show_failures) {
 		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
 	}
 
 	if(ctest_preferences.inverted)
-		result = !result;
+		success = !success;
 
 	metrics.assertions_run += 1;
-	if(result) {
+	if(success) {
 		if(ctest_preferences.verbosity >= 1) {
 			print_test_indentation();
 			printf("%d. assert %s at %s:%d: success\n",
@@ -147,7 +147,7 @@ void ctest_assert(int result, const char *file, int line, const char *msg)
 }
 
 
-void ctest_assert_fmt(int result, const char *file, int line, const char *msg, ...)
+void ctest_assert_fmt(int success, const char *file, int line, const char *msg, ...)
 {
 	va_list ap;
 	char buf[BUFSIZ];
@@ -159,7 +159,7 @@ void ctest_assert_fmt(int result, const char *file, int line, const char *msg, .
 	vsprintf(buf, msg, ap);
 	va_end(ap);
 
-	ctest_assert(result, file, line, buf);
+	ctest_assert(success, file, line, buf);
 }
 
 
@@ -190,7 +190,7 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 }
 
 
-int ctest_internal_finish_test(int failure)
+int ctest_internal_finish_test(int success)
 {
 	if(!test_head) {
 		/* how could we end up here without a test_head?? */
@@ -204,7 +204,7 @@ int ctest_internal_finish_test(int failure)
 		return 1;
 	}
 	
-	if(!failure || ctest_preferences.inverted) {
+	if(success || ctest_preferences.inverted) {
 		metrics.test_successes += 1;
 	} else {
 		metrics.test_failures += 1;

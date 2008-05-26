@@ -102,21 +102,21 @@ struct ctest_jmp_wrapper {
  */
 #define ctest_start(name) \
 	if(setjmp(ctest_internal_start_test(name, __FILE__,__LINE__)->jmp)) { \
-		ctest_internal_finish_test(1); \
-	} else for(; ctest_internal_finish_test(0); )
+		ctest_internal_finish_test(0); \
+	} else for(; ctest_internal_finish_test(1); )
 
 
 /** Indicates that an assertion has been run with the given result.
  */
 
-void ctest_assert(int result, const char *file, int line, const char *msg);
-void ctest_assert_fmt(int result, const char *file, int line, const char *msg, ...);
+void ctest_assert(int success, const char *file, int line, const char *msg);
+void ctest_assert_fmt(int success, const char *file, int line, const char *msg, ...);
 
 
 /* The following routines are not meant to be called directly; they are used
  * by the ctest_start() macro and always subject to change.
  */
 struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char *file, int line);
-int ctest_internal_finish_test(int failure);
+int ctest_internal_finish_test(int success);
 
 #endif
