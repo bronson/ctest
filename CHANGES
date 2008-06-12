@@ -6,6 +6,9 @@ TODO:
 - Optionally install signal handlers.  int/fp /0 and bus errors.
   Can we recover just like we do for failed asserts?
 - Make a homepage for it, replace the URL in the readme file.
+- What to do about compiling in asserts?  I want to be able to run the
+  unit tests at any time so I want asserts compiled in.  But do I want
+  to error out if the test is hit during normal usage??  Probably not!
 
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.

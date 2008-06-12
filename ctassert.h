@@ -233,15 +233,11 @@
  */
 
 /* If the expression returns false, it is printed in the failure message. */
-#define Assert(x) do { \
-		if(x) { ctest_assert(1, __FILE__, __LINE__, #x); } \
-		else { ctest_assert(0, __FILE__, __LINE__, #x); } \
-	} while(0)
+#define Assert(x) \
+	ctest_assert((x), __FILE__, __LINE__, #x)
 
-#define AssertArgs(x,str,arg1,arg2) do { \
-		if(x) { ctest_assert_fmt(1, __FILE__, __LINE__, str, arg1, arg2); } \
-		else { ctest_assert_fmt(0, __FILE__, __LINE__, str, arg1, arg2); } \
-	} while(0)
+#define AssertArgs(x,str,arg1,arg2) \
+	ctest_assert_fmt((x), __FILE__, __LINE__, str, arg1, arg2)
 
 
 #define AssertExpType(x,op,y,type,fmt) do { \
