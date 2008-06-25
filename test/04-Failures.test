@@ -85,4 +85,6 @@ ctassert.c:NNN: assert failed: a is empty with a set to "Bogozity"!
 ctassert.c:NNN: assert failed: n is empty with n set to NULL!
 ctassert.c:NNN: assert failed: e is nonempty with e[0] set to 0!
 ctassert.c:NNN: assert failed: n is nonempty with n set to NULL!
-All OK.  7 tests run, 7 successes (158 assertions).
+ctassert.c:NNN: assert failed: 5 %invar == 0 with 5 %invar=1!
+ctassert.c:NNN: assert failed: 101 % maybe == 0 with 101 % maybe=1!
+All OK.  8 tests run, 8 successes (160 assertions).

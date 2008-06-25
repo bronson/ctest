@@ -373,6 +373,24 @@ void run_ctassert_tests()
 		test_assert_args();
 	}
 
+	/* Make sure printf doesn't interpret the % operator.
+	 * ctest used to have a bug where if "AssertZero(5%invar)" failed,
+	 * the failure message would be "5 1nvar == 0 with 5 0nvar=0"
+	 * (that should be, of course, "5%invar == 0 with 5%invar=0"
+	 * No point in running this test unless showing failures.
+	 * How else can we test the output?
+	 */
+	if(ctest_preferences.show_failures) {
+		ctest_start("AssertPrintf") {
+			ctest_invert {
+				int invar = 2;
+				int maybe = 10;
+				AssertZero(5 %invar);     /* trigger %i */
+				AssertZero(101 % maybe);  /* %m GNU extension */
+			}
+		}
+	}
+
 	ctest_start("AssertNesting") {
 		/* This makes sure that we can assert on a function result,
 		 * even if that function makes other assert calls.

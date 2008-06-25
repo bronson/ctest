@@ -3,12 +3,15 @@ TODO:
   unit test, allow nesting, and allocate everything on the stack?
 - Don't malloc on every test.  Keep a cache or something.
 - Get rid of the vsprintf potential buffer overflow (and stdarg?).
+  In fact, printf has gotten fairly painful.  Convert everything to puts?
 - Optionally install signal handlers.  int/fp /0 and bus errors.
   Can we recover just like we do for failed asserts?
 - Make a homepage for it, replace the URL in the readme file.
 - What to do about compiling in asserts?  I want to be able to run the
   unit tests at any time so I want asserts compiled in.  But do I want
   to error out if the test is hit during normal usage??  Probably not!
+- ctest_assert_fmt formats the string even if nothing is eventually printed.
+  That's pretty costly.
 
 Version 0.8, IN PROGRESS
 - Renamed mutest to ctest.  A generic name is better than a lame one.
@@ -18,7 +21,7 @@ Version 0.8, IN PROGRESS
 - Can now run asserts without having them wrapped in ctest_start
   (if the assert fails, the app exits immediately).
 - Added ctest_preferences to provide more control over how ctest runs.
-- moved test inversion from the public API to an obscure prefs item.
+- Got rid of printf format errors (AssertZero(12%i) would use %i as a format string)
 
 Version 0.71, 20 Oct 2007
 - created the mutest_start macro, cleaned up the assertion routines.

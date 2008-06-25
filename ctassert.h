@@ -77,10 +77,12 @@
 #define AssertHexNonPositive(x) AssertHexOpToZero(x,<=);
 
 /* Pointers */
-#define AssertPtr(p)  do { void* pv = (p); AssertArgs(pv != (void*)0, \
-		#p" != NULL with " #p "==0x%lX!", pv, NULL); } while(0)
-#define AssertNull(p) do { void *pv = (p); AssertArgs(pv == (void*)0, \
-		#p" == NULL with " #p "==0x%lX!", pv, NULL); } while(0)
+#define AssertPtr(p)  do { void* pv = (p); \
+	ctest_assert_fmt(pv != (void*)0, __FILE__, __LINE__, "%s != NULL with %s==0x%lX!", #p, #p, pv); \
+	} while(0)
+#define AssertNull(p) do { void *pv = (p); \
+	ctest_assert_fmt(pv == (void*)0, __FILE__, __LINE__, "%s == NULL with %s==0x%lX!", #p, #p, pv); \
+	} while(0)
 #define AssertNonNull(p) AssertPtr(p)
 
 #define AssertPointer(p) AssertPtr(p)
@@ -136,16 +138,16 @@
 
 /* ensures a string is non-null but zero-length */
 #define AssertStrEmpty(p) do { char *pv = (void*)(p); \
-		if(!(pv)) { ctest_assert(0, __FILE__, __LINE__, #p" is empty with " #p " set to NULL"); } \
-		else if((pv)[0]) { ctest_assert_fmt(0, __FILE__, __LINE__, #p " is empty with " #p " set to \"%s\"", pv, NULL); } \
-		else ctest_assert_fmt(1, __FILE__, __LINE__, #p" is empty with " #p"[0]=0"); \
+		if(!(pv)) { ctest_assert_fmt(0, __FILE__, __LINE__, #p" is empty with " #p " set to NULL"); } \
+		else if((pv)[0]) { ctest_assert_fmt(0, __FILE__, __LINE__, "%s is empty with %s set to \"%s\"", #p, #p, pv); } \
+		else ctest_assert_fmt(1, __FILE__, __LINE__, "%s is empty with %s[0]=0", #p, #p); \
 	} while(0)
 
 /* ensures a string is non-null and non-zero-length */
 #define AssertStrNonEmpty(p) do { char *pv = (void*)(p); \
-		if(!(pv)) { ctest_assert(0, __FILE__, __LINE__, #p" is nonempty with " #p " set to NULL"); } \
-		else if(!(pv)[0]) { ctest_assert(0, __FILE__, __LINE__, #p" is nonempty with " #p"[0] set to 0"); } \
-		else ctest_assert_fmt(1, __FILE__, __LINE__, #p" is empty with " #p " set to \"%s\"", pv, NULL); \
+		if(!(pv)) { ctest_assert_fmt(0, __FILE__, __LINE__, "%s is nonempty with %s set to NULL", #p, #p); } \
+		else if(!(pv)[0]) { ctest_assert_fmt(0, __FILE__, __LINE__, "%s is nonempty with %s[0] set to 0", #p, #p); } \
+		else ctest_assert_fmt(1, __FILE__, __LINE__, "%s is empty with %s set to \"%s\"", #p, #p, pv); \
 	} while(0)
 
 #define AssertStringEmpty(x) AssertStrEmpty(x)
@@ -236,17 +238,13 @@
 #define Assert(x) \
 	ctest_assert((x), __FILE__, __LINE__, #x)
 
-#define AssertArgs(x,str,arg1,arg2) \
-	ctest_assert_fmt((x), __FILE__, __LINE__, str, arg1, arg2)
-
-
 #define AssertExpType(x,op,y,type,fmt) do { type xv = (x); type yv = (y); \
-	AssertArgs(xv op yv, #x" "#op" "#y " with " #x"="fmt" and "#y"="fmt, xv, yv); \
+	ctest_assert_fmt(xv op yv, __FILE__, __LINE__, "%s %s %s with %s="fmt" and %s="fmt, #x, #op, #y, #x, xv, #y, yv); \
 	} while(0)
 /* The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll */
 /* special-case checking against 0: "x==0 failed because x==1" */
-#define AssertExpToZero(x,op,type,fmt) do { type xv = (x); \
-	AssertArgs(xv op 0,#x" "#op" 0 with " #x"="fmt, xv, NULL); \
+#define AssertExpToZero(x,op,type,fmt) do { type xv = (type)(x); \
+	ctest_assert_fmt(xv op 0, __FILE__, __LINE__, "%s %s 0 with %s="fmt, #x, #op, #x, xv); \
 	} while(0)
 
 
@@ -257,8 +255,8 @@
 #define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		/* can't use %p because some libc print "0x" first and some don't */
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) do { char *xv = (void*)(x); char *yv = (void*)(y); \
-	AssertArgs(strcmp(xv,yv) op 0, #x" "#opn" "#y \
-	" with " #x"=\"%s\" and "#y"=\"%s\"",xv,yv); } while(0)
+	ctest_assert_fmt(strcmp(xv,yv) op 0, __FILE__, __LINE__, "%s %s %s with %s=\"%s\" and %s=\"%s\"", #x, #opn, #y, #x, xv, #y, yv); \
+	} while(0)
 
 
 /* If you want to run the unit tests for these asserts before using
