@@ -17,7 +17,7 @@
 
 
 /** just a stupid little trick to potentially make the test more readable. */
-#define ctest_invert while((ctest_preferences.inverted = !ctest_preferences.inverted) != 0)
+#define ctest_invert while(ctest_toggle_inversion())
 
 
 /* used to ensure assert macros don't evaluate their arguments more than once */

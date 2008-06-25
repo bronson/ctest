@@ -81,6 +81,8 @@ struct test {
 	const char *name;
 	/** True if we've already run the test in its entirety, false if not.  Needed because ctest_internal_test_finished() must be called twice: once when the test block is entered, and once when the block is exited.  We're only interested in the exit. */
 	int finished;
+	/** true if the sense of the assertions should be reversed. */
+	int inverted;
 };
 /** tests are listed off this list head, from most nested to least nested. */
 struct test *test_head;
@@ -126,7 +128,7 @@ void ctest_assert(int success, const char *file, int line, const char *msg)
 		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
 	}
 
-	if(ctest_preferences.inverted)
+	if(test_head && test_head->inverted)
 		success = !success;
 
 	metrics.assertions_run += 1;
@@ -135,7 +137,7 @@ void ctest_assert(int success, const char *file, int line, const char *msg)
 			print_test_indentation();
 			printf("%d. %sassert %s at %s:%d: success\n",
 				metrics.assertions_run, 
-				ctest_preferences.inverted ? "inverted " : "",
+				test_head && test_head->inverted ? "inverted " : "",
 				msg, file, line);
 		}
 	} else {
@@ -179,6 +181,7 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 	
 	test->name = name;
 	test->finished = 0;
+	test->inverted = 0;
 	
 	metrics.tests_run += 1;
 	if(ctest_preferences.verbosity >= 1) {
@@ -207,7 +210,7 @@ int ctest_internal_finish_test(int success)
 		return 1;
 	}
 	
-	if(success || ctest_preferences.inverted) {
+	if(success || test_head->inverted) {
 		metrics.test_successes += 1;
 	} else {
 		metrics.test_failures += 1;
@@ -248,6 +251,22 @@ void ctest_exit()
 {
 	print_ctest_results();
 	exit(metrics.test_failures < 100 ? metrics.test_failures : 100);
+}
+
+
+/** Normally, a failed assert causes the currently running test to be aborted.
+ *  But how do unit tests test their assert macros?  Invert the sense.
+ *  That way, if the assertion fails, that's what we expected, and the
+ *  test actually succeeds.  To start or stop inverting, call this routine.
+ */
+int ctest_toggle_inversion()
+{
+	if(!test_head) {
+		fprintf(stderr, "Called ctest_toggle_inversion without having started a test!\n");
+		exit(240);
+	}
+	test_head->inverted = !test_head->inverted;
+	return test_head->inverted;
 }
 
 

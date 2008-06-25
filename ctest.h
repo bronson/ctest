@@ -44,9 +44,6 @@ extern struct ctest_preferences {
 	/** Set this to 1 to print the failures.  This tells ctest to display the
          *  output of each inverted failure to ensure it looks OK. */
 	int show_failures;
-	/** Used to test the unit test suite itself.  It inverts the sense of the test:
-	 * a failure is actually the expected behavior and gets counted as a success. */
-	int inverted;
 } ctest_preferences;
 
 
@@ -108,6 +105,9 @@ struct ctest_jmp_wrapper {
 
 void ctest_assert(int success, const char *file, int line, const char *msg);
 void ctest_assert_fmt(int success, const char *file, int line, const char *msg, ...);
+
+/** Flips the sense of the ensuing tests, returns true if tests will now be inverted. */
+int ctest_toggle_inversion();
 
 
 /* The following routines are not meant to be called directly; they are used
