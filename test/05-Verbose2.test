@@ -149,7 +149,7 @@ STDOUT:
   134. assert e is empty with e[0]=0 at ctassert.c:NNN: success
   135. inverted assert a is empty with a set to "Bogozity" at ctassert.c:NNN: success
   136. inverted assert n is empty with n set to NULL at ctassert.c:NNN: success
-  137. assert ais empty with a set to "Bogozity" at ctassert.c:NNN: success
+  137. assert a is empty with a set to "Bogozity" at ctassert.c:NNN: success
   138. inverted assert e is nonempty with e[0] set to 0 at ctassert.c:NNN: success
   139. inverted assert n is nonempty with n set to NULL at ctassert.c:NNN: success
 }
@@ -164,7 +164,7 @@ STDOUT:
   147. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
   148. assert multi_str_empty() is empty with multi_str_empty()[0]=0 at ctassert.c:NNN: success
   149. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
-  150. assert multi_str()is empty with multi_str() set to "yep" at ctassert.c:NNN: success
+  150. assert multi_str() is empty with multi_str() set to "yep" at ctassert.c:NNN: success
   151. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
 }
 7. Running AssertNesting at ctassert.c:NNN {

@@ -145,7 +145,7 @@
 #define AssertStrNonEmpty(p) do { char *pv = (void*)(p); \
 		if(!(pv)) { ctest_assert(0, __FILE__, __LINE__, #p" is nonempty with " #p " set to NULL"); } \
 		else if(!(pv)[0]) { ctest_assert(0, __FILE__, __LINE__, #p" is nonempty with " #p"[0] set to 0"); } \
-		else ctest_assert_fmt(1, __FILE__, __LINE__, #p"is empty with " #p " set to \"%s\"", pv, NULL); \
+		else ctest_assert_fmt(1, __FILE__, __LINE__, #p" is empty with " #p " set to \"%s\"", pv, NULL); \
 	} while(0)
 
 #define AssertStringEmpty(x) AssertStrEmpty(x)
