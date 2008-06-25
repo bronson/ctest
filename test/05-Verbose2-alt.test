@@ -156,20 +156,24 @@ STDOUT:
 6. Running AssertArgs at ctassert.c:NNN {
   140. assert i++ == 1 with i++=1 and 1=1 at ctassert.c:NNN: success
   141. assert ++i == 2 with ++i=2 and 2=2 at ctassert.c:NNN: success
-  142. assert multi_ptr() != NULL with multi_ptr()==0xHEXDIGIT! at ctassert.c:NNN: success
+  142. assert multi_int() == 1 with multi_int()=0xHEXDIGIT and 1=0xHEXDIGIT at ctassert.c:NNN: success
   143. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
-  144. assert multi_null() == NULL with multi_null()==0xHEXDIGIT! at ctassert.c:NNN: success
+  144. assert (multi_int()!=1) == 0 with (multi_int()!=1)=0 at ctassert.c:NNN: success
   145. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
-  146. assert multi_str() eq "yep" with multi_str()="yep" and "yep"="yep" at ctassert.c:NNN: success
+  146. assert multi_ptr() != NULL with multi_ptr()==0xHEXDIGIT! at ctassert.c:NNN: success
   147. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
-  148. assert multi_str_empty() is empty with multi_str_empty()[0]=0 at ctassert.c:NNN: success
+  148. assert multi_null() == NULL with multi_null()==0xHEXDIGIT! at ctassert.c:NNN: success
   149. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
-  150. assert multi_str() is empty with multi_str() set to "yep" at ctassert.c:NNN: success
+  150. assert multi_str() eq "yep" with multi_str()="yep" and "yep"="yep" at ctassert.c:NNN: success
   151. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+  152. assert multi_str_empty() is empty with multi_str_empty()[0]=0 at ctassert.c:NNN: success
+  153. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
+  154. assert multi_str() is empty with multi_str() set to "yep" at ctassert.c:NNN: success
+  155. assert ctest_multi_calls == 1 with ctest_multi_calls=1 and 1=1 at ctassert.c:NNN: success
 }
 7. Running AssertNesting at ctassert.c:NNN {
-  152. assert 12 == 12 with 12=12 and 12=12 at ctassert.c:NNN: success
-  153. assert 12 == 12 with 12=12 and 12=12 at ctassert.c:NNN: success
-  154. assert nested_assert() == nested_assert() with nested_assert()=42 and nested_assert()=42 at ctassert.c:NNN: success
+  156. assert 12 == 12 with 12=12 and 12=12 at ctassert.c:NNN: success
+  157. assert 12 == 12 with 12=12 and 12=12 at ctassert.c:NNN: success
+  158. assert nested_assert() == nested_assert() with nested_assert()=42 and nested_assert()=42 at ctassert.c:NNN: success
 }
-All OK.  7 tests run, 7 successes (154 assertions).
+All OK.  7 tests run, 7 successes (158 assertions).

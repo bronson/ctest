@@ -240,14 +240,14 @@
 	ctest_assert_fmt((x), __FILE__, __LINE__, str, arg1, arg2)
 
 
-#define AssertExpType(x,op,y,type,fmt) do { \
-	type xv = (x); type yv = (y); \
+#define AssertExpType(x,op,y,type,fmt) do { type xv = (x); type yv = (y); \
 	AssertArgs(xv op yv, #x" "#op" "#y " with " #x"="fmt" and "#y"="fmt, xv, yv); \
 	} while(0)
 /* The failure "x==0 failed because x==1 and 0==0" s too wordy so we'll */
 /* special-case checking against 0: "x==0 failed because x==1" */
-#define AssertExpToZero(x,op,type,fmt) \
-	AssertArgs((type)(x) op 0,#x" "#op" 0 with " #x"="fmt, (type)(x), NULL)
+#define AssertExpToZero(x,op,type,fmt) do { type xv = (x); \
+	AssertArgs(xv op 0,#x" "#op" 0 with " #x"="fmt, xv, NULL); \
+	} while(0)
 
 
 #define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")

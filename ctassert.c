@@ -264,6 +264,13 @@ void test_assert_strings()
 }
 
 
+static int multi_int()
+{
+	ctest_multi_calls += 1;
+	return ctest_multi_calls;
+}
+
+
 static void* multi_ptr()
 {
 	ctest_multi_calls += 1;
@@ -302,6 +309,14 @@ void test_assert_args()
 	AssertEQ(i++, 1);
 	i=1;
 	AssertEQ(++i, 2);
+
+	ctest_multi_calls = 0;
+	AssertHexEQ(multi_int(), 1);
+	AssertEQ(ctest_multi_calls, 1);
+
+	ctest_multi_calls = 0;
+	AssertZero((multi_int()!=1));	/* multi_int should return 1 */
+	AssertEQ(ctest_multi_calls, 1);
 
 	ctest_multi_calls = 0;
 	AssertPtr(multi_ptr());
