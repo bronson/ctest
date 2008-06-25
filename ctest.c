@@ -142,6 +142,9 @@ void ctest_assert(int success, const char *file, int line, const char *msg)
 		}
 	} else {
 		if(test_head) {
+			if(test_head->inverted) {
+				fprintf(stderr, "%s:%d: inverted assert was not expected to succeed: %s!\n", file, line, msg);
+			}
 			/* longjump to abort this test */
 			longjmp(test_head->jmp.jmp, 1);
 		} else {
