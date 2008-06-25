@@ -3,7 +3,7 @@
  * 6 Mar 2006
  *
  * This file contains the code needed to find and launch C unit tests.
- * 
+ *
  * Copyright (C) 2007 Scott Bronson
  * This file is released under the MIT License.
  * See http://www.opensource.org/licenses/mit-license.php
@@ -26,13 +26,13 @@
  * within a test, the test itself is stopped and printed as a failure
  * but all other tests in the current test suite, and all other test
  * suites, will still be run.
- * 
+ *
  * If an assert fails outside of a test_enter block, a message is
  * printed and the testing program is exited.
- * 
+ *
  *
  * A single test is typically:
- *   
+ *
  * Generally each step in a test must be processed in order
  * (later steps depend on earlier).  This is why tmtest bails
  * on the entire test when the first assert fails -- chances are
@@ -136,7 +136,7 @@ void ctest_assert(int success, const char *file, int line, const char *msg)
 		if(ctest_preferences.verbosity >= 2) {
 			print_test_indentation();
 			printf("%d. %sassert %s at %s:%d: success\n",
-				metrics.assertions_run, 
+				metrics.assertions_run,
 				test_head && test_head->inverted ? "inverted " : "",
 				msg, file, line);
 		}
@@ -177,15 +177,15 @@ struct ctest_jmp_wrapper* ctest_internal_start_test(const char *name, const char
 		fprintf(stderr, "Out of memory allocating struct test!\n");
 		exit(239);
 	}
-	
+
 	if(!name || !name[0]) {
 		name = "(unnamed)";
 	}
-	
+
 	test->name = name;
 	test->finished = 0;
 	test->inverted = 0;
-	
+
 	metrics.tests_run += 1;
 	if(ctest_preferences.verbosity >= 1) {
 		print_test_indentation();
@@ -206,13 +206,13 @@ int ctest_internal_finish_test(int success)
 		fprintf(stderr, "Internal finish error: somehow ctest_start didn't complete?\n");
 		exit(243);
 	}
-	
+
 	if(!test_head->finished) {
 		/* we haven't run the test yet, so run it. */
 		test_head->finished = 1;
 		return 1;
 	}
-	
+
 	if(success || test_head->inverted) {
 		metrics.test_successes += 1;
 	} else {
@@ -239,7 +239,7 @@ void print_ctest_results()
 			metrics.assertions_run, (metrics.assertions_run == 1 ? "" : "s"));
 	} else {
 		printf("ERROR: %d failure%s in %d test%s run!\n",
-			metrics.test_failures, (metrics.test_failures == 1 ? "" : "s"), 
+			metrics.test_failures, (metrics.test_failures == 1 ? "" : "s"),
 			metrics.tests_run, (metrics.tests_run == 1 ? "" : "s"));
 	}
 }
@@ -273,8 +273,8 @@ int ctest_toggle_inversion()
 }
 
 
-/** Parses command-line arguments into ctest_preferences. 
- * 
+/** Parses command-line arguments into ctest_preferences.
+ *
  * Intended to be called before your application's command-line handling.
  *
  * Returns true if the user specified that unit tests should be run,
