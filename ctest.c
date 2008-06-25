@@ -124,12 +124,12 @@ static void print_test_indentation()
 
 void ctest_assert(int success, const char *file, int line, const char *msg)
 {
-	if(!success && ctest_preferences.show_failures) {
-		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
-	}
-
 	if(test_head && test_head->inverted)
 		success = !success;
+
+	if(!success || (ctest_preferences.show_failures && test_head && test_head->inverted)) {
+		fprintf(stderr, "%s:%d: assert failed: %s!\n", file, line, msg);
+	}
 
 	metrics.assertions_run += 1;
 	if(success) {

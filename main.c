@@ -13,12 +13,29 @@
 
 #include "ctest.h"
 #include "ctassert.h"
+#include <string.h>
 
 
 int main(int argc, char **argv)
 {
 	if(ctest_read_args(argc, argv)) {
 		printf("ctest_read_args returned true!\n");
+	}
+
+	/* Check for special-purpose tests */
+	for(;*argv;argv++) {
+		if(strcmp(*argv,"--fail-assert") == 0) {
+			/* intentionally fail an assert */
+			AssertEQ(1,0);
+		}
+		if(strcmp(*argv,"--fail-test") == 0) {
+			/* intentionally fail a test */
+			ctest_start("FailTest") {
+				AssertEQ(1,0);
+			}
+			ctest_exit();
+			return 0;
+		}
 	}
 
 	/* Ensure that we can hit asserts without first calling ctest_start. */

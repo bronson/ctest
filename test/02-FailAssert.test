@@ -1,0 +1,6 @@
+# Ensures that a bare assert will fail properly
+
+$ctest --fail-assert 2>&1 | sed -e 's/^[a-z.]*:[0-9]*:/FILE:LINE:/'
+
+STDOUT:
+FILE:LINE: assert failed: 1 == 0 with 1=1 and 0=0!

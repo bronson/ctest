@@ -1,0 +1,8 @@
+# Ensures that a test will fail and print the reason why.
+# (for a short time, a bug in ctest prevented the reason from being printed)
+
+$ctest --fail-test 2>&1 | sed -e 's/^[a-z.]*:[0-9]*:/FILE:LINE:/'
+
+STDOUT:
+FILE:LINE: assert failed: 1 == 0 with 1=1 and 0=0!
+ERROR: 1 failure in 1 test run!
