@@ -248,10 +248,23 @@
 	} while(0)
 
 
-#define AssertOp(x,op,y) AssertExpType(x,op,y,long,"%ld")
-#define AssertHexOp(x,op,y) AssertExpType(x,op,y,long,"0x%lX")
-#define AssertOpToZero(x,op) AssertExpToZero(x,op,long,"%ld")
-#define AssertHexOpToZero(x,op) AssertExpToZero(x,op,long,"0x%lX")
+/* define CTEST_LONG_LONG_ASSERTS before including ctassert.h to have all
+ * integer comparisons done using long longs.  Define this if you ever
+ * need to assert on 64 bit values on 32 bit systems.  It incurs a
+ * small performance penalty and is hardly ever needed. */
+
+#ifdef CTEST_LONG_LONG_ASSERTS
+#define CTiLONG long long
+#define CTiFMT "%ll"
+#else
+#define CTiLONG long
+#define CTiFMT "%l"
+#endif
+
+#define AssertOp(x,op,y) AssertExpType(x,op,y,CTiLONG,CTiFMT"d")
+#define AssertHexOp(x,op,y) AssertExpType(x,op,y,CTiLONG,"0x"CTiFMT"X")
+#define AssertOpToZero(x,op) AssertExpToZero(x,op,CTiLONG,CTiFMT"d")
+#define AssertHexOpToZero(x,op) AssertExpToZero(x,op,CTiLONG,"0x"CTiFMT"X")
 #define AssertPtrOp(x,op,y) AssertExpType(x,op,y,void*,"0x%lX")		/* can't use %p because some libc print "0x" first and some don't */
 #define AssertFloatOp(x,op,y) AssertExpType(x,op,y,double,"%lf")
 #define AssertStrOp(x,opn,op,y) do { char *xv = (void*)(x); char *yv = (void*)(y); \

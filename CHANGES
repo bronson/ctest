@@ -45,6 +45,7 @@ Would be nice but might never happen:
   - "A test could crash and fool the framework into thinking that it passed!"
     - Erm, you're probably more likely to be hit by lightning.
   - This would allow the ability to specify an optional timeout.
+- Add tests for CTEST_LONG_LONG_ASSERTS?  Do it in a different file of course.
 - AssertStrEmpty and AssertStrNonEmpty suck.  Clean them up?
   - It won't be easy...  They work well.
 - Make it easy to temporarily disable tests.
