@@ -1,0 +1,118 @@
+List of test frameworks:
+	http://www.opensourcetesting.org/unit_c.php
+
+
+Desires:
+	Very little boilerplate or complexity.
+	Easily step through testing code in the debugger.
+	Tests live in the same files as the code they're testing.
+	Asserts should be very descriptive.  I don't want "failed",
+		I want "myvar should have been 7 but was 3",
+		complete with actual variable names.
+	Everything must be 100% C, 100% ANSI C.
+	 No C++ comments, no compiler extensions, no variadic macros, etc.
+	 Any guis, etc must be so completely optional that they're superfluous.
+	Should want to compile it into the final executable.
+		No bloat, no wacky library dependencies.
+	License: must be commercial-friendly.
+		MIT or LGPL.  3-clause BSD is too restrictive.
+	Should only include testing.
+		i.e. if you want mock functions, that should be a separate library.
+
+
+Good things:
+	Straight ANSI C, no extensions.  Should be compilable by
+	even the stodgiest C compiler.
+
+	Asserts should only ever execute their arguments once.
+		ctest ensures this.
+
+Don't Care:
+	Vitality.  If a library is small and tight and written in 1998,
+	it should be just as usable today in 2008.
+
+
+I don't really like the idea of test suites...  Seems like too much
+complexity.  Why do this:
+
+	int main(int argc, char **argv) {
+	    TestSuite *suite = create_test_suite();
+	    add_test(suite, this_test_should_pass);
+	    add_test(suite, this_test_should_fail);
+	    return run_test_suite(suite, create_text_reporter());
+	}
+
+when you can just do this?
+
+	int main(int argc, char **argv) {
+		this_test_should_pass();
+		this_test_should_fail();
+	}
+
+
+ctest allows you to run without ever calling ctest_start, so the
+very first error will cause testing to exit.  You can also nest
+ctest_start, allowing you to nest your test suites deeply.  Try
+doing that with static test suites!
+
+
+This means that you can use ctest asserts just like regular asserts.
+They behave the same way, except you get a lot more information
+with CTest's asserts.
+
+
+CppTest is the only tool that has seen a release thus far in 2008.
+
+
+CUT (C Unit Test system):
+- not updated since 2003.
+- wiki is totally abandoned; covered in spam and offers no way
+  to see what content it previously contained.
+- Only offers the ASSERT macro.
+
+Includes a program, cutgen, to create a C program to run the tests.
+Tests are just dead functions following a naming convention:
+	__CUT_BRINGUP__Whatever, __CUT__TestWhatever, __CUT_TAKEDOWN__Whatever
+
+Too much complexity, dead project.
+
+
+AutoUnit: dead, too much reliance on autotools.
+
+CU: http://www.danfis.cz/projects/cu.html
+	Looks pretty darn good!
+
+cUnit: http://web.archive.org/web/*/http://people.codefactory.se/~spotty/cunit/
+	- requires glib.
+
+CUnit:	http://cunit.sourceforge.net/
+	- Very API-heavy.
+
+CUnitForAndo: http://park.ruru.ne.jp/ando/work/CUnitForAndo/html/
+	Small, tight, great license.  Overall, love it.
+
+Cgreen: http://www.lastcraft.com/cgreen.php
+	+ includes mocks
+	+ LGPL
+	- Mocking in C seems silly.  Use the preprocessor if you can.
+		Well, maybe not...  the preprocessor won't work for
+		subfunctions.  But nothing will, not without control
+		of the linker!  How do they do mocks?
+
+
+Check: http://check.sourceforge.net/
+	- tied tightly to autoconf.
+	- Seems rather large and unweidly.
+
+I like MinUnit a LOT.
+	http://www.jera.com/techinfo/jtns/jtn002.html
+	I think it actually shares quite a bit with cunit.
+
+simplectest: http://simplectest.sourceforge.net/index.php
+	Looks pretty groovy.
+
+cfix: Windows only
+
+
+Great DNS overview:
+	http://tech.slashdot.org/comments.pl?sid=559394&cid=23491076
